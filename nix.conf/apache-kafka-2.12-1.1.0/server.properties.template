@@ -1,0 +1,6 @@
+zookeeper.connect=${zookeepers}/${cluster_id}
+broker.id=${_ip_4th}
+listeners=PLAINTEXT://0.0.0.0:${_ip}
+advertised.listeners=PLAINTEXT://${_ip}:${_port}
+log.dir=${_home}/nix.var/data/${_package}/${_port}
+log.retention.hours=48

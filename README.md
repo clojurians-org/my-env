@@ -32,12 +32,23 @@
   
   hydra-create-user larluo --full-name 'larry.luo' --email-address 'larluo@clojurians.org' --password larluo --role admin
 
+   hydra-create-user alice --full-name 'hydra' --email-address 'hydra@clojurians.org' --password hydra--role admin
+
 #================
 # ELK [docker run --name centos6 -it --net=host centos:6 sh]
 #================
-  sh nix.sh import 10.132.37.33 zookeeper-3.4.12
-  sh nix.sh start-foreground 10.132.37.34:2181 zookeeper-3.4.12 --all "10.132.37.33:2181,10.132.37.34:2181,10.132.37.35:2181"
+  # zookeeper [10.132.37.33:2181,10.132.37.34:2181,10.132.37.35:2181]
+  sh nix.sh export zookeeper-3.4.11
+  sh nix.sh import 10.132.37.33 zookeeper-3.4.11
+  sh nix.sh start-foreground 10.132.37.33:2181 zookeeper-3.4.11 --all "10.132.37.33:2181,10.132.37.34:2181,10.132.37.35:2181"
   zkCli.sh -server "10.132.37.33:2181,10.132.37.34:2181,10.132.37.34:2181"
+
+  # kafka [10.132.37.33:2181,10.132.37.34:2181,10.132.37.35:2181]
+  sh nix.sh export apache-kafka-2.12-1.1.0 
+  sh nix.sh import 10.132.37.33 apache-kafka-2.12-1.1.0
+  sh nix.sh start-foreground 10.132.37.33 apache-kafka-2.12-1.1.0 --zookeepers "10.132.37.33:2181,10.132.37.34:2181,10.132.37.35:2181" --cluster.id monitor
+
+
   
 
 #================
@@ -45,4 +56,7 @@
 #================
 mvn archetype:generate -DgroupId=my-first -DartifactId=my-first
 
+
+http://www.jedi.be/blog/2011/11/04/vagrant-virtualbox-hostonly-pxe-vlans/
 ```
+

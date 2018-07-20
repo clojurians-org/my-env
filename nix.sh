@@ -9,8 +9,8 @@ nix_tar=${nix_name}-x86_64-linux.tar.bz2
 
 if [ "$1" == "download" ]; then
   echo "[action] download ${nix_name}"
-  if [ ! -e $my/${nix_tar} ]; then
-    wget -O $my/${nix_tar}.tmp https://nixos.org/releases/nix/${nix_name}/${nix_tar}
+  if [ ! -e $my/nix.sh.d/${nix_tar} ]; then
+    wget -O $my/nix.sh.d/${nix_tar}.tmp https://nixos.org/releases/nix/${nix_name}/${nix_tar}
     mv $my/nix.sh.d/${nix_tar}.tmp $my/nix.sh.d/${nix_tar}
   else
     echo "[info] file exist already!"
@@ -23,9 +23,13 @@ elif [ "$1" == "export" ]; then
     exit 1
   fi
   echo "[action] export ${nix_package}..."
-  if [ -e nix.sh.out/${nix_package}.closure ]; then
+  if [ -e $my/nix.sh.out/${nix_package}.closure.bz2 ]; then
     echo "---->[info] ${nix_package} exist already!"
   else
+    if [ "$(shopt -s nullglob; echo /nix/store/*${nix_package}*)" == "" ]; then 
+      echo "--> nix-env -i ${nix_package}"
+      nix-env -i ${nix_package}
+    fi
     nix-store --export $(nix-store -qR /nix/store/*${nix_package}*) | bzip2 > nix.sh.out/${nix_package}.closure.bz2
   fi
 elif [ "$1" == "init" ]; then
@@ -90,6 +94,13 @@ elif [ "$1" == "start" -o "$1" == "start-foreground" ]; then
   echo "#=> sync conf file: $my/nix.conf/${nix_package}"
   rsync -av ${my}/nix.conf/${nix_package}/ op@${remote_ip}:my-env/nix.conf/${nix_package}
   ssh op@${remote_ip} "sh my-env/nix.conf/${nix_package}/run.sh $@"
+elif [ "$1" == "clean" ]; then
+  remote_host=$2
+  ssh root@${remote_host} "
+    rm -rf /nix/*
+    rm -rf /home/op/my-env
+  "
 else
   echo ${help_message}
 fi
+

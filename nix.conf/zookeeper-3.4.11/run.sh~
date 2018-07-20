@@ -9,9 +9,8 @@ _port=$(echo $_host | cut -d: -f2)
 servers_info=$(echo $_all | awk 'BEGIN {RS=",";FS=":"} {print "server."NR"="$1":"($2+2888-2181)":"($2+3888-2181)}')
 export _ip _port _package _home servers_info
 
-mkdir -p ${_home}/nix.var/{data,log}
-my_var=${_home}/nix.var/data/${_package}/${_port}
-mkdir -p ${my_var}
+mkdir -p ${
+my_var=${_home}/nix.var/{data,log}/${_package}/${_port}
 cat $my/zoo.cfg.template | envsubst > ${my_var}/zoo.cfg
 echo ${_all} | awk "BEGIN {RS=\",\"} /${_host}/ {print FNR}" > ${my_var}/myid
 
@@ -20,5 +19,5 @@ cat ${my_var}/myid
 cat ${my_var}/zoo.cfg # for display on console
 echo "====dump file content end===="
 
-echo "/nix/store/*${_package}*/bin/zkServer.sh ${_action} ${my_var}/zoo.cfg"
-/nix/store/*${_package}*/bin/zkServer.sh ${_action} ${my_var}/zoo.cfg
+echo "/nix/store/*zookeeper-3.4.12*/bin/zkServer.sh ${_action} ${my_var}/zoo.cfg"
+/nix/store/*zookeeper-3.4.12*/bin/zkServer.sh ${_action} ${my_var}/zoo.cfg

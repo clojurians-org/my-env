@@ -1,0 +1,8 @@
+tickTime=2000
+initLimit=10
+syncLimit=5
+${servers_info}
+# server.1=zoo1:2888:3888
+dataDir=${_home}/nix.var/data/${_package}/${_port}
+dataLogDir=${_home}/nix.var/log/${_package}/${_port}
+clientPort=${_port}
