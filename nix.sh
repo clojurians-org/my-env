@@ -56,6 +56,8 @@ elif [ "$1" == "install" ]; then
     if [ -e '.nix-profile/bin/nix' ]; then
       echo '---->[info] remote_ip:${remote_ip} install nix already!'
     else
+      mkdir -p my-env/nix.conf
+      mkdir -p my-env/nix.opt/tarball.bin
       cd my-env/nix.sh.d && tar -xvf ${nix_tar} && cd nix* && cp ../_install . && ./_install
     fi
   "
@@ -79,6 +81,27 @@ elif [ "$1" == "import" ]; then
     echo "cat nix.sh.out/${nix_package}.closure.bz2 | ssh op@${remote_ip} \"bunzip2 | .nix-profile/bin/nix-store -v --import\""
     cat nix.sh.out/${nix_package}.closure.bz2 | ssh op@${remote_ip} "bunzip2 | .nix-profile/bin/nix-store --import"
   fi
+elif [ "$1" == "import-tarball" ]; then
+  remote_ip=$2
+  nix_package=$3
+  if [ "${nix_package}" = "" ]; then
+    echo "${help_message}"
+    echo "[error]: nix_package is missing"
+    exit 1
+  fi
+  echo "[action] import-tarball ${remote_ip} ${nix_package}"
+  echo "--> mk directory..."
+  ssh op@${remote_ip} "mkdir -p my-env/nix.opt/tarball.bin"
+  echo "--> sync tarball ..."
+  rsync -av ${my}/nix.opt/tarball.bin/${nix_package}/ op@${remote_ip}:my-env/nix.opt/tarball.bin/${nix_package}
+  echo "--> unzip tarball to my-env/nix.var/data/${nix_package}..."
+  ssh op@${remote_ip} "
+    if [ ! -e 'my-env/nix.var/data/${nix_package}/_tarball' ]; then
+      mkdir -p my-env/nix.var/data/${nix_package}
+      cd my-env/nix.var/data/${nix_package} && tar -xvf ~/my-env/nix.opt/tarball.bin/${nix_package}/*
+      touch ~/my-env/nix.opt/tarball.bin/${nix_package}/_tarball
+    fi
+  "
 elif [ "$1" == "start" -o "$1" == "start-foreground" ]; then
   action=$1; remote_host=$2; nix_package=$3
   echo "[action] $action $remote_ip ${nix_package}"

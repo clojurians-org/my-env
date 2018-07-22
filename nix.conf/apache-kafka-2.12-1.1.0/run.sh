@@ -7,7 +7,7 @@ _action=$1; _host=$2; _package=$3; zookepers_opt=$4; zookeepers=$5; cluster_id_o
 _ip=$(echo $_host | cut -d: -f1)
 _ip_4th=$(echo $_ip | cut -d. -f4)
 _port=$(echo $_host | cut -d: -f2)
-export _ip _port _package _home zookeepers
+export _ip _ip_4th _port _package _home zookeepers cluster_id
 
 mkdir -p ${_home}/nix.var/log/${_package}/${_port}
 my_var=${_home}/nix.var/data/${_package}/${_port}
@@ -19,9 +19,15 @@ echo "====dump file content start===="
 cat ${my_var}/server.properties
 echo "====dump file content end===="
 
-echo "/nix/store/*${_package}*/bin/zkServer.sh ${_action} ${my_var}/zoo.cfg"
+if [ -e ${my_var}/_tarball ]; then
+  kafka_server_start_sh=${my_var}/*/kafka-server-start.sh
+elif
+  kafka_server_start_sh=/nix/store/*${_package}*/bin/kafka-server-start.sh
+fi
 if [ "${_action}" == "start-foreground" ]; then
-  /nix/store/*${_package}*/bin/zkServer.sh start ${my_var}/server.properties
+  echo "bash ${kafka-server-start_sh} start ${my_var}/server.properties"
+  bash ${kafka_server_start_sh} ${my_var}/server.properties
 elif [ "${_action}" == "start" ]; then
-  /nix/store/*${_package}*/bin/zkServer.sh --daemon start ${my_var}/server.properties
+  echo "bash ${kafka-server-start_sh} /nix/store/*${_package}*/bin/kafka-server-start.sh --daemon start ${my_var}/server.properties"
+  bash ${kafka_server_start_sh} --daemon ${my_var}/server.properties
 fi

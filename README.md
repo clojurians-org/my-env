@@ -38,19 +38,43 @@
 # ELK [docker run --name centos6 -it --net=host centos:6 sh]
 #================
   # zookeeper [10.132.37.33:2181,10.132.37.34:2181,10.132.37.35:2181]
-  sh nix.sh export zookeeper-3.4.11
-  sh nix.sh import 10.132.37.33 zookeeper-3.4.11
-  sh nix.sh start-foreground 10.132.37.33:2181 zookeeper-3.4.11 --all "10.132.37.33:2181,10.132.37.34:2181,10.132.37.35:2181"
+  bash nix.sh export zookeeper-3.4.11
+  bash nix.sh import 10.132.37.33 zookeeper-3.4.11
+  bash nix.sh start-foreground 10.132.37.33:2181 zookeeper-3.4.11 --all "10.132.37.33:2181,10.132.37.34:2181,10.132.37.35:2181"
   zkCli.sh -server "10.132.37.33:2181,10.132.37.34:2181,10.132.37.34:2181"
 
   # kafka [10.132.37.33:2181,10.132.37.34:2181,10.132.37.35:2181]
-  sh nix.sh export apache-kafka-2.12-1.1.0 
-  sh nix.sh import 10.132.37.33 apache-kafka-2.12-1.1.0
-  sh nix.sh start-foreground 10.132.37.33 apache-kafka-2.12-1.1.0 --zookeepers "10.132.37.33:2181,10.132.37.34:2181,10.132.37.35:2181" --cluster.id monitor
-
-
+  bash nix.sh export apache-kafka-2.12-1.1.0 
+  bash nix.sh import 10.132.37.33 apache-kafka-2.12-1.1.0
+  bash nix.sh start-foreground 10.132.37.33:9092 apache-kafka-2.12-1.1.0 --zookeepers "10.132.37.33:2181,10.132.37.34:2181,10.132.37.35:2181" --cluster.id monitor
   
+#================
+# VirtualBox
+#================
+  wget http://nixos.org/releases/nixos/virtualbox-nixops-images/virtualbox-nixops-18.03pre131587.b6ddb9913f2.vmdk.xz
 
+  ssh-keygen -t ed25519 -f nix.sh.out/key -N '' -C "my-env auto-generated key"
+
+  VBoxManage createvm --name nixos-elk-001 --ostype Linux26_64 --register
+  VBoxManage guestproperty set nixos-elk-001 /VirtualBox/GuestInfo/Charon/ClientPublicKey "$(cat nix.sh.out/key.pub)"
+  VBoxManage guestproperty set nixos-elk-001 /VirtualBox/GuestInfo/NixOps/PrivateHostEd25519Key "$(cat nix.sh.out/key)"
+
+  VBoxManage storagectl nixos-elk-001 --name SATA --add sata --portcount 8 --bootable on --hostiocache on 
+  VBoxManage clonehd nix.sh.out/virtualbox-nixops-18.03pre131587.b6ddb9913f2.vmdk ~/"VirtualBox VMs"/nixos-elk-001/disk1.vdi --format VDI
+  VBoxManage storageattach nixos-elk-001 --storagectl SATA --port 0 --device 0 --type hdd --medium ~/"VirtualBox VMs"/nixos-elk-001/disk1.vdi
+  VBoxManage modifyvm nixos-elk-001 --memory 2048 --cpus 2 --vram 10 --nictype1 virtio --nictype2 virtio --nic2 hostonly --hostonlyadapter2 vboxnet0 --nestedpaging off --paravirtprovider kvm
+  VBoxManage guestproperty enumerate nixos-elk-001
+  VBoxManage startvm nixos-elk-001 --type headless
+
+
+  VBoxManage guestproperty get nixos-elk-001 /VirtualBox/GuestInfo/Net/1/V4/IP
+
+  VBoxManage controlvm nixos-elk-001 poweroff
+  VBoxManage unregistervm --delete nixos-elk-001
+  
+  VBoxManage list runningvms
+  VBoxManage list vms
+  VBoxManage showvminfo --machinereadable nixos-elk-001
 #================
 # Java
 #================
@@ -58,5 +82,8 @@ mvn archetype:generate -DgroupId=my-first -DartifactId=my-first
 
 
 http://www.jedi.be/blog/2011/11/04/vagrant-virtualbox-hostonly-pxe-vlans/
+
+
+mkdir -p nix.opt/{tar.src,tar.bin,bin}
 ```
 
