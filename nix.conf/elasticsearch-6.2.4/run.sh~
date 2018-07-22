@@ -12,13 +12,13 @@ export _ip _port _package _home servers_info
 mkdir -p ${_home}/nix.var/{data,log}
 my_var=${_home}/nix.var/data/${_package}/${_port}
 mkdir -p ${my_var}
-cat $my/zoo.cfg.template | /nix/store/*gettext-0.19.8.1/bin/envsubst > ${my_var}/zoo.cfg
-echo ${_all} | awk "BEGIN {RS=\",\"} /${_host}/ {print FNR}" > ${my_var}/myid
+
+cat $my/elasticsearch.yml.template | /nix/store/*gettext-0.19.8.1/bin/envsubst > ${my_var}/elasticsearch.yml
 
 echo "====dump file content start===="
-cat ${my_var}/myid
-cat ${my_var}/zoo.cfg # for display on console
+cat 
 echo "====dump file content end===="
 
+cp /nix/store/*-elasticsearch-6.2.4/config/jvm.options  ${my_var}/jvm.options
 echo "/nix/store/*${_package}*/bin/zkServer.sh ${_action} ${my_var}/zoo.cfg"
 /nix/store/*${_package}*/bin/zkServer.sh ${_action} ${my_var}/zoo.cfg

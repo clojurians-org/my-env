@@ -1,0 +1,9 @@
+cluster.name: ${cluster_id}
+node.name: ${ip}_${_port}
+network.bind_host: ${_ip}
+network.publish_host: ${_ip}
+http.port: ${_port}
+transport.tcp.port: ${_port_tcp}
+${servers_info}
+# discovery.zen.ping.unicast.hosts: ["X.X.X.X:9300", "X.X.X.X:9300", "X.X.X.X:9300"]
+bootstrap.system_call_filter: false

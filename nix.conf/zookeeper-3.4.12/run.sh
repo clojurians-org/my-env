@@ -12,7 +12,7 @@ export _ip _port _package _home servers_info
 mkdir -p ${_home}/nix.var/{data,log}
 my_var=${_home}/nix.var/data/${_package}/${_port}
 mkdir -p ${my_var}
-cat $my/zoo.cfg.template | envsubst > ${my_var}/zoo.cfg
+cat $my/zoo.cfg.template | /nix/store/*gettext-0.19.8.1/bin/envsubst > ${my_var}/zoo.cfg
 echo ${_all} | awk "BEGIN {RS=\",\"} /${_host}/ {print FNR}" > ${my_var}/myid
 
 echo "====dump file content start===="
