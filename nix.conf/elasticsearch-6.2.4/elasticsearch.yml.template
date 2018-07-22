@@ -1,5 +1,5 @@
 cluster.name: ${cluster_id}
-node.name: ${ip}_${_port}
+node.name: ${_ip}_${_port}
 network.bind_host: ${_ip}
 network.publish_host: ${_ip}
 http.port: ${_port}

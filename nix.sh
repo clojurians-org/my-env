@@ -73,6 +73,8 @@ elif [ "$1" == "init" ]; then
       else
         chmod 777 /nix/var/nix/profiles/per-user
 	ln -s /run/current-system/sw/bin/echo /bin/echo
+	systemctl stop firewall
+	sysctl -w vm.max_map_count=262144
       fi
 
     else
