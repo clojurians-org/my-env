@@ -32,7 +32,7 @@ if [ "$1" == "createvm" ]; then
     VBoxManage storagectl "${vm_name}" --name SATA --add sata --portcount 8 --bootable on --hostiocache on
     VBoxManage clonehd nix.sh.out/virtualbox-nixops-18.03pre131587.b6ddb9913f2.vmdk ~/"VirtualBox VMs"/"${vm_name}"/disk1.vdi --format VDI
     VBoxManage storageattach "${vm_name}" --storagectl SATA --port 0 --device 0 --type hdd --medium ~/"VirtualBox VMs"/"${vm_name}"/disk1.vdi
-    VBoxManage modifyvm "${vm_name}" --memory 2048 --cpus 2 --vram 10 --nictype1 virtio --nictype2 virtio --nic2 hostonly --hostonlyadapter2 vboxnet0 --nestedpaging off --paravirtprovider kvm
+    VBoxManage modifyvm "${vm_name}" --memory 3072 --cpus 2 --vram 10 --nictype1 virtio --nictype2 virtio --nic2 hostonly --hostonlyadapter2 vboxnet0 --nestedpaging off --paravirtprovider kvm
     VBoxManage guestproperty enumerate "${vm_name}"
     VBoxManage startvm "${vm_name}" --type headless
   fi
@@ -55,11 +55,11 @@ elif [ "$1" == "export" ]; then
   if [ -e $my/nix.sh.out/${nix_package}.closure.bz2 ]; then
     echo "---->[info] ${nix_package} exist already!"
   else
-    if [ "$(shopt -s nullglob; echo /nix/store/*${nix_package}*)" == "" ]; then 
+    if [ "$(shopt -s nullglob; echo /nix/store/*-${nix_package})" == "" ]; then 
       echo "--> nix-env -i ${nix_package}"
       nix-env -i ${nix_package}
     fi
-    nix-store --export $(nix-store -qR /nix/store/*${nix_package}*) | bzip2 > nix.sh.out/${nix_package}.closure.bz2
+    nix-store --export $(nix-store -qR /nix/store/*-${nix_package}) | bzip2 > nix.sh.out/${nix_package}.closure.bz2
   fi
 elif [ "$1" == "init" ]; then
   remote_ip=$2
