@@ -4,9 +4,17 @@ help_message="$0 <download|mkdir :ip|export :nix_package|import :ip :nix_package
 my=$(cd -P -- "$(dirname -- "${BASH_SOURCE-$0}")" > /dev/null && pwd -P)
 mkdir -p $my/{nix.sh.d,nix.sh.out}
 
+my_user=op
+
 nix_name=nix-2.0.4
 nix_sys=${nix_name}-x86_64-linux
 nix_tar=${nix_sys}.tar.bz2
+
+if [ ! -e nix.sh.out/key ]; then
+  echo "--> ssh-keygen to nix.sh.out/key"
+  ssh-keygen -t ed25519 -f nix.sh.out/key -N '' -C "my-env auto-generated key"
+fi
+ssh_opt="-i nix.sh.out/key"
 
 if [ "$1" == "createvm" ]; then
   vm_name=$2
@@ -17,10 +25,6 @@ if [ "$1" == "createvm" ]; then
     wget -c -O nix.sh.out/virtualbox-nixops-18.03pre131587.b6ddb9913f2.vmdk.xz.tmp ${vbox_url}
     mv nix.sh.out/virtualbox-nixops-18.03pre131587.b6ddb9913f2.vmdk.xz.tmp nix.sh.out/virtualbox-nixops-18.03pre131587.b6ddb9913f2.vmdk.xz
     unxz nix.sh.out/virtualbox-nixops-18.03pre131587.b6ddb9913f2.vmdk.xz
-  fi
-  if [ ! -e nix.sh.out/key ]; then
-    echo "--> ssh-keygen to nix.sh.out/key"
-    ssh-keygen -t ed25519 -f nix.sh.out/key -N '' -C "my-env auto-generated key"
   fi
   if VBoxManage list vms | grep "${vm_name}" > /dev/null 2>&1; then
     echo "----> vm ${vm_name} exist already!"
@@ -64,10 +68,10 @@ elif [ "$1" == "export" ]; then
 elif [ "$1" == "init" ]; then
   remote_ip=$2
   echo "[action] init $remote_ip"
-  ssh -i nix.sh.out/key root@$remote_ip "
-    if [ ! -e /home/op ]; then
-      useradd -m op
-      echo 'op:op' | chpasswd
+  ssh $ssh_opt root@$remote_ip "
+    if [ ! -e /home/${my_user} ]; then
+      useradd -m ${my_user}
+      echo '${my_user}:${my_user}' | chpasswd
       if [ ! -e /nix ]; then
         install -d -m755 -o op /nix
       else
@@ -81,15 +85,16 @@ elif [ "$1" == "init" ]; then
       echo '---->[${remote_ip}-info] /nix exist already!'
     fi
   "
+  ssh-copy-id $ssh_opt ${my_user}@${remote_ip}
 elif [ "$1" == "install" ]; then
   remote_ip=$2
   echo "[action] install $remote_ip"
   echo "#=> mkdir my-env directory"
-  ssh op@${remote_ip} "mkdir -p my-env/nix.sh.d"
+  ssh ${ssh_opt} op@${remote_ip} "mkdir -p my-env/nix.sh.d"
   echo "#=> sync local file"
-  rsync -av ${my}/nix.sh.d/ op@${remote_ip}:my-env/nix.sh.d
+  rsync -e "ssh ${ssh_opt}" -av ${my}/nix.sh.d/ op@${remote_ip}:my-env/nix.sh.d
   echo "#=> install nix"
-  ssh op@${remote_ip} "
+  ssh ${ssh_opt} op@${remote_ip} "
     if [ -e '.nix-defexpr' ]; then
       echo '---->[info] remote_ip:${remote_ip} install nix already!'
     else
@@ -108,15 +113,15 @@ elif [ "$1" == "import" ]; then
   fi
   echo "[action] import ${remote_ip} ${nix_package}"
   echo "--> check whether remote package exist..."
-  package_exist=$(ssh op@${remote_ip} "
+  package_exist=$(ssh $ssh_opt op@${remote_ip} "
     if compgen -G '/nix/store/*-${nix_package}' > /dev/null; then echo 1; else echo 0; fi
   ")
   if [ "$package_exist" == "1" ]; then 
     echo "---->[${remote_ip}-info] ${nix_package} imported already"
   else
     echo "--> import ${nix_package} need to cost a little time, please be patient..."
-    echo "cat nix.sh.out/${nix_package}.closure.bz2 | ssh op@${remote_ip} \"bunzip2 | .nix-profile/bin/nix-store -v --import\""
-    cat nix.sh.out/${nix_package}.closure.bz2 | ssh op@${remote_ip} "bunzip2 | .nix-profile/bin/nix-store --import"
+    echo "cat nix.sh.out/${nix_package}.closure.bz2 | ssh ${ssh_opt} ${my_user}@${remote_ip} \"bunzip2 | .nix-profile/bin/nix-store -v --import\""
+    cat nix.sh.out/${nix_package}.closure.bz2 | ssh ${ssh_opt} ${my_user}@${remote_ip} "bunzip2 | .nix-profile/bin/nix-store --import"
   fi
 elif [ "$1" == "import-tarball" ]; then
   remote_ip=$2
@@ -128,11 +133,11 @@ elif [ "$1" == "import-tarball" ]; then
   fi
   echo "[action] import-tarball ${remote_ip} ${nix_package}"
   echo "--> mk directory..."
-  ssh op@${remote_ip} "mkdir -p my-env/nix.opt/tarball.bin"
+  ssh ${ssh_opt} op@${remote_ip} "mkdir -p my-env/nix.opt/tarball.bin"
   echo "--> sync tarball ..."
-  rsync -av ${my}/nix.opt/tarball.bin/${nix_package}/ op@${remote_ip}:my-env/nix.opt/tarball.bin/${nix_package}
+  rsync -e "ssh ${ssh_opt}" -av ${my}/nix.opt/tarball.bin/${nix_package}/ op@${remote_ip}:my-env/nix.opt/tarball.bin/${nix_package}
   echo "--> unzip tarball to my-env/nix.var/data/${nix_package}..."
-  ssh op@${remote_ip} "
+  ssh ${ssh_opt} op@${remote_ip} "
     if [ ! -e 'my-env/nix.var/data/${nix_package}/_tarball' ]; then
       mkdir -p my-env/nix.var/data/${nix_package}
       cd my-env/nix.var/data/${nix_package} && tar -xvf ~/my-env/nix.opt/tarball.bin/${nix_package}/*
@@ -150,10 +155,10 @@ elif [ "$1" == "start" -o "$1" == "start-foreground" ]; then
   fi
 
   echo "#=> mk directory: nix.conf/${nix_package}"
-  ssh op@${remote_ip} "mkdir -p my-env/nix.conf/${nix_package}"
+  ssh ${ssh_opt} op@${remote_ip} "mkdir -p my-env/nix.conf/${nix_package}"
   echo "#=> sync conf file: $my/nix.conf/${nix_package}"
-  rsync -av ${my}/nix.conf/${nix_package}/ op@${remote_ip}:my-env/nix.conf/${nix_package}
-  ssh op@${remote_ip} "sh my-env/nix.conf/${nix_package}/run.sh $@"
+  rsync -e "ssh ${ssh_opt}" -av ${my}/nix.conf/${nix_package}/ op@${remote_ip}:my-env/nix.conf/${nix_package}
+  ssh ${ssh_opt} op@${remote_ip} "sh my-env/nix.conf/${nix_package}/run.sh $@"
 elif [ "$1" == "clean" ]; then
   remote_host=$2
   ssh root@${remote_host} "

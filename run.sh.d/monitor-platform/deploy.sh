@@ -1,4 +1,5 @@
-my=$(cd -P -- "$(dirname -- "${BASH_SOURCE-$0}")" > /dev/null && pwd -P) && cd $my/..
+set -e
+my=$(cd -P -- "$(dirname -- "${BASH_SOURCE-$0}")" > /dev/null && pwd -P) && cd $my/../..
 
 #========
 # SERVER
@@ -12,9 +13,9 @@ my=$(cd -P -- "$(dirname -- "${BASH_SOURCE-$0}")" > /dev/null && pwd -P) && cd $
 #echo -e "\n==== bash nix.sh init 10.132.37.37" && bash nix.sh init 10.132.37.37 
 #echo -e "\n==== bash nix.sh init 10.132.37.39" && bash nix.sh init 10.132.37.39
 #echo -e "\n==== bash nix.sh init 10.132.37.40" && bash nix.sh init 10.132.37.40
-echo -e "\n==== bash nix.sh init 10.132.37.41" && bash nix.sh init 10.132.37.41
-echo -e "\n==== bash nix.sh init 10.132.37.42" && bash nix.sh init 10.132.37.42
-echo -e "\n==== bash nix.sh init 10.132.37.43" && bash nix.sh init 10.132.37.43
+#echo -e "\n==== bash nix.sh init 10.132.37.41" && bash nix.sh init 10.132.37.41
+#echo -e "\n==== bash nix.sh init 10.132.37.42" && bash nix.sh init 10.132.37.42
+#echo -e "\n==== bash nix.sh init 10.132.37.43" && bash nix.sh init 10.132.37.43
 
 # install nix
 echo -e "\n==== bash nix.sh install 10.132.37.32" && bash nix.sh install 10.132.37.32
@@ -26,7 +27,7 @@ echo -e "\n==== bash nix.sh install 10.132.37.37" && bash nix.sh install 10.132.
 echo -e "\n==== bash nix.sh install 10.132.37.39" && bash nix.sh install 10.132.37.39
 echo -e "\n==== bash nix.sh install 10.132.37.40" && bash nix.sh install 10.132.37.40
 echo -e "\n==== bash nix.sh install 10.132.37.41" && bash nix.sh install 10.132.37.41
-echo -e "\n==== bash nix.sh install 10.132.37.42" && bash nix.sh install 10.132.37.42
+#echo -e "\n==== bash nix.sh install 10.132.37.42" && bash nix.sh install 10.132.37.42
 echo -e "\n==== bash nix.sh install 10.132.37.43" && bash nix.sh install 10.132.37.43
 
 # install gettext
@@ -39,8 +40,21 @@ echo -e "\n==== bash nix.sh import 10.132.37.37 gettext-0.19.8.1" && bash nix.sh
 echo -e "\n==== bash nix.sh import 10.132.37.39 gettext-0.19.8.1" && bash nix.sh import 10.132.37.39 gettext-0.19.8.1
 echo -e "\n==== bash nix.sh import 10.132.37.40 gettext-0.19.8.1" && bash nix.sh import 10.132.37.40 gettext-0.19.8.1
 echo -e "\n==== bash nix.sh import 10.132.37.41 gettext-0.19.8.1" && bash nix.sh import 10.132.37.41 gettext-0.19.8.1
-echo -e "\n==== bash nix.sh import 10.132.37.42 gettext-0.19.8.1" && bash nix.sh import 10.132.37.42 gettext-0.19.8.1
+#echo -e "\n==== bash nix.sh import 10.132.37.42 gettext-0.19.8.1" && bash nix.sh import 10.132.37.42 gettext-0.19.8.1
 echo -e "\n==== bash nix.sh import 10.132.37.43 gettext-0.19.8.1" && bash nix.sh import 10.132.37.43 gettext-0.19.8.1
+
+# install openjdk[for tarball]
+echo -e "\n==== bash nix.sh import 10.132.37.32 openjdk-8u172b11" && bash nix.sh import 10.132.37.32 openjdk-8u172b11
+echo -e "\n==== bash nix.sh import 10.132.37.33 openjdk-8u172b11" && bash nix.sh import 10.132.37.33 openjdk-8u172b11
+echo -e "\n==== bash nix.sh import 10.132.37.34 openjdk-8u172b11" && bash nix.sh import 10.132.37.34 openjdk-8u172b11
+echo -e "\n==== bash nix.sh import 10.132.37.35 openjdk-8u172b11" && bash nix.sh import 10.132.37.35 openjdk-8u172b11
+echo -e "\n==== bash nix.sh import 10.132.37.36 openjdk-8u172b11" && bash nix.sh import 10.132.37.36 openjdk-8u172b11
+echo -e "\n==== bash nix.sh import 10.132.37.37 openjdk-8u172b11" && bash nix.sh import 10.132.37.37 openjdk-8u172b11
+echo -e "\n==== bash nix.sh import 10.132.37.39 openjdk-8u172b11" && bash nix.sh import 10.132.37.39 openjdk-8u172b11
+echo -e "\n==== bash nix.sh import 10.132.37.40 openjdk-8u172b11" && bash nix.sh import 10.132.37.40 openjdk-8u172b11
+echo -e "\n==== bash nix.sh import 10.132.37.41 openjdk-8u172b11" && bash nix.sh import 10.132.37.41 openjdk-8u172b11
+echo -e "\n==== bash nix.sh import 10.132.37.42 openjdk-8u172b11" && bash nix.sh import 10.132.37.42 openjdk-8u172b11
+echo -e "\n==== bash nix.sh import 10.132.37.43 openjdk-8u172b11" && bash nix.sh import 10.132.37.43 openjdk-8u172b11
 
 # install zookeeper & kafka [message queue]
 echo -e "\n==== bash nix.sh import 10.132.37.33 zookeeper-3.4.11" && bash nix.sh import 10.132.37.33 zookeeper-3.4.11 
@@ -82,7 +96,7 @@ echo -e "\n==== bash nix.sh import 10.132.37.40 redis-4.0.10" && bash nix.sh imp
 
 # install postgresql [data-platform]
 echo -e "\n==== bash nix.sh import 10.132.37.41 postgresql-10.3" && bash nix.sh import 10.132.37.41 postgresql-10.3
-echo -e "\n==== bash nix.sh import 10.132.37.42 postgresql-10.3" && bash nix.sh import 10.132.37.42 postgresql-10.3
+#echo -e "\n==== bash nix.sh import 10.132.37.42 postgresql-10.3" && bash nix.sh import 10.132.37.42 postgresql-10.3
 echo -e "\n==== bash nix.sh import 10.132.37.43 postgresql-10.3" && bash nix.sh import 10.132.37.43 postgresql-10.3
 
 # install client machine [zookeeper & kafka & filebeat & logstash & postgresql & mongodb & redis]
