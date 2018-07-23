@@ -1,4 +1,4 @@
-my=$(cd -P -- "$(dirname -- "${BASH_SOURCE-$0}")" > /dev/null && pwd -P) && cd $my/..
+my=$(cd -P -- "$(dirname -- "${BASH_SOURCE-$0}")" > /dev/null && pwd -P) && cd $my/../..
 
 # create /nix and user op:op
 echo -e "\n==== bash nix.sh init 192.168.56.101" && bash nix.sh init 192.168.56.101

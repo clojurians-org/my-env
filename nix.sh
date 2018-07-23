@@ -109,23 +109,14 @@ elif [ "$1" == "import" ]; then
   echo "[action] import ${remote_ip} ${nix_package}"
   echo "--> check whether remote package exist..."
   package_exist=$(ssh op@${remote_ip} "
-    if compgen -G '/nix/store/*${nix_package}' > /dev/null; then echo 1; else echo 0; fi
+    if compgen -G '/nix/store/*-${nix_package}' > /dev/null; then echo 1; else echo 0; fi
   ")
   if [ "$package_exist" == "1" ]; then 
     echo "---->[${remote_ip}-info] ${nix_package} imported already"
   else
     echo "--> import ${nix_package} need to cost a little time, please be patient..."
-    if [ -e .nix-profile/bin/nix-store ]; then
-      nix_store_cmd=.nix-profile/bin/nix-store
-      ssh_cmd="ssh op@${remote_ip}"
-    elif [ -e /run/current-system/sw/bin/nix-store ]; then
-      nix_store_cmd=/run/current-system/sw/bin/nix-store
-      ssh_cmd="ssh -i nix.sh.out/key root@${remote_ip}"
-    else
-      echo " ----> [ERROR] nix-store command not found!"
-    fi
-    echo "cat nix.sh.out/${nix_package}.closure.bz2 | $ssh_cmd \"bunzip2 | ${nix_store_cmd} -v --import\""
-    cat nix.sh.out/${nix_package}.closure.bz2 | $ssh_cmd "bunzip2 | ${nix_store_cmd} --import"
+    echo "cat nix.sh.out/${nix_package}.closure.bz2 | ssh op@${remote_ip} \"bunzip2 | .nix-profile/bin/nix-store -v --import\""
+    cat nix.sh.out/${nix_package}.closure.bz2 | ssh op@${remote_ip} "bunzip2 | .nix-profile/bin/nix-store --import"
   fi
 elif [ "$1" == "import-tarball" ]; then
   remote_ip=$2

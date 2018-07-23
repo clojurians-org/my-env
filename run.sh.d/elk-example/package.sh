@@ -1,5 +1,5 @@
 set -e
-my=$(cd -P -- "$(dirname -- "${BASH_SOURCE-$0}")" > /dev/null && pwd -P) && cd $my/..
+my=$(cd -P -- "$(dirname -- "${BASH_SOURCE-$0}")" > /dev/null && pwd -P) && cd $my/../..
 
 echo -e "\n==== bash nix.sh download" && bash nix.sh download
 echo -e "\n==== bash nix.sh export gettext-0.19.8.1" && bash nix.sh export gettext-0.19.8.1

@@ -1,4 +1,5 @@
-my=$(cd -P -- "$(dirname -- "${BASH_SOURCE-$0}")" > /dev/null && pwd -P) && cd $my
+set -e
+my=$(cd -P -- "$(dirname -- "${BASH_SOURCE-$0}")" > /dev/null && pwd -P) && cd $my/../..
 
 export ZK_ALL="192.168.56.101:2181,192.168.56.102:2181,192.168.56.103:2181"
 # start zookeeper-3.4.12

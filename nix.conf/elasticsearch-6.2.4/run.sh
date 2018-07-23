@@ -25,7 +25,6 @@ echo "====dump file content end===="
 
 export ES_HOME=$(compgen -G "/nix/store/*-${_package}")
 export ES_PATH_CONF=${my_data}/config
-ulimit -n -S 63356
 if [ "${_action}" == "start-foreground" ]; then
   echo "/nix/store/*-${_package}/bin/elasticsearch -Epath.data=${my_data} -Epath.logs=${my_log}"
   /nix/store/*-${_package}/bin/elasticsearch -Epath.data=${my_data} -Epath.logs=${my_log}
