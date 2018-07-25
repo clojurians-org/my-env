@@ -38,15 +38,20 @@
 # ELK [docker run --name centos6 -it --net=host centos:6 sh]
 #================
   # zookeeper [10.132.37.33:2181,10.132.37.34:2181,10.132.37.35:2181]
-  bash nix.sh export zookeeper-3.4.11
-  bash nix.sh import 10.132.37.33 zookeeper-3.4.11
-  bash nix.sh start-foreground 10.132.37.33:2181 zookeeper-3.4.11 --all "10.132.37.33:2181,10.132.37.34:2181,10.132.37.35:2181"
+  bash nix.sh export zookeeper-3.4.12
+  bash nix.sh import 10.132.37.33 zookeeper-3.4.12
+  bash nix.sh start-foreground 10.132.37.33:2181 zookeeper-3.4.12 --all "10.132.37.33:2181,10.132.37.34:2181,10.132.37.35:2181"
+
+  echo ruok | nc 10.132.37.33 2181
   zkCli.sh -server "10.132.37.33:2181,10.132.37.34:2181,10.132.37.34:2181"
 
   # kafka [10.132.37.33:2181,10.132.37.34:2181,10.132.37.35:2181]
   bash nix.sh export apache-kafka-2.12-1.1.0 
   bash nix.sh import 10.132.37.33 apache-kafka-2.12-1.1.0
   bash nix.sh start-foreground 10.132.37.33:9092 apache-kafka-2.12-1.1.0 --zookeepers "10.132.37.33:2181,10.132.37.34:2181,10.132.37.35:2181" --cluster.id monitor
+
+  # elasticsearch [10.132.37.36:9200,10.132.37.37:9200,10.132.37.39:9200,10.132.37.40:9200]
+  curl 10.132.37.36:9200/_cluster/health?pretty=true
   
 #================
 # VirtualBox
@@ -70,6 +75,7 @@
   VBoxManage guestproperty get nixos-elk-001 /VirtualBox/GuestInfo/Net/1/V4/IP
 
   VBoxManage controlvm nixos-elk-001 poweroff
+  VBoxManage controlvm nixos-elk-001 acpipowerbutton
   VBoxManage unregistervm --delete nixos-elk-001
   
   VBoxManage list runningvms

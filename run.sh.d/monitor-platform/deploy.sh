@@ -43,38 +43,37 @@ echo -e "\n==== bash nix.sh import 10.132.37.41 gettext-0.19.8.1" && bash nix.sh
 #echo -e "\n==== bash nix.sh import 10.132.37.42 gettext-0.19.8.1" && bash nix.sh import 10.132.37.42 gettext-0.19.8.1
 echo -e "\n==== bash nix.sh import 10.132.37.43 gettext-0.19.8.1" && bash nix.sh import 10.132.37.43 gettext-0.19.8.1
 
-# install openjdk[for tarball]
-echo -e "\n==== bash nix.sh import 10.132.37.32 openjdk-8u172b11" && bash nix.sh import 10.132.37.32 openjdk-8u172b11
-echo -e "\n==== bash nix.sh import 10.132.37.33 openjdk-8u172b11" && bash nix.sh import 10.132.37.33 openjdk-8u172b11
-echo -e "\n==== bash nix.sh import 10.132.37.34 openjdk-8u172b11" && bash nix.sh import 10.132.37.34 openjdk-8u172b11
-echo -e "\n==== bash nix.sh import 10.132.37.35 openjdk-8u172b11" && bash nix.sh import 10.132.37.35 openjdk-8u172b11
-echo -e "\n==== bash nix.sh import 10.132.37.36 openjdk-8u172b11" && bash nix.sh import 10.132.37.36 openjdk-8u172b11
-echo -e "\n==== bash nix.sh import 10.132.37.37 openjdk-8u172b11" && bash nix.sh import 10.132.37.37 openjdk-8u172b11
-echo -e "\n==== bash nix.sh import 10.132.37.39 openjdk-8u172b11" && bash nix.sh import 10.132.37.39 openjdk-8u172b11
-echo -e "\n==== bash nix.sh import 10.132.37.40 openjdk-8u172b11" && bash nix.sh import 10.132.37.40 openjdk-8u172b11
-echo -e "\n==== bash nix.sh import 10.132.37.41 openjdk-8u172b11" && bash nix.sh import 10.132.37.41 openjdk-8u172b11
-echo -e "\n==== bash nix.sh import 10.132.37.42 openjdk-8u172b11" && bash nix.sh import 10.132.37.42 openjdk-8u172b11
-echo -e "\n==== bash nix.sh import 10.132.37.43 openjdk-8u172b11" && bash nix.sh import 10.132.37.43 openjdk-8u172b11
+# install oraclejre-8u181b13
+echo -e "\n==== bash nix.sh import-tarball 10.132.37.32 oraclejre-8u181b13" && bash nix.sh import-tarball 10.132.37.32 oraclejre-8u181b13
+echo -e "\n==== bash nix.sh import-tarball 10.132.37.33 oraclejre-8u181b13" && bash nix.sh import-tarball 10.132.37.33 oraclejre-8u181b13
+echo -e "\n==== bash nix.sh import-tarball 10.132.37.34 oraclejre-8u181b13" && bash nix.sh import-tarball 10.132.37.34 oraclejre-8u181b13
+echo -e "\n==== bash nix.sh import-tarball 10.132.37.35 oraclejre-8u181b13" && bash nix.sh import-tarball 10.132.37.35 oraclejre-8u181b13
+echo -e "\n==== bash nix.sh import-tarball 10.132.37.36 oraclejre-8u181b13" && bash nix.sh import-tarball 10.132.37.36 oraclejre-8u181b13
+echo -e "\n==== bash nix.sh import-tarball 10.132.37.37 oraclejre-8u181b13" && bash nix.sh import-tarball 10.132.37.37 oraclejre-8u181b13
+echo -e "\n==== bash nix.sh import-tarball 10.132.37.39 oraclejre-8u181b13" && bash nix.sh import-tarball 10.132.37.39 oraclejre-8u181b13
+echo -e "\n==== bash nix.sh import-tarball 10.132.37.40 oraclejre-8u181b13" && bash nix.sh import-tarball 10.132.37.40 oraclejre-8u181b13
+echo -e "\n==== bash nix.sh import-tarball 10.132.37.41 oraclejre-8u181b13" && bash nix.sh import-tarball 10.132.37.41 oraclejre-8u181b13
+#echo -e "\n==== bash nix.sh import-tarball 10.132.37.42 oraclejre-8u181b13" && bash nix.sh import-tarball 10.132.37.43 oraclejre-8u181b13
+echo -e "\n==== bash nix.sh import-tarball 10.132.37.43 oraclejre-8u181b13" && bash nix.sh import-tarball 10.132.37.43 oraclejre-8u181b13
 
 # install zookeeper & kafka [message queue]
-echo -e "\n==== bash nix.sh import 10.132.37.33 zookeeper-3.4.11" && bash nix.sh import 10.132.37.33 zookeeper-3.4.11 
-echo -e "\n==== bash nix.sh import 10.132.37.34 zookeeper-3.4.11" && bash nix.sh import 10.132.37.34 zookeeper-3.4.11 
-echo -e "\n==== bash nix.sh import 10.132.37.35 zookeeper-3.4.11" && bash nix.sh import 10.132.37.35 zookeeper-3.4.11 
 echo -e "\n==== bash nix.sh import 10.132.37.33 zookeeper-3.4.12" && bash nix.sh import 10.132.37.33 zookeeper-3.4.12 
 echo -e "\n==== bash nix.sh import 10.132.37.34 zookeeper-3.4.12" && bash nix.sh import 10.132.37.34 zookeeper-3.4.12 
 echo -e "\n==== bash nix.sh import 10.132.37.35 zookeeper-3.4.12" && bash nix.sh import 10.132.37.35 zookeeper-3.4.12 
-echo -e "\n==== bash nix.sh import 10.132.37.33 apache-kafka-2.11-0.9.0.1" && bash nix.sh import 10.132.37.33 apache-kafka-2.11-0.9.0.1
-echo -e "\n==== bash nix.sh import 10.132.37.34 apache-kafka-2.11-0.9.0.1" && bash nix.sh import 10.132.37.34 apache-kafka-2.11-0.9.0.1
-echo -e "\n==== bash nix.sh import 10.132.37.35 apache-kafka-2.11-0.9.0.1" && bash nix.sh import 10.132.37.35 apache-kafka-2.11-0.9.0.1
-echo -e "\n==== bash nix.sh import 10.132.37.33 apache-kafka-2.12-1.1.0" && bash nix.sh import 10.132.37.33 apache-kafka-2.12-1.1.0
-echo -e "\n==== bash nix.sh import 10.132.37.34 apache-kafka-2.12-1.1.0" && bash nix.sh import 10.132.37.34 apache-kafka-2.12-1.1.0
-echo -e "\n==== bash nix.sh import 10.132.37.35 apache-kafka-2.12-1.1.0" && bash nix.sh import 10.132.37.35 apache-kafka-2.12-1.1.0
+echo -e "\n==== bash nix.sh import-tarball 10.132.37.33 apache-kafka-2.12-1.1.0" && bash nix.sh import-tarball 10.132.37.33 apache-kafka-2.12-1.1.0
+echo -e "\n==== bash nix.sh import-tarball 10.132.37.34 apache-kafka-2.12-1.1.0" && bash nix.sh import-tarball 10.132.37.34 apache-kafka-2.12-1.1.0
+echo -e "\n==== bash nix.sh import-tarball 10.132.37.35 apache-kafka-2.12-1.1.0" && bash nix.sh import-tarball 10.132.37.35 apache-kafka-2.12-1.1.0
 
 # install elasticsearch & kibana & filebeat & logstash  [search-service]
 echo -e "\n==== bash nix.sh import 10.132.37.36 elasticsearch-6.2.4" && bash nix.sh import 10.132.37.36 elasticsearch-6.2.4
 echo -e "\n==== bash nix.sh import 10.132.37.37 elasticsearch-6.2.4" && bash nix.sh import 10.132.37.37 elasticsearch-6.2.4
 echo -e "\n==== bash nix.sh import 10.132.37.39 elasticsearch-6.2.4" && bash nix.sh import 10.132.37.39 elasticsearch-6.2.4
-echo -e "\n==== bash nix.sh import 10.132.37.40 elasticsearch-6.2.4" && bash nix.sh import 10.132.37.40 elasticsearch-6.2.4
+echo -e "\n==== bash nix.sh import 10.132.37.40 elasticsearch-7.2.4" && bash nix.sh import 10.132.37.40 elasticsearch-6.2.4
+echo -e "\n==== bash nix.sh import-tarball 10.132.37.36 elasticsearch-6.2.4" && bash nix.sh import-tarball 10.132.37.36 elasticsearch-6.2.4
+echo -e "\n==== bash nix.sh import-tarball 10.132.37.37 elasticsearch-6.2.4" && bash nix.sh import-tarball 10.132.37.37 elasticsearch-6.2.4
+echo -e "\n==== bash nix.sh import-tarball 10.132.37.39 elasticsearch-6.2.4" && bash nix.sh import-tarball 10.132.37.39 elasticsearch-6.2.4
+echo -e "\n==== bash nix.sh import-tarball 10.132.37.40 elasticsearch-7.2.4" && bash nix.sh import-tarball 10.132.37.40 elasticsearch-6.2.4
+
 echo -e "\n==== bash nix.sh import 10.132.37.36 kibana-6.2.4" && bash nix.sh import 10.132.37.36 kibana-6.2.4
 echo -e "\n==== bash nix.sh import 10.132.37.36 filebeat-6.2.4" && bash nix.sh import 10.132.37.36 filebeat-6.2.4
 echo -e "\n==== bash nix.sh import 10.132.37.36 logstash-2.4.0" && bash nix.sh import 10.132.37.36 logstash-2.4.0
@@ -118,11 +117,11 @@ echo -e "\n==== bash nix.sh import 10.132.37.32 redis-4.0.10" && bash nix.sh imp
 # echo -e "\n==== bash nix.sh init 10.132.33.43" && bash nix.sh init 10.132.33.43
 
 # install nix
-echo -e "\n==== bash nix.sh install 10.132.33.43" && bash nix.sh install 10.132.33.43
+# echo -e "\n==== bash nix.sh install 10.132.33.43" && bash nix.sh install 10.132.33.43
 
 # install filebeat & logstash & kafka
-echo -e "\n==== bash nix.sh import 10.132.33.43 filebeat-6.2.4" && bash nix.sh import 10.132.33.43 filebeat-6.2.4
-echo -e "\n==== bash nix.sh import 10.132.33.43 logstash-2.4.0" && bash nix.sh import 10.132.33.43 logstash-2.4.0
-echo -e "\n==== bash nix.sh import 10.132.33.43 logstash-6.2.4" && bash nix.sh import 10.132.33.43 logstash-6.2.4
-echo -e "\n==== bash nix.sh import 10.132.33.43 apache-kafka-2.11-0.9.0.1" && bash nix.sh import 10.132.33.43 apache-kafka-2.11-0.9.0.1
-echo -e "\n==== bash nix.sh import 10.132.33.43 apache-kafka-2.12-1.1.0" && bash nix.sh import 10.132.33.43 apache-kafka-2.12-1.1.0
+# echo -e "\n==== bash nix.sh import 10.132.33.43 filebeat-6.2.4" && bash nix.sh import 10.132.33.43 filebeat-6.2.4
+# echo -e "\n==== bash nix.sh import 10.132.33.43 logstash-2.4.0" && bash nix.sh import 10.132.33.43 logstash-2.4.0
+# echo -e "\n==== bash nix.sh import 10.132.33.43 logstash-6.2.4" && bash nix.sh import 10.132.33.43 logstash-6.2.4
+# echo -e "\n==== bash nix.sh import 10.132.33.43 apache-kafka-2.11-0.9.0.1" && bash nix.sh import 10.132.33.43 apache-kafka-2.11-0.9.0.1
+# echo -e "\n==== bash nix.sh import 10.132.33.43 apache-kafka-2.12-1.1.0" && bash nix.sh import 10.132.33.43 apache-kafka-2.12-1.1.0

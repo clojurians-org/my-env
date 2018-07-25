@@ -25,10 +25,34 @@ echo "====dump file content end===="
 
 export ES_HOME=$(compgen -G "/nix/store/*-${_package}")
 export ES_PATH_CONF=${my_data}/config
+
+
+if [ -e ${my_data}/../_tarball ]; then
+  elasticsearch_cmd=${my_data}/../*/bin/elasticsearch
+  export JAVA_HOME=${_home}/nix.var/data/oraclejre-8u181b13/jre1.8.0_181
+else
+  elasticsearch_cmd=/nix/store/*-${_package}/bin/elasticsearch
+fi
+
+
 if [ "${_action}" == "start-foreground" ]; then
-  echo "/nix/store/*-${_package}/bin/elasticsearch -Epath.data=${my_data} -Epath.logs=${my_log}"
-  /nix/store/*-${_package}/bin/elasticsearch -Epath.data=${my_data} -Epath.logs=${my_log}
+  # echo "${elasticsearch_cmd} -Epath.data=${my_data} -Epath.logs=${my_log}"
+  start_elasticsearch_cmd="${elasticsearch_cmd} -Epath.data=${my_data} -Epath.logs=${my_log}"
 elif [ "${_action}" == "start" ]; then
-  echo "/nix/store/*-${_package}/bin/elasticsearch -Epath.data=${my_data} -Epath.logs=${my_log} -d"
-  /nix/store/*-${_package}/bin/elasticsearch -Epath.data=${my_data} -Epath.logs=${my_log} -d
+  # echo "${elasticsearch_cmd} -Epath.data=${my_data} -Epath.logs=${my_log} -d"
+  start_elasticsearch_cmd="${elasticsearch_cmd} -Epath.data=${my_data} -Epath.logs=${my_log} -d"
+fi
+
+if [ $(ulimit -Hn) -lt 65536 ]; then
+    echo "--> [ulimit] value is too low: $(ulimit -Hn), use su root[$USER] commmand to  run"
+    su - root -c "ulimit -n 65536 && sysctl -w vm.max_map_count=262144 && su - ${USER} -c '
+      ulimit -u 4096
+      export ES_HOME=${ES_HOME}
+      export ES_PATH_CONF=${ES_PATH_CONF}
+      echo ${start_elasticsearch_cmd}
+      ${start_elasticsearch_cmd}
+    '"
+else
+    echo ${start_elasticsearch_cmd}
+    ${start_elasticsearch_cmd}
 fi

@@ -19,15 +19,16 @@ echo "====dump file content start===="
 cat ${my_var}/server.properties
 echo "====dump file content end===="
 
-if [ -e ${my_var}/_tarball ]; then
-  kafka_server_start_sh=${my_var}/*/kafka-server-start.sh
+if [ -e ${my_var}/../_tarball ]; then
+  kafka_server_start_sh=${my_var}/../*/bin/kafka-server-start.sh
+  export JAVA_HOME=my-env/nix.var/data/oraclejre-8u181b13/jre1.8.0_181
 else
   kafka_server_start_sh=/nix/store/*-${_package}/bin/kafka-server-start.sh
 fi
 if [ "${_action}" == "start-foreground" ]; then
-  echo "bash ${kafka-server-start_sh} start ${my_var}/server.properties"
+  echo "bash ${kafka_server_start_sh} ${my_var}/server.properties"
   bash ${kafka_server_start_sh} ${my_var}/server.properties
 elif [ "${_action}" == "start" ]; then
-  echo "bash ${kafka-server-start_sh} /nix/store/*${_package}*/bin/kafka-server-start.sh -daemon start ${my_var}/server.properties"
+  echo "bash ${kafka_server_start_sh} /nix/store/*${_package}*/bin/kafka-server-start.sh -daemon ${my_var}/server.properties"
   bash ${kafka_server_start_sh} -daemon ${my_var}/server.properties
 fi

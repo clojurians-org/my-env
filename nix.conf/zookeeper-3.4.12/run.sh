@@ -20,5 +20,12 @@ cat ${my_var}/myid
 cat ${my_var}/zoo.cfg # for display on console
 echo "====dump file content end===="
 
-echo "/nix/store/*${_package}*/bin/zkServer.sh ${_action} ${my_var}/zoo.cfg"
-/nix/store/*${_package}*/bin/zkServer.sh ${_action} ${my_var}/zoo.cfg
+if [ -e ${my_var}/../_tarball ]; then
+  zkServer_sh=${my_var}/../*/bin/zkServer.sh
+  export JAVA_HOME=my-env/nix.var/data/oraclejre-8u181b13/jre1.8.0_181
+else
+  zkServer_sh=/nix/store/*-${_package}/bin/zkServer.sh
+fi
+
+echo "${zkServer_sh} ${_action} ${my_var}/zoo.cfg"
+${zkServer_sh} ${_action} ${my_var}/zoo.cfg
