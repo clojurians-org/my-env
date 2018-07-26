@@ -80,7 +80,8 @@ elif [ "$1" == "export-tarball" ]; then
     if [ "${download_url}" == "" ]; then echo "----> [ERROR] DOWLOAD URL NOT EXIST!"; exit 1; fi
     echo "--> download ${package_name} from ${download_url}"
     mkdir -p nix.opt/tarball.bin/${package_name}
-    wget -O nix.opt/tarball.bin/${package_name}/${package_name}.tgz ${download_url}
+    wget -O nix.opt/tarball.bin/${package_name}/${package_name}.tgz.tmp ${download_url}
+    mv nix.opt/tarball.bin/${package_name}/${package_name}.tgz.tmp nix.opt/tarball.bin/${package_name}/${package_name}.tgz
   fi
 elif [ "$1" == "init" ]; then
   remote_ip=$2

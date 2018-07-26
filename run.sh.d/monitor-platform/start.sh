@@ -27,5 +27,8 @@ echo -e "\n==== bash nix.sh start 10.132.37.40:9200 elasticsearch-6.2.4 --all ${
                 bash nix.sh start 10.132.37.40:9200 elasticsearch-6.2.4 --all ${ES_ALL} --cluster.id monitor
 
 # start kibana-6.2.4
-echo -e "\n==== bash nix.sh start 10.132.37.36:5601 kibana-6.2.4 -e ${ES_ALL}" && bash nix.sh start 10.132.37.36 kibana-6.2.4 -e ${ES_ALL}
+echo -e "\n==== bash nix.sh start 10.132.37.36:5601 kibana-6.2.4" && bash nix.sh start 10.132.37.36:5601 kibana-6.2.4
+echo -e "\n==== bash nix.sh start 10.132.37.37:5601 kibana-6.2.4" && bash nix.sh start 10.132.37.37:5601 kibana-6.2.4
+echo -e "\n==== bash nix.sh start 10.132.37.39:5601 kibana-6.2.4" && bash nix.sh start 10.132.37.39:5601 kibana-6.2.4
+echo -e "\n==== bash nix.sh start 10.132.37.40:5601 kibana-6.2.4" && bash nix.sh start 10.132.37.40:5601 kibana-6.2.4
 
