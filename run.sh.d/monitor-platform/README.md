@@ -1,17 +1,21 @@
-1. 下载依赖:
-```shell
-  bash package.sh  
+ 下载依赖:
+
+```sh
+  bash package.sh
 ```
-2. 自动部署:
-```shell
+自动部署:  
+
+```sh
   bash deploy.sh
 ```
-3. 启动服务
-```shell
+启动服务  
+
+```
   bash start.sh
 ```
 
-客户端接入:
-```shell
+客户端接入: 
+
+```sh
   bash call.sh
 ```
