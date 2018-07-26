@@ -4,7 +4,7 @@ help_message="$0 <download|mkdir :ip|export :package_name|import :ip :package_na
 my=$(cd -P -- "$(dirname -- "${BASH_SOURCE-$0}")" > /dev/null && pwd -P); cd $my
 mkdir -p nix.sh.d nix.sh.out nix.opt/tarball.bin
 
-my_user=op
+my_user=${my_user:-op}
 
 nix_name=nix-2.0.4
 nix_sys=${nix_name}-x86_64-linux

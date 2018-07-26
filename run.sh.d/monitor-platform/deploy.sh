@@ -82,6 +82,13 @@ echo -e "\n==== bash nix.sh import-tarball 10.132.37.37 kibana-6.2.4" && bash ni
 echo -e "\n==== bash nix.sh import-tarball 10.132.37.39 kibana-6.2.4" && bash nix.sh import-tarball 10.132.37.39 kibana-6.2.4
 echo -e "\n==== bash nix.sh import-tarball 10.132.37.40 kibana-6.2.4" && bash nix.sh import-tarball 10.132.37.40 kibana-6.2.4
 
+# install confluent-oss-2.11-4.1.2 [realtime-service]
+echo -e "\n==== bash nix.sh import-tarball 10.132.37.36 confluent-oss-2.11-4.1.2" && bash nix.sh import-tarball 10.132.37.36 confluent-oss-2.11-4.1.2
+echo -e "\n==== bash nix.sh import-tarball 10.132.37.37 confluent-oss-2.11-4.1.2" && bash nix.sh import-tarball 10.132.37.37 confluent-oss-2.11-4.1.2
+echo -e "\n==== bash nix.sh import-tarball 10.132.37.39 confluent-oss-2.11-4.1.2" && bash nix.sh import-tarball 10.132.37.39 confluent-oss-2.11-4.1.2
+echo -e "\n==== bash nix.sh import-tarball 10.132.37.40 confluent-oss-2.11-4.1.2" && bash nix.sh import-tarball 10.132.37.40 confluent-oss-2.11-4.1.2
+
+
 echo -e "\n==== bash nix.sh import 10.132.37.36 filebeat-6.2.4" && bash nix.sh import 10.132.37.36 filebeat-6.2.4
 echo -e "\n==== bash nix.sh import 10.132.37.36 logstash-2.4.0" && bash nix.sh import 10.132.37.36 logstash-2.4.0
 echo -e "\n==== bash nix.sh import 10.132.37.36 logstash-6.2.4" && bash nix.sh import 10.132.37.36 logstash-6.2.4

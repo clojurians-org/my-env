@@ -1,5 +1,8 @@
 test=test
+oraclejre-8u181b13=_download_
 zookeeper-3.4.12=http://www-eu.apache.org/dist/zookeeper/zookeeper-3.4.12/zookeeper-3.4.12.tar.gz
 apache-kafka-2.12-1.1.0=http://www-eu.apache.org/dist/kafka/1.1.0/kafka_2.12-1.1.0.tgz
 elasticsearch-6.2.4=https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.2.4.tar.gz
 kibana-6.2.4=https://artifacts.elastic.co/downloads/kibana/kibana-6.2.4-linux-x86_64.tar.gz
+confluent-oss-2.11-4.1.2=https://packages.confluent.io/archive/4.1/confluent-oss-4.1.2-2.11.tar.gz
+logstash-6.2.4=https://artifacts.elastic.co/downloads/logstash/logstash-6.2.4.tar.gz
