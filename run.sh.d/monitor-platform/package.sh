@@ -7,7 +7,7 @@ echo -e "\n==== bash nix.sh export-tarball zookeeper-3.4.12" && bash nix.sh expo
 echo -e "\n==== bash nix.sh export-tarball apache-kafka-2.12-1.1.0" && bash nix.sh export-tarball apache-kafka-2.12-1.1.0
 echo -e "\n==== bash nix.sh export-tarball elasticsearch-6.2.4" && bash nix.sh export-tarball elasticsearch-6.2.4
 echo -e "\n==== bash nix.sh export-tarball kibana-6.2.4" && bash nix.sh export-tarball kibana-6.2.4
-echo -e "\n==== bash nix.sh export-tarball confluent-oss-2.11-4.1.2" && bash nix.sh export-tarball confluent-oss-2.11-4.1.2
+echo -e "\n==== bash nix.sh export-tarball ksql-4.1.2" && bash nix.sh export-tarball ksql-4.1.2
 
 echo -e "\n==== bash nix.sh export filebeat-6.2.4" && bash nix.sh export filebeat-6.2.4
 echo -e "\n==== bash nix.sh export logstash-2.4.0" && bash nix.sh export logstash-2.4.0

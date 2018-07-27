@@ -158,6 +158,8 @@ elif [ "$1" == "import-tarball" ]; then
       mkdir -p my-env/nix.var/data/${package_name}
       cd my-env/nix.var/data/${package_name} && tar -xvf ~/my-env/nix.opt/tarball.bin/${package_name}/${package_name}.tgz
       touch ~/my-env/nix.var/data/${package_name}/_tarball
+    else
+      echo '---->[${remote_ip}-info] ${package_name} imported already'
     fi
   "
 elif [ "$1" == "reload" -o "$1" == "start" -o "$1" == "start-foreground" ]; then

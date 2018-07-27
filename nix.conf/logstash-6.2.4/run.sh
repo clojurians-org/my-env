@@ -3,12 +3,17 @@ my=$(cd -P -- "$(dirname -- "${BASH_SOURCE-$0}")" > /dev/null && pwd -P)
 _home=$(readlink -f "$my/../..") # my-env/nix.conf/${my}/run.sh
 
 oraclejre_package=oraclejre-8u181b13
-kafka_package=kafka_2.12-1.1.1
+kafka_package=apache-kafka-2.12-1.1.0
 
 _action=$1; _host=$2; _package=$3; kafkas_opt=$4; kafkas=$5; type_opt=$6; type=$7; inputs_opt=$8; inputs=$9; 
 
 _ip=$(echo $_host | cut -d: -f1)
 _id=$(echo $_host | cut -d: -f2)
+
+if [ "${kafkas}" == "--type" ]; then
+  echo "----> [ERROR] KAFKAS IS MISSING!"
+  exit 1
+fi
 if [ "${type}" == "file:multiline" ]; then
   codec_info='
     codec => multiline {
@@ -21,8 +26,23 @@ elif [ "${type}" == "file" ]; then
     codec => plain{charset=>"UTF-8"}
   '
 fi
+
+# create kafka topic
+major_type=$(echo $type | cut -d: -f1)
+if [ "$(shopt -s nullglob; echo /nix/store/*-${kafka_package})" != "" ]; then
+  kafka_topics_sh=/nix/store/*-${kafka_package}/bin/kafka-topics.sh
+elif [ "$(shopt -s nullglob; echo ${_home}/nix.var/data/${kafka_package})" != '' ];then
+  export JAVA_HOME="${_home}/nix.var/data/${oraclejre_package}/jre1.8.0_181"
+  kafka_topics_sh=${_home}/nix.var/data/${kafka_package}/*/bin/kafka-topics.sh
+fi
+if [ ${major_type} == "file" ]; then
+  zookeeper_arg=$(echo $kafkas | sed 's/:9092/:2181/g')
+  partition_count=$(echo $kafkas | awk -F, '{print NF}')
+  echo ${kafka_topics_sh} --zookeeper $zookeeper_arg --create --replication-factor 1 --partitions ${partition_count} --topic ${_id} --if-not-exists
+  ${kafka_topics_sh} --zookeeper $zookeeper_arg --create --replication-factor 1 --partitions ${partition_count} --topic ${_id} --if-not-exists
+fi
+
 input_arr="[$(printf "$inputs" | awk 'BEGIN {RS=","} {all=all",\""$0"\""} END {print all}' | cut -c2-)]"
-echo "[debug]: inputs:${inputs} => ${input_arr}"
 
 export _home _ip _id _package kafkas input_arr codec_info
 
@@ -37,17 +57,7 @@ elif [ -e "/usr/bin/envsubst" ]; then
 else
   echo "----> [ERROR] envsubst@gettext NOT FOUND!"
 fi
-if [ "$(shopt -s nullglob; echo /nix/store/*-${kafka_package})" != "" ]; then
-  kafka_topics_sh=/nix/store/*-${kafka_package}/bin/kafka-topics.sh
-elif [ "$(shopt -s nullglob; echo ${_home}/nix.var/data/${kafka_package})" != '' ];then
-  kafka_topics_sh=${_home}/nix.var/data/${kafka_package}/*/bin/kafka-topics.sh
-fi
 
-zookeeper_arg==$(echo $kafkas | sed 's/:9092/:2181/g')
-partition_count=$(echo $kafkas | awk -F, '{print NF}')
-echo ${kafka_topics_sh} --zookeeper $zookeeper_arg --create --replication-factor 1 --partitions ${partition_count} --topic ${_id} --if-not-exists
-${kafka_topics_sh} --zookeeper $zookeeper_arg --create --replication-factor 1 --partitions ${partition_count} --topic ${_id} --if-not-exists
-major_type=$(echo $type | cut -d: -f1)
 cat $my/${major_type}.conf.template | ${envsubst_cmd} > ${my_data}/${major_type}.conf
 
 echo "====dump file content start===="
@@ -55,8 +65,8 @@ cat ${my_data}/${major_type}.conf
 echo "====dump file content end===="
 
 if [ -e ${my_data}/../_tarball ]; then
+  export JAVA_HOME="${_home}/nix.var/data/${oraclejre_package}/jre1.8.0_181"
   logstash_cmd=${my_data}/../*/bin/logstash
-  export JAVA_HOME=${_home}/nix.var/data/${oraclejre_package}/jre1.8.0_181
 else
   logstash_cmd=/nix/store/*-${_package}/bin/logstash
 fi

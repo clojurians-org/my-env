@@ -53,7 +53,7 @@ echo -e "\n==== bash nix.sh import-tarball 10.132.37.40 oraclejre-8u181b13" && b
 echo -e "\n==== bash nix.sh import-tarball 10.132.37.41 oraclejre-8u181b13" && bash nix.sh import-tarball 10.132.37.41 oraclejre-8u181b13
 echo -e "\n==== bash nix.sh import-tarball 10.132.37.43 oraclejre-8u181b13" && bash nix.sh import-tarball 10.132.37.43 oraclejre-8u181b13
 
-# install zookeeper & kafka [message queue]
+# install zookeeper & kafka [message queue] & ksql[realtime]
 #echo -e "\n==== bash nix.sh import 10.132.37.33 zookeeper-3.4.12" && bash nix.sh import 10.132.37.33 zookeeper-3.4.12 
 #echo -e "\n==== bash nix.sh import 10.132.37.34 zookeeper-3.4.12" && bash nix.sh import 10.132.37.34 zookeeper-3.4.12 
 #echo -e "\n==== bash nix.sh import 10.132.37.35 zookeeper-3.4.12" && bash nix.sh import 10.132.37.35 zookeeper-3.4.12 
@@ -66,6 +66,9 @@ echo -e "\n==== bash nix.sh import-tarball 10.132.37.35 zookeeper-3.4.12" && bas
 echo -e "\n==== bash nix.sh import-tarball 10.132.37.33 apache-kafka-2.12-1.1.0" && bash nix.sh import-tarball 10.132.37.33 apache-kafka-2.12-1.1.0
 echo -e "\n==== bash nix.sh import-tarball 10.132.37.34 apache-kafka-2.12-1.1.0" && bash nix.sh import-tarball 10.132.37.34 apache-kafka-2.12-1.1.0
 echo -e "\n==== bash nix.sh import-tarball 10.132.37.35 apache-kafka-2.12-1.1.0" && bash nix.sh import-tarball 10.132.37.35 apache-kafka-2.12-1.1.0
+echo -e "\n==== bash nix.sh import-tarball 10.132.37.33 ksql-4.1.2" && bash nix.sh import-tarball 10.132.37.33 ksql-4.1.2
+echo -e "\n==== bash nix.sh import-tarball 10.132.37.34 ksql-4.1.2" && bash nix.sh import-tarball 10.132.37.34 ksql-4.1.2
+echo -e "\n==== bash nix.sh import-tarball 10.132.37.35 ksql-4.1.2" && bash nix.sh import-tarball 10.132.37.35 ksql-4.1.2
 
 # install elasticsearch & kibana & filebeat & logstash  [search-service]
 #echo -e "\n==== bash nix.sh import 10.132.37.36 elasticsearch-6.2.4" && bash nix.sh import 10.132.37.36 elasticsearch-6.2.4
@@ -93,11 +96,6 @@ echo -e "\n==== bash nix.sh import-tarball 10.132.37.37 logstash-6.2.4" && bash 
 echo -e "\n==== bash nix.sh import-tarball 10.132.37.39 logstash-6.2.4" && bash nix.sh import-tarball 10.132.37.39 logstash-6.2.4
 echo -e "\n==== bash nix.sh import-tarball 10.132.37.40 logstash-6.2.4" && bash nix.sh import-tarball 10.132.37.40 logstash-6.2.4
 
-# install confluent-oss-2.11-4.1.2 [realtime-service]
-echo -e "\n==== bash nix.sh import-tarball 10.132.37.36 confluent-oss-2.11-4.1.2" && bash nix.sh import-tarball 10.132.37.36 confluent-oss-2.11-4.1.2
-echo -e "\n==== bash nix.sh import-tarball 10.132.37.37 confluent-oss-2.11-4.1.2" && bash nix.sh import-tarball 10.132.37.37 confluent-oss-2.11-4.1.2
-echo -e "\n==== bash nix.sh import-tarball 10.132.37.39 confluent-oss-2.11-4.1.2" && bash nix.sh import-tarball 10.132.37.39 confluent-oss-2.11-4.1.2
-echo -e "\n==== bash nix.sh import-tarball 10.132.37.40 confluent-oss-2.11-4.1.2" && bash nix.sh import-tarball 10.132.37.40 confluent-oss-2.11-4.1.2
 
 # install mongo & postgresql & redis [report-service]
 echo -e "\n==== bash nix.sh import 10.132.37.36 postgresql-10.3" && bash nix.sh import 10.132.37.36 postgresql-10.3
