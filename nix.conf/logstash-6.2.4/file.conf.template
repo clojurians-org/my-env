@@ -1,11 +1,13 @@
 input { 
   file {
-    codec => multiline {
-      pattern => "^%{TIMESTAMP_ISO8601} "
-      negate => "true"
-      what => "previous"
-    }
-    path => ${path_arr}
+    ${codec_info}
+    #codec=>plain{charset=>"UTF-8"}
+    #codec => multiline {
+    #  pattern => "^%{TIMESTAMP_ISO8601} "
+    #  negate => "true"
+    #  what => "previous"
+    #}
+    path => ${input_arr}
     start_position => "end"
   }
 }
@@ -13,8 +15,8 @@ filter {
   ruby { 
     code => "event.set('read_ts_file', Time.now.iso8601(3))"
     add_field => {
-      "app_name"=>"{_id}"
-      "ip" => "{_ip}"
+      "app_name"=>"${_id}"
+      "ip" => "${_ip}"
     }
   }
 }

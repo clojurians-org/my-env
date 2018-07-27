@@ -1,0 +1,20 @@
+input {
+  kafka {
+    codec => "json"
+    bootstrap_servers => "${kafkas}"
+    #topics => ["logi_cores_pts"]
+    topics => ${input_arr}
+    auto_offset_reset => "latest"
+  }
+}
+filter{
+  ruby {
+    code => "event.set('read_ts_kafka', Time.now.iso8601(3))"
+  }
+}
+output {
+  elasticsearch {
+    hosts => ["${_ip}:9200"]
+    index => "${_id}-%{+YYYY-MM-dd}"
+  }
+}

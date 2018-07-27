@@ -160,7 +160,7 @@ elif [ "$1" == "import-tarball" ]; then
       touch ~/my-env/nix.var/data/${package_name}/_tarball
     fi
   "
-elif [ "$1" == "start" -o "$1" == "start-foreground" ]; then
+elif [ "$1" == "reload" -o "$1" == "start" -o "$1" == "start-foreground" ]; then
   action=$1; remote_host=$2; package_name=$3
   echo "[action] $action $remote_ip ${package_name}"
   remote_ip=$(echo $remote_host | cut -d: -f1)
