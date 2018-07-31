@@ -53,7 +53,7 @@ echo -e "\n==== bash nix.sh import-tarball 10.132.37.40 oraclejre-8u181b13" && b
 echo -e "\n==== bash nix.sh import-tarball 10.132.37.41 oraclejre-8u181b13" && bash nix.sh import-tarball 10.132.37.41 oraclejre-8u181b13
 echo -e "\n==== bash nix.sh import-tarball 10.132.37.43 oraclejre-8u181b13" && bash nix.sh import-tarball 10.132.37.43 oraclejre-8u181b13
 
-# install zookeeper & kafka [message queue] & ksql[realtime]
+# install zookeeper & kafka & ksql [streaming-platform]
 #echo -e "\n==== bash nix.sh import 10.132.37.33 zookeeper-3.4.12" && bash nix.sh import 10.132.37.33 zookeeper-3.4.12 
 #echo -e "\n==== bash nix.sh import 10.132.37.34 zookeeper-3.4.12" && bash nix.sh import 10.132.37.34 zookeeper-3.4.12 
 #echo -e "\n==== bash nix.sh import 10.132.37.35 zookeeper-3.4.12" && bash nix.sh import 10.132.37.35 zookeeper-3.4.12 
@@ -96,20 +96,19 @@ echo -e "\n==== bash nix.sh import-tarball 10.132.37.37 logstash-6.2.4" && bash 
 echo -e "\n==== bash nix.sh import-tarball 10.132.37.39 logstash-6.2.4" && bash nix.sh import-tarball 10.132.37.39 logstash-6.2.4
 echo -e "\n==== bash nix.sh import-tarball 10.132.37.40 logstash-6.2.4" && bash nix.sh import-tarball 10.132.37.40 logstash-6.2.4
 
-
 # install postgresql & redis [report-service]
 echo -e "\n==== bash nix.sh import 10.132.37.36 postgresql-10.4" && bash nix.sh import 10.132.37.36 postgresql-10.4
 echo -e "\n==== bash nix.sh import 10.132.37.37 postgresql-10.4" && bash nix.sh import 10.132.37.37 postgresql-10.4
 echo -e "\n==== bash nix.sh import 10.132.37.39 postgresql-10.4" && bash nix.sh import 10.132.37.39 postgresql-10.4
-echo -e "\n==== bash nix.sh import 10.132.37.40 postgresql-10.4" && bash nix.sh import 10.132.37.40 postgresql-10.3
+echo -e "\n==== bash nix.sh import 10.132.37.40 postgresql-10.4" && bash nix.sh import 10.132.37.40 postgresql-10.4
 echo -e "\n==== bash nix.sh import 10.132.37.36 redis-4.0.10" && bash nix.sh import 10.132.37.36 redis-4.0.10
 echo -e "\n==== bash nix.sh import 10.132.37.37 redis-4.0.10" && bash nix.sh import 10.132.37.37 redis-4.0.10
 echo -e "\n==== bash nix.sh import 10.132.37.39 redis-4.0.10" && bash nix.sh import 10.132.37.39 redis-4.0.10
 echo -e "\n==== bash nix.sh import 10.132.37.40 redis-4.0.10" && bash nix.sh import 10.132.37.40 redis-4.0.10
 
 # install postgresql [data-platform]
-echo -e "\n==== bash nix.sh import 10.132.37.41 postgresql-10.3" && bash nix.sh import 10.132.37.41 postgresql-10.3
-echo -e "\n==== bash nix.sh import 10.132.37.43 postgresql-10.3" && bash nix.sh import 10.132.37.43 postgresql-10.3
+echo -e "\n==== bash nix.sh import 10.132.37.41 postgresql-10.3" && bash nix.sh import 10.132.37.41 postgresql-10.4
+echo -e "\n==== bash nix.sh import 10.132.37.43 postgresql-10.3" && bash nix.sh import 10.132.37.43 postgresql-10.4
 
 # install client machine [zookeeper & kafka & filebeat & logstash & postgresql & mongodb & redis]
 echo -e "\n==== bash nix.sh import 10.132.37.32 zookeeper-3.4.11" && bash nix.sh import 10.132.37.32 zookeeper-3.4.11 

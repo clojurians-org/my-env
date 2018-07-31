@@ -48,5 +48,5 @@ if [ "${_action}" == "start-foreground" ]; then
   ${my_cmd} ${my_data}/${cfg_file}
 elif [ "${_action}" == "start" ]; then
   echo "${my_cmd} -daemon ${my_data}/${cfg_file}"
-  "${my_cmd} -daemon ${my_data}/${cfg_file}"
+  ${my_cmd} -daemon ${my_data}/${cfg_file}
 fi

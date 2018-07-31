@@ -40,7 +40,7 @@ echo -e "\n==== bash nix.sh start 10.132.37.39:5601 kibana-6.2.4" && bash nix.sh
 echo -e "\n==== bash nix.sh start 10.132.37.40:5601 kibana-6.2.4" && bash nix.sh start 10.132.37.40:5601 kibana-6.2.4
 
 # start postgresql-10.4
-echo -e "\n==== bash nix.sh start 10.132.37.36:5601 kibana-6.2.4" && bash nix.sh start 10.132.37.36:5601 kibana-6.2.4
-echo -e "\n==== bash nix.sh start 10.132.37.37:5601 kibana-6.2.4" && bash nix.sh start 10.132.37.37:5601 kibana-6.2.4
-echo -e "\n==== bash nix.sh start 10.132.37.39:5601 kibana-6.2.4" && bash nix.sh start 10.132.37.39:5601 kibana-6.2.4
-echo -e "\n==== bash nix.sh start 10.132.37.40:5601 kibana-6.2.4" && bash nix.sh start 10.132.37.40:5601 kibana-6.2.4
+echo -e "\n==== bash nix.sh start 10.132.37.36:5432 postgresql-10.4" && bash nix.sh start 10.132.37.36:5432 postgresql-10.4
+echo -e "\n==== bash nix.sh start 10.132.37.37:5432 postgresql-10.4" && bash nix.sh start 10.132.37.37:5432 postgresql-10.4
+echo -e "\n==== bash nix.sh start 10.132.37.39:5432 postgresql-10.4" && bash nix.sh start 10.132.37.39:5432 postgresql-10.4
+echo -e "\n==== bash nix.sh start 10.132.37.40:5432 postgresql-10.4" && bash nix.sh start 10.132.37.40:5432 postgresql-10.4
