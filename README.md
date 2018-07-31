@@ -12,8 +12,6 @@
   ss-local -s hk2.wormholex.online -p 13173 -k ewxm9l -m aes-256-cfb  -b 0.0.0.0 -l 1080 -v
   ss-local -s 47.88.155.121 -p 443 -m chacha20  -b 0.0.0.0 -l 1080 -k p123D.alao.+ -v
   
-  proxychains4 chromium
-  
   # rdkafka
   nix-prefetch-url --unpack --print-path https://github.com/edenhill/librdkafka/archive/v0.9.5.tar.gz
   nix-build -E 'with import <nixpkgs> {}; callPackage nixpkgs/rdkafka/default.nix {}'
@@ -21,18 +19,17 @@
   #================
   # HYDRA
   #================
-  initdb -D opt.var/data/postgresql-10.3/5432
-  pg_ctl -D opt.var/data/postgresql-10.3/5432 -l logfile start
+  initdb -D nix.var/data/postgresql-10.3/5432
+  pg_ctl -D nix.var/data/postgresql-10.3/5432 -l logfile start
   psql -d postgres
   createuser -S -D -R -P hydra
   createdb -O hydra hydra
   
   export HYDRA_DBI="dbi:Pg:dbname=hydra;host=localhost;user=hydra;"
-  export HYDRA_DATA=opt.var/data/hydra-2017-11-21/3000
-  
-  hydra-create-user larluo --full-name 'larry.luo' --email-address 'larluo@clojurians.org' --password larluo --role admin
+  export HYDRA_DATA=nix.var/data/hydra-2017-11-21/3000
 
-   hydra-create-user alice --full-name 'hydra' --email-address 'hydra@clojurians.org' --password hydra--role admin
+  su root; su hydra
+  hydra-create-user larluo --full-name 'larry.luo' --email-address 'larluo@clojurians.org' --password larluo --role admin
 
 #================
 # ELK [docker run --name centos6 -it --net=host centos:6 sh]

@@ -72,9 +72,9 @@ else
 fi
 
 if [ "${_action}" == "start-foreground" ]; then
-  echo "${logstash_cmd} -f ${my_data}/${major_type}.conf"
-  ${logstash_cmd} -f ${my_data}/${major_type}.conf
+  echo "${logstash_cmd} -f ${my_data}/${major_type}.conf --path.data ${my_data}"
+  ${logstash_cmd} -f ${my_data}/${major_type}.conf --path.data ${my_data}
 elif [ "${_action}" == "start" ]; then
-  echo "nohup ${logstash_cmd} -f ${my_data}/${major_type}.conf 2>&1 > /dev/null &"
-  nohup ${logstash_cmd} -f ${my_data}/${major_type}.conf 2>&1 > /dev/null &
+  echo "nohup ${logstash_cmd} -f ${my_data}/${major_type}.conf --path.data ${my_data} 2>&1 > /dev/null &"
+  nohup ${logstash_cmd} -f ${my_data}/${major_type}.conf --path.data ${my_data} 2>&1 > /dev/null &
 fi

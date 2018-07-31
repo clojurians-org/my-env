@@ -1,5 +1,5 @@
 set -e
-help_message="$0 <download|mkdir :ip|export :package_name|import :ip :package_name|start :ip :package_name [--:arg-name arg-value]+>"
+help_message="$0 <download|init :ip|export :package_name|import :ip :package_name|start :ip :package_name [--:arg-name arg-value]+>"
 
 my=$(cd -P -- "$(dirname -- "${BASH_SOURCE-$0}")" > /dev/null && pwd -P); cd $my
 mkdir -p nix.sh.d nix.sh.out nix.opt/tarball.bin
@@ -75,13 +75,31 @@ elif [ "$1" == "export-tarball" ]; then
   echo "[action] export-tarball ${package_name}..."
   if [ -e "nix.opt/tarball.bin/${package_name}/${package_name}.tgz" ]; then
     echo "----> [info] ${package_name}.tgz exist!" 
-  else
+  elif  grep "^${package_name}=" nix.opt.dic 2> /dev/null; then
     download_url=$(grep "^${package_name}=" nix.opt.dic | cut -d= -f2)
-    if [ "${download_url}" == "" ]; then echo "----> [ERROR] DOWLOAD URL NOT EXIST!"; exit 1; fi
     echo "--> download ${package_name} from ${download_url}"
     mkdir -p nix.opt/tarball.bin/${package_name}
     wget -O nix.opt/tarball.bin/${package_name}/${package_name}.tgz.tmp ${download_url}
     mv nix.opt/tarball.bin/${package_name}/${package_name}.tgz.tmp nix.opt/tarball.bin/${package_name}/${package_name}.tgz
+  elif grep "^${package_name}-src=" nix.opt.dic 2> /dev/null; then
+    echo "--> [info] build source tarball"
+    download_url=$(grep "^${package_name}-src=" nix.opt.dic | cut -d= -f2)
+    echo "--> download ${package_name} from ${download_url}"
+    mkdir -p nix.opt/tarball.src/${package_name}
+    if [ ! -e nix.opt/tarball.src/${package_name}/${package_name}-src.tgz ]; then
+      wget -O nix.opt/tarball.src/${package_name}/${package_name}-src.tgz.tmp ${download_url}
+      mv nix.opt/tarball.src/${package_name}/${package_name}-src.tgz.tmp nix.opt/tarball.src/${package_name}/${package_name}-src.tgz
+    fi
+    rm -rf nix.opt/tarball.src/${package_name}/${package_name}.build
+    mkdir -p nix.opt/tarball.src/${package_name}/${package_name}.build
+    mkdir -p ${my}/nix.opt/tarball.bin/${package_name}
+
+    cd nix.opt/tarball.src/${package_name}/${package_name}.build 
+    tar -xvf ../${package_name}-src.tgz && cd * && mvn package -DskipTests && cd ..
+    tar -cvzf ${package_name}.tgz * && mv ${package_name}.tgz ${my}/nix.opt/tarball.bin/${package_name}/${package_name}.tgz
+    cd .. && rm -rf ${package_name}.build
+  else
+    echo "----> [ERROR] DOWLOAD URL NOT EXIST!"; exit 1
   fi
 elif [ "$1" == "init" ]; then
   remote_ip=$2
@@ -104,9 +122,9 @@ elif [ "$1" == "init" ]; then
     fi
   "
   ssh-copy-id $ssh_opt ${my_user}@${remote_ip}
-elif [ "$1" == "install" ]; then
+elif [ "$1" == "setup" ]; then
   remote_ip=$2
-  echo "[action] install $remote_ip"
+  echo "[action] setup $remote_ip"
   echo "#=> sync local file"
   rsync -e "ssh ${ssh_opt}" -av ${my}/nix.sh.d op@${remote_ip}:my-env
   echo "#=> install nix"
@@ -155,6 +173,7 @@ elif [ "$1" == "import-tarball" ]; then
   ssh ${ssh_opt} ${my_user}@${remote_ip} "
     if [ ! -e 'my-env/nix.var/data/${package_name}/_tarball' ]; then
       echo '--> unzip tarball to my-env/nix.var/data/${package_name}...'
+      rm -rf my-env/nix.var/data/${package_name}
       mkdir -p my-env/nix.var/data/${package_name}
       cd my-env/nix.var/data/${package_name} && tar -xvf ~/my-env/nix.opt/tarball.bin/${package_name}/${package_name}.tgz
       touch ~/my-env/nix.var/data/${package_name}/_tarball

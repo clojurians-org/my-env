@@ -13,5 +13,5 @@ echo -e "\n==== bash nix.sh export filebeat-6.2.4" && bash nix.sh export filebea
 echo -e "\n==== bash nix.sh export logstash-2.4.0" && bash nix.sh export logstash-2.4.0
 echo -e "\n==== bash nix.sh export logstash-6.2.4" && bash nix.sh export logstash-6.2.4
 echo -e "\n==== bash nix.sh export mongodb-3.4.10" && bash nix.sh export mongodb-3.4.10
-echo -e "\n==== bash nix.sh export postgresql-10.3" && bash nix.sh export postgresql-10.3
+echo -e "\n==== bash nix.sh export postgresql-10.4" && bash nix.sh export postgresql-10.4
 echo -e "\n==== bash nix.sh export redis-4.0.10" && bash nix.sh export redis-4.0.10
