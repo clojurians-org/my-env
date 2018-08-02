@@ -40,8 +40,8 @@ if [ "$1" == "createvm" ]; then
     VBoxManage guestproperty enumerate "${vm_name}"
     VBoxManage startvm "${vm_name}" --type headless
   fi
-elif [ "$1" == "download" ]; then
-  echo "[action] download ${nix_name}"
+elif [ "$1" == "setup" ]; then
+  echo "[action] setup ${nix_name}..."
   if [ ! -e $my/nix.sh.d/${nix_tar} ]; then
     wget -O $my/nix.sh.d/${nix_tar}.tmp https://nixos.org/releases/nix/${nix_name}/${nix_tar}
     mv $my/nix.sh.d/${nix_tar}.tmp $my/nix.sh.d/${nix_tar}
@@ -122,7 +122,7 @@ elif [ "$1" == "init" ]; then
     fi
   "
   ssh-copy-id $ssh_opt ${my_user}@${remote_ip}
-elif [ "$1" == "setup" ]; then
+elif [ "$1" == "install" ]; then
   remote_ip=$2
   echo "[action] setup $remote_ip"
   echo "#=> sync local file"
@@ -182,7 +182,7 @@ elif [ "$1" == "import-tarball" ]; then
     fi
   "
 elif [ "$1" == "reload" -o "$1" == "start" -o "$1" == "start-foreground" ]; then
-  action=$1; remote_host=$2; package_name=$3
+  action=$1; remote_host=$2; package_name=$(echo $3 | cut -d: -f1)
   echo "[action] $action $remote_ip ${package_name}"
   remote_ip=$(echo $remote_host | cut -d: -f1)
   if [ "${package_name}" = "" ]; then

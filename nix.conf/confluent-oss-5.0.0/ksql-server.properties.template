@@ -1,0 +1,4 @@
+bootstrap.servers=${kafkas}
+listeners=http://${_ip}:${_id}
+ksql.cluster.id=${cluster_id}
+ksql.server.ui.enabled=true

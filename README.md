@@ -1,4 +1,32 @@
 ```sh
+#================
+# REDHAT
+#================
+    cat /etc/sysconfig/network-scripts/ifcfg-eth0 
+    DEVICE=eth0
+    HWADDR=00:0C:29:D6:7C:73
+    TYPE=Ethernet
+    UUID=065d2da1-8409-48fc-a501-4fdf0ec57da9
+    ONBOOT=yes
+    NM_CONTROLLED=yes
+    BOOTPROTO=static
+    IPADDR=10.132.37.32
+    NETMASK=255.255.255.0
+    GATEWAY=10.132.37.254
+
+    systemctl restart network
+
+#================
+# UBUNTU
+#================
+    cat /etc/network/interfaces
+    iface em1 inet static
+    address 192.168.1.?
+    netmask 255.255.0.0
+    gateway 192.168.1.1
+
+    sudo ifdown em1
+    sudo ifup em1 
 
 #================
 # NixOS
@@ -55,20 +83,6 @@
 #================
   wget http://nixos.org/releases/nixos/virtualbox-nixops-images/virtualbox-nixops-18.03pre131587.b6ddb9913f2.vmdk.xz
 
-  ssh-keygen -t ed25519 -f nix.sh.out/key -N '' -C "my-env auto-generated key"
-
-  VBoxManage createvm --name nixos-elk-001 --ostype Linux26_64 --register
-  VBoxManage guestproperty set nixos-elk-001 /VirtualBox/GuestInfo/Charon/ClientPublicKey "$(cat nix.sh.out/key.pub)"
-  VBoxManage guestproperty set nixos-elk-001 /VirtualBox/GuestInfo/NixOps/PrivateHostEd25519Key "$(cat nix.sh.out/key)"
-
-  VBoxManage storagectl nixos-elk-001 --name SATA --add sata --portcount 8 --bootable on --hostiocache on 
-  VBoxManage clonehd nix.sh.out/virtualbox-nixops-18.03pre131587.b6ddb9913f2.vmdk ~/"VirtualBox VMs"/nixos-elk-001/disk1.vdi --format VDI
-  VBoxManage storageattach nixos-elk-001 --storagectl SATA --port 0 --device 0 --type hdd --medium ~/"VirtualBox VMs"/nixos-elk-001/disk1.vdi
-  VBoxManage modifyvm nixos-elk-001 --memory 2048 --cpus 2 --vram 10 --nictype1 virtio --nictype2 virtio --nic2 hostonly --hostonlyadapter2 vboxnet0 --nestedpaging off --paravirtprovider kvm
-  VBoxManage guestproperty enumerate nixos-elk-001
-  VBoxManage startvm nixos-elk-001 --type headless
-
-
   VBoxManage guestproperty get nixos-elk-001 /VirtualBox/GuestInfo/Net/1/V4/IP
 
   VBoxManage controlvm nixos-elk-001 poweroff
@@ -78,10 +92,16 @@
   VBoxManage list runningvms
   VBoxManage list vms
   VBoxManage showvminfo --machinereadable nixos-elk-001
+
+#================
+# KSQL
+#================
+  SET 'auto.offset.reset' = 'earliest';
+  SET 'auto.offset.reset' = 'latest' ;
+
 #================
 # Java
 #================
-mvn archetype:generate -DgroupId=my-first -DartifactId=my-first
 
 
 http://www.jedi.be/blog/2011/11/04/vagrant-virtualbox-hostonly-pxe-vlans/

@@ -1,0 +1,9 @@
+export JAVA_HOME=my-env/nix.var/data/oraclejre-8u181b13/jre1.8.0_181
+alias zkCli.sh=~/my-env/nix.var/data/zookeeper-3.4.12/zookeeper-3.4.12/bin/zkCli.sh
+alias kafka-console-consumer.sh=~/my-env/nix.var/data/apache-kafka-2.12-1.1.0/kafka_2.12-1.1.0/bin/kafka-console-consumer.sh
+alias kafka-console-producer.sh=~/my-env/nix.var/data/apache-kafka-2.12-1.1.0/kafka_2.12-1.1.0/bin/kafka-console-producer.sh
+alias kafka-topics.sh=~/my-env/nix.var/data/apache-kafka-2.12-1.1.0/kafka_2.12-1.1.0/bin/kafka-topics.sh
+alias logstash=~/my-env/nix.var/data/logstash-6.2.4/logstash-6.2.4/bin/logstash
+alias filebeat=~/my-env/nix.var/data/filebeat-6.2.4/filebeat-6.2.4-linux-x86_64/filebeat
+alias ksql=~/my-env/nix.var/data/confluent-oss-5.0.0/confluent-5.0.0/bin/ksql
+alias psql=/nix/store/zzrphwnp8kzv4s5r4z1nqzn8hbnlsm7b-postgresql-10.4/bin/psql
