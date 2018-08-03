@@ -75,7 +75,11 @@
   bash nix.sh import 10.132.37.33 apache-kafka-2.12-1.1.0
   bash nix.sh start-foreground 10.132.37.33:9092 apache-kafka-2.12-1.1.0 --zookeepers "10.132.37.33:2181,10.132.37.34:2181,10.132.37.35:2181" --cluster.id monitor
 
+  ssh op@10.132.37.34 'ps -ef | grep zookeeper | grep -v grep | awk "{print \$2}" | xargs kill'
+  ssh op@10.132.37.33 "/home/op/my-env/nix.var/data/confluent-oss-5.0.0/confluent-5.0.0/bin/kafka-server-stop"
+
   ssh op@10.132.37.34 'ps -ef | grep kafka-connect | grep -v grep | awk "{print \$2}" | xargs kill'
+
 
 #================
 # ELK
