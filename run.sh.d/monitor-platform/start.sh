@@ -14,7 +14,7 @@ echo -e "\n==== bash nix.sh start 10.132.37.34:9092 apache-kafka-2.12-1.1.0 --zo
                 bash nix.sh start 10.132.37.34:9092 apache-kafka-2.12-1.1.0 --zookeepers ${ZK_ALL} --cluster.id monitor
 echo -e "\n==== bash nix.sh start 10.132.37.35:9092 apache-kafka-2.12-1.1.0 --zookeepers ${ZK_ALL} --cluster.id monitor" 
                 bash nix.sh start 10.132.37.35:9092 apache-kafka-2.12-1.1.0 --zookeepers ${ZK_ALL} --cluster.id monitor
-# start ksql-5.0.0
+# start confluent-oss-5.0.0:ksql
 echo -e "\n==== bash nix.sh start 10.132.37.33:8088 confluent-oss-5.0.0:ksql --kafkas ${KAFKA_ALL} --cluster.id monitor" 
                 bash nix.sh start 10.132.37.33:8088 confluent-oss-5.0.0:ksql --kafkas ${KAFKA_ALL} --cluster.id monitor
 echo -e "\n==== bash nix.sh start 10.132.37.34:8088 confluent-oss-5.0.0:ksql --kafkas ${KAFKA_ALL} --cluster.id monitor" 
@@ -22,7 +22,15 @@ echo -e "\n==== bash nix.sh start 10.132.37.34:8088 confluent-oss-5.0.0:ksql --k
 echo -e "\n==== bash nix.sh start 10.132.37.35:8088 confluent-oss-5.0.0:ksql --kafkas ${KAFKA_ALL} --cluster.id monitor" 
                 bash nix.sh start 10.132.37.35:8088 confluent-oss-5.0.0:ksql --kafkas ${KAFKA_ALL} --cluster.id monitor
 
-# start kafka-connect-5.0.0
+# start confluent-oss-5.0.0:schema-registry
+echo -e "\n==== bash nix.sh start 10.132.37.33:8081 confluent-oss-5.0.0:schema-registry --kafkas ${KAFKA_ALL} --cluster.id monitor"
+                bash nix.sh start 10.132.37.33:8081 confluent-oss-5.0.0:schema-registry --kafkas ${KAFKA_ALL} --cluster.id monitor
+echo -e "\n==== bash nix.sh start 10.132.37.34:8081 confluent-oss-5.0.0:schema-registry --kafkas ${KAFKA_ALL} --cluster.id monitor"
+                bash nix.sh start 10.132.37.34:8081 confluent-oss-5.0.0:schema-registry --kafkas ${KAFKA_ALL} --cluster.id monitor
+echo -e "\n==== bash nix.sh start 10.132.37.35:8081 confluent-oss-5.0.0:schema-registry --kafkas ${KAFKA_ALL} --cluster.id monitor"
+                bash nix.sh start 10.132.37.35:8081 confluent-oss-5.0.0:schema-registry --kafkas ${KAFKA_ALL} --cluster.id monitor
+
+# start confluent-oss-5.0.0:kafka-connect
 echo -e "\n==== bash nix.sh start 10.132.37.33:8083 confluent-oss-5.0.0:kafka-connect --kafkas ${KAFKA_ALL} --cluster.id monitor" 
                 bash nix.sh start 10.132.37.33:8083 confluent-oss-5.0.0:kafka-connect --kafkas ${KAFKA_ALL} --cluster.id monitor
 echo -e "\n==== bash nix.sh start 10.132.37.34:8083 confluent-oss-5.0.0:kafka-connect --kafkas ${KAFKA_ALL} --cluster.id monitor" 

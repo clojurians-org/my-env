@@ -17,8 +17,6 @@ if [ "${kafkas}" == "--cluster.id" ]; then
   exit 1
 fi
 
-export _home _ip _id _package kafkas cluster_id
-
 if [ "$(shopt -s nullglob; echo /nix/store/*-${gettext_package})" != "" ]; then
   envsubst_cmd="/nix/store/*-${gettext_package}/bin/envsubst"
 elif [ -e "/usr/bin/envsubst" ]; then
@@ -27,36 +25,42 @@ else
   echo "----> [ERROR] envsubst@gettext NOT FOUND!"
 fi
 
-package_home=${_home}/nix.var/data/${_package_parent}
-my_data=${_home}/nix.var/data/${_package_parent}/${_package}/${_id}
-my_log=${_home}/nix.var/log/${_package_parent}/${_package}/${_id}
-mkdir -p ${my_data}/{data,config} ${my_log}
+id_data=${_home}/nix.var/data/${_package_parent}/${_package}/${_id}
+id_log=${_home}/nix.var/log/${_package_parent}/${_package}/${_id}
+_package_home=$(readlink -f ${_home}/nix.var/data/${_package_parent}/*/bin/..)
+mkdir -p ${id_data}/{data,config} ${id_log} 
+
+export _package_home _home _ip _id _package kafkas cluster_id
 
 if [ "${_package}" == "ksql" ]; then
   cmd_file=ksql-server-start
   cfg_file=ksql-server.properties
+elif [ "${_package}" == "schema-registry" ]; then
+  cmd_file=schema-registry-start
+  cfg_file=schema-registry.properties
+  export protocol_kafkas="$(printf "$kafkas" | awk 'BEGIN {RS=","} {all=all",PLAINTEXT://"$0} END {print all}' | cut -c2-)"
 elif [ "${_package}" == "kafka-connect" ]; then
   cmd_file=connect-distributed
   cfg_file=connect-distributed.properties
 fi
 
-cat $my/${cfg_file}.template | ${envsubst_cmd} > ${my_data}/config/${cfg_file}
+cat $my/${cfg_file}.template | ${envsubst_cmd} > ${id_data}/config/${cfg_file}
 echo "====dump file content start===="
-cat ${my_data}/config/${cfg_file}
+cat ${id_data}/config/${cfg_file}
 echo "====dump file content end===="
 
-if [ -e ${package_home}/_tarball ]; then
+if [ -e ${_package_home}/../_tarball ]; then
   export JAVA_HOME="${_home}/nix.var/data/${oraclejre_package}/jre1.8.0_181"
-  my_cmd=${package_home}/*/bin/${cmd_file}
+  my_cmd=${_package_home}/bin/${cmd_file}
 else
   my_cmd=/nix/store/*-${_package_parent}/bin/${cmd_file}
 fi
 
 if [ "${_action}" == "start-foreground" ]; then
-  echo "${my_cmd} ${my_data}/config/${cfg_file}"
-  ${my_cmd} ${my_data}/config/${cfg_file}
+  echo "${my_cmd} ${id_data}/config/${cfg_file}"
+  ${my_cmd} ${id_data}/config/${cfg_file}
 elif [ "${_action}" == "start" ]; then
-  echo "${my_cmd} -daemon ${my_data}/config/${cfg_file}"
-  ${my_cmd} -daemon ${my_data}/config/${cfg_file}
+  echo "${my_cmd} -daemon ${id_data}/config/${cfg_file}"
+  ${my_cmd} -daemon ${id_data}/config/${cfg_file}
 fi
 

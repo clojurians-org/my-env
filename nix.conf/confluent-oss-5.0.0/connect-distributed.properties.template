@@ -85,4 +85,4 @@ offset.flush.interval.ms=10000
 # plugin.path=/usr/local/share/java,/usr/local/share/kafka/plugins,/opt/connectors,
 # Replace the relative path below with an absolute path if you are planning to start Kafka Connect from within a
 # directory other than the home directory of Confluent Platform.
-plugin.path=share/java
+plugin.path=${_package_home}/share/java

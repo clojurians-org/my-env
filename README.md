@@ -60,7 +60,7 @@
   hydra-create-user larluo --full-name 'larry.luo' --email-address 'larluo@clojurians.org' --password larluo --role admin
 
 #================
-# ELK [docker run --name centos6 -it --net=host centos:6 sh]
+# KSQL
 #================
   # zookeeper [10.132.37.33:2181,10.132.37.34:2181,10.132.37.35:2181]
   bash nix.sh export zookeeper-3.4.12
@@ -74,6 +74,12 @@
   bash nix.sh export apache-kafka-2.12-1.1.0 
   bash nix.sh import 10.132.37.33 apache-kafka-2.12-1.1.0
   bash nix.sh start-foreground 10.132.37.33:9092 apache-kafka-2.12-1.1.0 --zookeepers "10.132.37.33:2181,10.132.37.34:2181,10.132.37.35:2181" --cluster.id monitor
+
+  ssh op@10.132.37.34 'ps -ef | grep kafka-connect | grep -v grep | awk "{print \$2}" | xargs kill'
+
+#================
+# ELK
+#================
 
   # elasticsearch [10.132.37.36:9200,10.132.37.37:9200,10.132.37.39:9200,10.132.37.40:9200]
   curl 10.132.37.36:9200/_cluster/health?pretty=true
