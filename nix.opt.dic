@@ -1,4 +1,6 @@
 test=test
+
+nix-2.0.4=https://nixos.org/releases/nix/nix-2.0.4/nix-2.0.4-x86_64-linux.tar.bz2
 oraclejre-8u181b13=_download_
 
 zookeeper-3.4.12=http://www-eu.apache.org/dist/zookeeper/zookeeper-3.4.12/zookeeper-3.4.12.tar.gz

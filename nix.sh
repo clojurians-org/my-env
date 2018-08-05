@@ -1,5 +1,5 @@
 set -e
-help_message="$0 <download|init :ip|export :package_name|import :ip :package_name|start :ip :package_name [--:arg-name arg-value]+>"
+help_message="$0 <create-vm|export :package_name|create-user :ip|import :ip :package_name|start :ip :package_name [--arg-name arg-value]+>"
 
 my=$(cd -P -- "$(dirname -- "${BASH_SOURCE-$0}")" > /dev/null && pwd -P); cd $my
 mkdir -p nix.sh.d nix.sh.out nix.opt/tarball.bin
@@ -16,7 +16,7 @@ if [ ! -e nix.sh.out/key ]; then
 fi
 ssh_opt="-i nix.sh.out/key"
 
-if [ "$1" == "createvm" ]; then
+if [ "$1" == "create-vm" ]; then
   vm_name=$2
   echo "[action] createvm ${vm_name}"
   if [ ! -e nix.sh.out/virtualbox-nixops-18.03pre131587.b6ddb9913f2.vmdk ]; then
@@ -28,7 +28,6 @@ if [ "$1" == "createvm" ]; then
   fi
   if VBoxManage list vms | grep "${vm_name}" > /dev/null 2>&1; then
     echo "----> vm ${vm_name} exist already!"
-    exit 1
   else
     VBoxManage createvm --name "${vm_name}" --ostype Linux26_64 --register
     VBoxManage guestproperty set "${vm_name}" /VirtualBox/GuestInfo/Charon/ClientPublicKey "$(cat nix.sh.out/key.pub)"
@@ -40,14 +39,13 @@ if [ "$1" == "createvm" ]; then
     VBoxManage guestproperty enumerate "${vm_name}"
     VBoxManage startvm "${vm_name}" --type headless
   fi
-elif [ "$1" == "setup" ]; then
-  echo "[action] setup ${nix_name}..."
-  if [ ! -e $my/nix.sh.d/${nix_tar} ]; then
-    wget -O $my/nix.sh.d/${nix_tar}.tmp https://nixos.org/releases/nix/${nix_name}/${nix_tar}
-    mv $my/nix.sh.d/${nix_tar}.tmp $my/nix.sh.d/${nix_tar}
-  else
-    echo "[info] file exist already!"
-  fi
+  echo "--> wait ip to be generated, by patient..."
+  ip="No value set!"
+  while [ "$ip" = "No value set!" ]; do
+    sleep 1
+    ip=$(VBoxManage guestproperty get ${vm_name} /VirtualBox/GuestInfo/Net/1/V4/IP)
+  done
+  echo "---> VM CREATED SUCCESS WITH IP: ${ip}"
 elif [ "$1" == "export" ]; then
   package_name=$2
   if [ "${package_name}" = "" ]; then
@@ -75,12 +73,17 @@ elif [ "$1" == "export-tarball" ]; then
   echo "[action] export-tarball ${package_name}..."
   if [ -e "nix.opt/tarball.bin/${package_name}/${package_name}.tgz" ]; then
     echo "----> [info] ${package_name}.tgz exist!" 
-  elif  grep "^${package_name}=" nix.opt.dic 2> /dev/null; then
+  elif grep "^${package_name}=" nix.opt.dic 2> /dev/null; then
     download_url=$(grep "^${package_name}=" nix.opt.dic | cut -d= -f2)
     echo "--> download ${package_name} from ${download_url}"
     mkdir -p nix.opt/tarball.bin/${package_name}
     wget -O nix.opt/tarball.bin/${package_name}/${package_name}.tgz.tmp ${download_url}
     mv nix.opt/tarball.bin/${package_name}/${package_name}.tgz.tmp nix.opt/tarball.bin/${package_name}/${package_name}.tgz
+  else echo "----> [ERROR] DOWLOAD URL NOT EXIST!"; exit 1
+  fi
+elif [ "$1" == "build-tarball" ]; then
+  if [ -e "nix.opt/tarball.bin/${package_name}/${package_name}.tgz" ]; then
+    echo "----> [info] ${package_name}.tgz exist!" 
   elif grep "^${package_name}-src=" nix.opt.dic 2> /dev/null; then
     echo "--> [info] build source tarball"
     download_url=$(grep "^${package_name}-src=" nix.opt.dic | cut -d= -f2)
@@ -98,45 +101,27 @@ elif [ "$1" == "export-tarball" ]; then
     tar -xvf ../${package_name}-src.tgz && cd * && mvn package -DskipTests && cd ..
     tar -cvzf ${package_name}.tgz * && mv ${package_name}.tgz ${my}/nix.opt/tarball.bin/${package_name}/${package_name}.tgz
     cd .. && rm -rf ${package_name}.build
-  else
-    echo "----> [ERROR] DOWLOAD URL NOT EXIST!"; exit 1
   fi
-elif [ "$1" == "init" ]; then
+elif [ "$1" == "create-user" ]; then
   remote_ip=$2
   echo "[action] init $remote_ip"
   ssh $ssh_opt root@$remote_ip "
+    set -e ;
     if [ ! -e /home/${my_user} ]; then
+      # useradd -m -g nixbld ${my_user}
       useradd -m ${my_user}
       echo '${my_user}:${my_user}' | chpasswd
-      if [ ! -e /nix ]; then
-        install -d -m755 -o ${my_user} /nix
-      else
-        chmod 777 /nix/var/nix/profiles/per-user
-	ln -s /run/current-system/sw/bin/echo /bin/echo
-	systemctl stop firewall
-	sysctl -w vm.max_map_count=262144
+      if uname -a | grep NixOS > /dev/null; then
+        systemctl stop firewall
+        chmod 1777 /nix/var/nix/profiles/per-user
+        chmod 1777 /nix/var/nix/gcroots/per-user
       fi
-      su root -c 'echo -e "*          soft    nproc     65556\nroot       soft    nproc     unlimited"  > /etc/security/limits.d/90-nproc.conf'
     else
-      echo '---->[${remote_ip}-info] /nix exist already!'
+      echo '---->[${remote_ip}-info] user:${my_user} exist already!'
     fi
+    if [ ! -e /nix ]; then install -d -m755 -o ${my_user} /nix; fi
   "
   ssh-copy-id $ssh_opt ${my_user}@${remote_ip}
-elif [ "$1" == "install" ]; then
-  remote_ip=$2
-  echo "[action] setup $remote_ip"
-  echo "#=> sync local file"
-  rsync -e "ssh ${ssh_opt}" -av ${my}/nix.sh.d op@${remote_ip}:my-env
-  echo "#=> install nix"
-  ssh ${ssh_opt} op@${remote_ip} "
-    if [ -e '.nix-defexpr' ]; then
-      echo '---->[info] remote_ip:${remote_ip} install nix already!'
-    else
-      mkdir -p my-env/nix.conf
-      mkdir -p my-env/nix.opt/tarball.bin
-      cd my-env/nix.sh.d && tar -xvf ${nix_tar} && cd ${nix_sys} && cp ../_install . && ./_install
-    fi
-  "
 elif [ "$1" == "import" ]; then
   remote_ip=$2
   package_name=$3
@@ -154,10 +139,18 @@ elif [ "$1" == "import" ]; then
     echo "---->[${remote_ip}-info] ${package_name} imported already"
   else
     echo "--> import ${package_name} need to cost a little time, please be patient..."
-    echo "cat nix.sh.out/${package_name}.closure.bz2 | ssh ${ssh_opt} ${my_user}@${remote_ip} \"bunzip2 | .nix-profile/bin/nix-store -v --import\""
-    cat nix.sh.out/${package_name}.closure.bz2 | ssh ${ssh_opt} ${my_user}@${remote_ip} "bunzip2 | .nix-profile/bin/nix-store --import"
+    echo "cat nix.sh.out/${package_name}.closure.bz2 | ssh ${ssh_opt} ${my_user}@${remote_ip} \"bunzip2 | nix-store -v --import\""
+    cat nix.sh.out/${package_name}.closure.bz2 | ssh ${ssh_opt} ${my_user}@${remote_ip} '
+      if [ -e .nix-profile/bin/nix-store ]; then
+        nix_store_cmd=.nix-profile/bin/nix-store
+      else
+        nix_store_cmd=nix-store
+      fi
+      bunzip2 | ${nix_store_cmd} --import
+    '
   fi
-elif [ "$1" == "import-tarball" ]; then
+elif [ "$1" == "import-tarball" -o "$1" == "import-nix" ]; then
+  action=$1
   remote_ip=$2
   package_name=$3
   if [ "${package_name}" = "" ]; then
@@ -165,17 +158,22 @@ elif [ "$1" == "import-tarball" ]; then
     echo "[error]: package_name is missing"
     exit 1
   fi
-  echo "[action] import-tarball ${remote_ip} ${package_name}"
+  echo "[action] ${action} ${remote_ip} ${package_name}"
   echo "--> mk directory..."
   ssh ${ssh_opt} ${my_user}@${remote_ip} "mkdir -p my-env/nix.opt/tarball.bin"
   echo "--> sync tarball ..."
   rsync -e "ssh ${ssh_opt}" -av ${my}/nix.opt/tarball.bin/${package_name} ${my_user}@${remote_ip}:my-env/nix.opt/tarball.bin
-  ssh ${ssh_opt} ${my_user}@${remote_ip} "
+  ssh ${ssh_opt} ${my_user}@${remote_ip} "set -e
     if [ ! -e 'my-env/nix.var/data/${package_name}/_tarball' ]; then
       echo '--> unzip tarball to my-env/nix.var/data/${package_name}...'
       rm -rf my-env/nix.var/data/${package_name}
       mkdir -p my-env/nix.var/data/${package_name}
       cd my-env/nix.var/data/${package_name} && tar -xvf ~/my-env/nix.opt/tarball.bin/${package_name}/${package_name}.tgz
+      if [ '$action' == 'import-nix' ]; then
+        cd ~/my-env/nix.var/data/${package_name}/*
+        sed '/nix-channel --update/ {s/^/  echo/}' install > _install
+        chmod +x ./_install && ./_install
+      fi
       touch ~/my-env/nix.var/data/${package_name}/_tarball
     else
       echo '---->[${remote_ip}-info] ${package_name} imported already'
@@ -197,7 +195,7 @@ elif [ "$1" == "reload" -o "$1" == "start" -o "$1" == "start-foreground" ]; then
 elif [ "$1" == "clean" ]; then
   remote_host=$2
   ssh root@${remote_host} "
-    rm -rf /nix/*
+    rm -rf /nix
     rm -rf /home/op/my-env
   "
 else

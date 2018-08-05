@@ -31,6 +31,8 @@
 #================
 # NixOS
 #================
+  bash nix.sh export hello-2.10
+
   wpa_passphrase 'hl03863' '@hl03863' > nix.conf/wpa_supplicant-2.6/hl03863.conf
   sudo wpa_supplicant -s -u -Dnl80211,wext -c nix.conf/wpa_supplicant-2.6/Shrbank.conf -iwlp7s0
   sudo wpa_supplicant -s -u -Dnl80211,wext -c nix.conf/wpa_supplicant-2.6/hl03863.conf -iwlp7s0
@@ -78,6 +80,15 @@
   ssh op@10.132.37.34 'ps -ef | grep zookeeper | grep -v grep | awk "{print \$2}" | xargs kill'
   ssh op@10.132.37.33 "/home/op/my-env/nix.var/data/confluent-oss-5.0.0/confluent-5.0.0/bin/kafka-server-stop"
 
+  # kafka connect
+  bash nix.sh start 10.132.37.33:8083 confluent-oss-5.0.0:kafka-connect --kafkas "10.132.37.33:9092,10.132.37.34:9092,10.132.37.35:9092" --cluster.id monitor
+  ssh op@10.132.37.34 'ps -ef | grep ConnectDistributed | grep -v grep | awk "{print \$2}" | xargs kill'
+
+  # ksql
+  bash nix.sh start 10.132.37.33:8088 confluent-oss-5.0.0:ksql --kafkas 10.132.37.33:2181,10.132.37.34:2181,10.132.37.35:2181 --cluster.id monitor
+  curl 10.132.37.34:8083
+
+
   ssh op@10.132.37.34 'ps -ef | grep kafka-connect | grep -v grep | awk "{print \$2}" | xargs kill'
 
 
@@ -92,8 +103,6 @@
 # VirtualBox
 #================
   wget http://nixos.org/releases/nixos/virtualbox-nixops-images/virtualbox-nixops-18.03pre131587.b6ddb9913f2.vmdk.xz
-
-  VBoxManage guestproperty get nixos-elk-001 /VirtualBox/GuestInfo/Net/1/V4/IP
 
   VBoxManage controlvm nixos-elk-001 poweroff
   VBoxManage controlvm nixos-elk-001 acpipowerbutton

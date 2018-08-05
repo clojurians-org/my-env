@@ -56,7 +56,8 @@ elif [ "${_package}" == "schema-registry" ]; then
   export protocol_kafkas="$(printf "$kafkas" | awk 'BEGIN {RS=","} {all=all",PLAINTEXT://"$0} END {print all}' | cut -c2-)"
 elif [ "${_package}" == "kafka-connect" ]; then
   cmd_file=connect-distributed
-  cfg_file=connect-distributed.properties
+  # cfg_file=connect-distributed.properties
+  cfg_file=connect-avro-distributed.properties
 fi
 
 cat $my/${cfg_file}.template | ${envsubst_cmd} > ${_id_data}/config/${cfg_file}

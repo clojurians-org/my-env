@@ -35,12 +35,12 @@ elif [ "$(shopt -s nullglob; echo ${_home}/nix.var/data/${kafka_package})" != ''
   export JAVA_HOME="${_home}/nix.var/data/${oraclejre_package}/jre1.8.0_181"
   kafka_topics_sh=${_home}/nix.var/data/${kafka_package}/*/bin/kafka-topics.sh
 fi
-if [ ${major_type} == "file" ]; then
-  zookeeper_arg=$(echo $kafkas | sed 's/:9092/:2181/g')
-  partition_count=$(echo $kafkas | awk -F, '{print NF}')
-  echo ${kafka_topics_sh} --zookeeper $zookeeper_arg --create --replication-factor 1 --partitions ${partition_count} --topic ${_id} --if-not-exists
-  ${kafka_topics_sh} --zookeeper $zookeeper_arg --create --replication-factor 1 --partitions ${partition_count} --topic ${_id} --if-not-exists
-fi
+#if [ ${major_type} == "file" ]; then
+#  zookeeper_arg=$(echo $kafkas | sed 's/:9092/:2181/g')
+#  partition_count=$(echo $kafkas | awk -F, '{print NF}')
+#  echo ${kafka_topics_sh} --zookeeper $zookeeper_arg --create --replication-factor 1 --partitions ${partition_count} --topic ${_id} --if-not-exists
+#  ${kafka_topics_sh} --zookeeper $zookeeper_arg --create --replication-factor 1 --partitions ${partition_count} --topic ${_id} --if-not-exists
+#fi
 
 input_arr="[$(printf "$inputs" | awk 'BEGIN {RS=","} {all=all",\""$0"\""} END {print all}' | cut -c2-)]"
 
