@@ -61,6 +61,8 @@
   su root; su hydra
   hydra-create-user larluo --full-name 'larry.luo' --email-address 'larluo@clojurians.org' --password larluo --role admin
 
+  ssh -i nix.sh.out/key root@192.168.56.101 "userdel -r op"
+
 #================
 # KSQL
 #================

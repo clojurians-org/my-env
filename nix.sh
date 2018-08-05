@@ -1,8 +1,10 @@
 set -e
-help_message="$0 <create-vm|export :package_name|create-user :ip|import :ip :package_name|start :ip :package_name [--arg-name arg-value]+>"
+help_message="$0 <create-vm|export :package_name|create-user :ip|(import|import-nix) :ip :package_name|start :ip :package_name [--:arg-name :arg-value]+>"
 
 my=$(cd -P -- "$(dirname -- "${BASH_SOURCE-$0}")" > /dev/null && pwd -P); cd $my
-mkdir -p nix.sh.d nix.sh.out nix.opt/tarball.bin
+my_rhome=my-env
+
+mkdir -p nix.sh.out nix.sh.build
 
 my_user=${my_user:-op}
 
@@ -47,43 +49,40 @@ if [ "$1" == "create-vm" ]; then
   done
   echo "---> VM CREATED SUCCESS WITH IP: ${ip}"
 elif [ "$1" == "export" ]; then
-  package_name=$2
+  full_package_name=$2
+  protocol_name=$(echo $full_package_name | cut -d. -f1)
+  package_name=$(echo $full_package_name | cut -d. -f2-)
   if [ "${package_name}" = "" ]; then
     echo "${help_message}"
     echo "[error]: package_name is missing"
     exit 1
   fi
-  echo "[action] export ${package_name}..."
-  if [ -e $my/nix.sh.out/${package_name}.closure.bz2 ]; then
-    echo "---->[info] ${package_name} exist already!"
-  else
-    if [ "$(shopt -s nullglob; echo /nix/store/*-${package_name})" == "" ]; then 
+  echo "[action] export ${full_package_name}..."
+  if [  -e $my/nix.sh.out/${full_package_name} ]; then
+    echo "---->[info] ${full_package_name} exist already!"
+  elif [ "$protocol_name" == "nix" ] ;then
+    download_url=$(grep "^${full_package_name}=" nix.sh.dic | cut -d= -f2)
+    if [ ! -e "$download_url" ]; then 
       echo "--> nix-env -i ${package_name}"
       nix-env -i ${package_name}
     fi
-    nix-store --export $(nix-store -qR /nix/store/*-${package_name}) | bzip2 > nix.sh.out/${package_name}.closure.bz2
+    if [ -e "$download_url" ];  then
+      nix-store --export $(nix-store -qR $download_url) | bzip2 > nix.sh.out/${full_package_name}.tmp
+      mv nix.sh.out/${full_package_name}.tmp nix.sh.out/${full_package_name}
+    else echo "--> [ERROR] ${full_package_name} HASH VALUE NOT MATCHED, PLEASE CHECK AND REEXPORT !" && exit 1
+    fi
+  elif [ "$protocol_name" == "tgz" ]; then
+    download_url=$(grep "^${full_package_name}=" nix.sh.dic | cut -d= -f2)
+    if [ "$download_url" == "" ]; then echo "----> [ERROR] DOWLOAD URL NOT EXIST!"; exit 1; fi
+    echo "--> download ${full_package_name} from ${download_url}"
+    wget -c -O nix.sh.out/${full_package_name}.tmp ${download_url}
+    mv nix.sh.out/${full_package_name}.tmp nix.sh.out/${full_package_name}
+  else echo "format error: only nix|tgz protocol support" && exit 1
   fi
-elif [ "$1" == "export-tarball" ]; then
+elif [ "$1" == "build" ]; then
   package_name=$2
-  if [ "${package_name}" = "" ]; then
-    echo "${help_message}"
-    echo "[error]: package_name is missing"
-    exit 1
-  fi
-  echo "[action] export-tarball ${package_name}..."
-  if [ -e "nix.opt/tarball.bin/${package_name}/${package_name}.tgz" ]; then
-    echo "----> [info] ${package_name}.tgz exist!" 
-  elif grep "^${package_name}=" nix.opt.dic 2> /dev/null; then
-    download_url=$(grep "^${package_name}=" nix.opt.dic | cut -d= -f2)
-    echo "--> download ${package_name} from ${download_url}"
-    mkdir -p nix.opt/tarball.bin/${package_name}
-    wget -O nix.opt/tarball.bin/${package_name}/${package_name}.tgz.tmp ${download_url}
-    mv nix.opt/tarball.bin/${package_name}/${package_name}.tgz.tmp nix.opt/tarball.bin/${package_name}/${package_name}.tgz
-  else echo "----> [ERROR] DOWLOAD URL NOT EXIST!"; exit 1
-  fi
-elif [ "$1" == "build-tarball" ]; then
-  if [ -e "nix.opt/tarball.bin/${package_name}/${package_name}.tgz" ]; then
-    echo "----> [info] ${package_name}.tgz exist!" 
+  if [ -e "nix.opt//${package_name}/${package_name}.tgz" ]; then
+    echo "package exist already"
   elif grep "^${package_name}-src=" nix.opt.dic 2> /dev/null; then
     echo "--> [info] build source tarball"
     download_url=$(grep "^${package_name}-src=" nix.opt.dic | cut -d= -f2)
@@ -108,77 +107,81 @@ elif [ "$1" == "create-user" ]; then
   ssh $ssh_opt root@$remote_ip "
     set -e ;
     if [ ! -e /home/${my_user} ]; then
-      # useradd -m -g nixbld ${my_user}
+      if uname -a | grep NixOS > /dev/null; then
+	echo '--> adjust nixos for normal case'
+        systemctl stop firewall
+	if [ ! -e /bin/bash ]; then ln -s /run/current-system/sw/bin/bash /bin/bash; fi
+	rm -rf /nix/var/nix/profiles/per-user/${my_user}
+	rm -rf /nix/var/nix/gcroots/per-user/${my_user}
+        chmod 777 /nix/var/nix/profiles/per-user
+        chmod 777 /nix/var/nix/gcroots/per-user
+      fi
       useradd -m ${my_user}
       echo '${my_user}:${my_user}' | chpasswd
-      if uname -a | grep NixOS > /dev/null; then
-        systemctl stop firewall
-        chmod 1777 /nix/var/nix/profiles/per-user
-        chmod 1777 /nix/var/nix/gcroots/per-user
-      fi
     else
       echo '---->[${remote_ip}-info] user:${my_user} exist already!'
     fi
     if [ ! -e /nix ]; then install -d -m755 -o ${my_user} /nix; fi
   "
   ssh-copy-id $ssh_opt ${my_user}@${remote_ip}
-elif [ "$1" == "import" ]; then
+elif [ "$1" == "import" -o "$1" == "import-nix" ]; then
   remote_ip=$2
-  package_name=$3
+  full_package_name=$3
+  protocol_name=$(echo $full_package_name | cut -d. -f1)
+  package_name=$(echo $full_package_name | cut -d. -f2-)
   if [ "${package_name}" = "" ]; then
     echo "${help_message}"
     echo "[error]: package_name is missing"
     exit 1
   fi
-  echo "[action] import ${remote_ip} ${package_name}"
-  echo "--> check whether remote package exist..."
-  package_exist=$(ssh $ssh_opt ${my_user}@${remote_ip} "
-    if compgen -G '/nix/store/*-${package_name}' > /dev/null; then echo 1; else echo 0; fi
-  ")
-  if [ "$package_exist" == "1" ]; then 
-    echo "---->[${remote_ip}-info] ${package_name} imported already"
-  else
-    echo "--> import ${package_name} need to cost a little time, please be patient..."
-    echo "cat nix.sh.out/${package_name}.closure.bz2 | ssh ${ssh_opt} ${my_user}@${remote_ip} \"bunzip2 | nix-store -v --import\""
-    cat nix.sh.out/${package_name}.closure.bz2 | ssh ${ssh_opt} ${my_user}@${remote_ip} '
-      if [ -e .nix-profile/bin/nix-store ]; then
-        nix_store_cmd=.nix-profile/bin/nix-store
-      else
-        nix_store_cmd=nix-store
-      fi
-      bunzip2 | ${nix_store_cmd} --import
-    '
-  fi
-elif [ "$1" == "import-tarball" -o "$1" == "import-nix" ]; then
-  action=$1
-  remote_ip=$2
-  package_name=$3
-  if [ "${package_name}" = "" ]; then
-    echo "${help_message}"
-    echo "[error]: package_name is missing"
-    exit 1
-  fi
-  echo "[action] ${action} ${remote_ip} ${package_name}"
-  echo "--> mk directory..."
-  ssh ${ssh_opt} ${my_user}@${remote_ip} "mkdir -p my-env/nix.opt/tarball.bin"
-  echo "--> sync tarball ..."
-  rsync -e "ssh ${ssh_opt}" -av ${my}/nix.opt/tarball.bin/${package_name} ${my_user}@${remote_ip}:my-env/nix.opt/tarball.bin
-  ssh ${ssh_opt} ${my_user}@${remote_ip} "set -e
-    if [ ! -e 'my-env/nix.var/data/${package_name}/_tarball' ]; then
-      echo '--> unzip tarball to my-env/nix.var/data/${package_name}...'
-      rm -rf my-env/nix.var/data/${package_name}
-      mkdir -p my-env/nix.var/data/${package_name}
-      cd my-env/nix.var/data/${package_name} && tar -xvf ~/my-env/nix.opt/tarball.bin/${package_name}/${package_name}.tgz
-      if [ '$action' == 'import-nix' ]; then
-        cd ~/my-env/nix.var/data/${package_name}/*
-        sed '/nix-channel --update/ {s/^/  echo/}' install > _install
-        chmod +x ./_install && ./_install
-      fi
-      touch ~/my-env/nix.var/data/${package_name}/_tarball
+  echo "[action] import ${remote_ip} ${full_package_name}"
+  echo "--> syncing ${full_package_name}..."
+  rsync -e "ssh ${ssh_opt}" -av ${my}/{nix.sh,nix.sh.dic} ${my_user}@${remote_ip}:${my_rhome}/
+  rsync -e "ssh ${ssh_opt}" -av ${my}/nix.sh.out/${full_package_name} ${my_user}@${remote_ip}:${my_rhome}/nix.sh.out/
+
+  if [ $protocol_name = "nix" ]; then
+    echo "--> check whether remote package exist..."
+    package_exist=$(ssh $ssh_opt ${my_user}@${remote_ip} "
+      if compgen -G '/nix/store/*-${package_name}' > /dev/null; then echo 1; else echo 0; fi
+    ")
+    if [ "$package_exist" == "1" ]; then 
+      echo "---->[${remote_ip}-info] ${package_name} imported already"
     else
-      echo '---->[${remote_ip}-info] ${package_name} imported already'
+      echo "--> import ${package_name} need to cost a little time, please be patient..."
+      echo "cat nix.sh.out/nix.${package_name} | ssh ${ssh_opt} ${my_user}@${remote_ip} \"bunzip2 | nix-store -v --import\""
+      cat nix.sh.out/nix.${package_name} | ssh ${ssh_opt} ${my_user}@${remote_ip} '
+        if [ -e .nix-profile/bin/nix-store ]; then
+          nix_store_cmd=.nix-profile/bin/nix-store
+        else
+          nix_store_cmd=nix-store
+        fi
+        bunzip2 | ${nix_store_cmd} --import
+      '
     fi
-  "
+  elif [ "$protocol_name" = "tgz" ]; then
+    ssh ${ssh_opt} ${my_user}@${remote_ip} "set -e
+      if [ ! -e '${my_rhome}/nix.var/data/${package_name}/_tarball' ]; then
+        echo '--> unzip tarball to ${my_rhome}/nix.var/data/${package_name}...'
+	my_full_rhome=\$(readlink -f $my_rhome) && cd \$my_full_rhome
+        rm -rf nix.var/data/${package_name}
+        mkdir -p nix.var/data/${package_name}
+	cd nix.var/data/${package_name} && tar -xvf \$my_full_rhome/nix.sh.out/${full_package_name} && cd \$my_full_rhome
+        if [ '$action' == 'import-nix' ]; then
+          cd nix.var/data/${package_name}/*
+          sed '/nix-channel --update/ {s/^/  echo/}' install > _install
+          if [ -e /nix/store ]; then 
+            echo '----> nix install already!'
+          else
+            chmod +x ./_install && ./_install
+          fi
+        fi
+        touch nix.var/data/${package_name}/_tarball
+      else
+        echo '---->[${remote_ip}-info] ${package_name} imported already'
+      fi
+    "
+  else echo "--> [ERROR] only nix|tgz protocol support" && exit 1
+  fi
 elif [ "$1" == "reload" -o "$1" == "start" -o "$1" == "start-foreground" ]; then
   action=$1; remote_host=$2; package_name=$(echo $3 | cut -d: -f1)
   echo "[action] $action $remote_ip ${package_name}"
@@ -190,13 +193,13 @@ elif [ "$1" == "reload" -o "$1" == "start" -o "$1" == "start-foreground" ]; then
   fi
 
   echo "#=> sync conf file: $my/nix.conf/${package_name}"
-  rsync -e "ssh ${ssh_opt}" -av ${my}/nix.conf/${package_name} ${my_user}@${remote_ip}:my-env/nix.conf
-  ssh ${ssh_opt} ${my_user}@${remote_ip} -t "sh my-env/nix.conf/${package_name}/run.sh $@"
+  rsync -e "ssh ${ssh_opt}" -av ${my}/nix.conf/${package_name} ${my_user}@${remote_ip}:${my_rhome}/nix.conf/
+  ssh ${ssh_opt} ${my_user}@${remote_ip} -t "sh ${my_rhome}/nix.conf/${package_name}/run.sh $@"
 elif [ "$1" == "clean" ]; then
   remote_host=$2
   ssh root@${remote_host} "
     rm -rf /nix
-    rm -rf /home/op/my-env
+    rm -rf ${my_rhome}
   "
 else
   echo ${help_message}

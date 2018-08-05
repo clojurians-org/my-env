@@ -1,0 +1,15 @@
+nix.gettext-0.19.8.1=/nix/store/hfv35ryi50y0cjxcssxpz927k2a8r22x-gettext-0.19.8.1/bin/envsubst
+nix.openjdk-8u172b11=/nix/store/f6s6xd2cvcqhaw8i3hkb481ywdxn24l6-openjdk-8u172b11/bin/java
+nix.postgresql-10.4=/nix/store/zzrphwnp8kzv4s5r4z1nqzn8hbnlsm7b-postgresql-10.4/bin/postgres
+nix.redis-4.0.10=/nix/store/bqqhwkbd9a3xhrr116x4sb8c1ddda34w-redis-4.0.10
+
+tgz.oraclejre-8u181b13=_download_
+tgz.nix-2.0.4=https://nixos.org/releases/nix/nix-2.0.4/nix-2.0.4-x86_64-linux.tar.bz2
+tgz.zookeeper-3.4.12=http://www-eu.apache.org/dist/zookeeper/zookeeper-3.4.12/zookeeper-3.4.12.tar.gz
+tgz.apache-kafka-2.12-1.1.0=http://www-eu.apache.org/dist/kafka/1.1.0/kafka_2.12-1.1.0.tgz
+tgz.ksql-5.0.0-src=https://github.com/confluentinc/ksql/archive/v5.0.0.tar.gz
+tgz.confluent-oss-5.0.0=https://packages.confluent.io/archive/5.0/confluent-oss-5.0.0-2.11.tar.gz
+tgz.elasticsearch-6.2.4=https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.2.4.tar.gz
+tgz.kibana-6.2.4=https://artifacts.elastic.co/downloads/kibana/kibana-6.2.4-linux-x86_64.tar.gz
+tgz.logstash-6.2.4=https://artifacts.elastic.co/downloads/logstash/logstash-6.2.4.tar.gz
+tgz.filebeat-6.2.4=https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-6.2.4-linux-x86_64.tar.gz
