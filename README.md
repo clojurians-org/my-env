@@ -79,8 +79,10 @@
   bash nix.sh import 10.132.37.33 apache-kafka-2.12-1.1.0
   bash nix.sh start-foreground 10.132.37.33:9092 apache-kafka-2.12-1.1.0 --zookeepers "10.132.37.33:2181,10.132.37.34:2181,10.132.37.35:2181" --cluster.id monitor
 
+  kafka-topics.sh --zookeeper 10.132.37.33:2181/monitor --topic LOGI_CORES_PTS_EXT_AVRO --delete
+
   ssh op@10.132.37.34 'ps -ef | grep zookeeper | grep -v grep | awk "{print \$2}" | xargs kill'
-  ssh op@10.132.37.33 "/home/op/my-env/nix.var/data/confluent-oss-5.0.0/confluent-5.0.0/bin/kafka-server-stop"
+  ssh op@10.132.37.33 "/home/op/my-env/nix.var/data/confluent-oss-5.0.0/confluent-5.0.0/bin/ksql-server-stop"
 
   # kafka connect
   bash nix.sh start 10.132.37.33:8083 confluent-oss-5.0.0:kafka-connect --kafkas "10.132.37.33:9092,10.132.37.34:9092,10.132.37.35:9092" --cluster.id monitor
@@ -89,6 +91,7 @@
   # ksql
   bash nix.sh start 10.132.37.33:8088 confluent-oss-5.0.0:ksql --kafkas 10.132.37.33:2181,10.132.37.34:2181,10.132.37.35:2181 --cluster.id monitor
   curl 10.132.37.34:8083
+  ssh op@10.132.37.33 "/home/op/my-env/nix.var/data/confluent-oss-5.0.0/confluent-5.0.0/bin/ksql-server-stop"
 
 
   ssh op@10.132.37.34 'ps -ef | grep kafka-connect | grep -v grep | awk "{print \$2}" | xargs kill'

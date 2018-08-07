@@ -1,6 +1,6 @@
-nix.gettext-0.19.8.1=/nix/store/hfv35ryi50y0cjxcssxpz927k2a8r22x-gettext-0.19.8.1/bin/envsubst
-nix.openjdk-8u172b11=/nix/store/f6s6xd2cvcqhaw8i3hkb481ywdxn24l6-openjdk-8u172b11/bin/java
-nix.postgresql-10.4=/nix/store/zzrphwnp8kzv4s5r4z1nqzn8hbnlsm7b-postgresql-10.4/bin/postgres
+nix.gettext-0.19.8.1=/nix/store/hfv35ryi50y0cjxcssxpz927k2a8r22x-gettext-0.19.8.1
+nix.openjdk-8u172b11=/nix/store/f6s6xd2cvcqhaw8i3hkb481ywdxn24l6-openjdk-8u172b11
+nix.postgresql-10.4=/nix/store/zzrphwnp8kzv4s5r4z1nqzn8hbnlsm7b-postgresql-10.4
 nix.redis-4.0.10=/nix/store/bqqhwkbd9a3xhrr116x4sb8c1ddda34w-redis-4.0.10
 
 tgz.oraclejre-8u181b13=_download_

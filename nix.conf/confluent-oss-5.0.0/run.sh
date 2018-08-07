@@ -65,8 +65,12 @@ echo "====dump file content start===="
 cat ${_id_data}/config/${cfg_file}
 echo "====dump file content end===="
 
-if [ -e ${_package_home}/../_tarball ]; then
+if [ -e "${_home}/nix.var/data/${oraclejre_package}/jre1.8.0_181" ]; then
   export JAVA_HOME="${_home}/nix.var/data/${oraclejre_package}/jre1.8.0_181"
+else
+  echo "--> use path java: $(which java)"
+fi
+if [ -e ${_package_home}/../_tarball ]; then
   my_cmd=${_package_home}/bin/${cmd_file}
 else
   my_cmd=/nix/store/*-${_package_parent}/bin/${cmd_file}
