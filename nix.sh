@@ -165,7 +165,7 @@ elif [ "$1" == "import" -o "$1" == "install" ]; then
       echo "cat ${my_rhome}/nix.sh.out/${full_package_name} | gunzip | nix-store --import"
       ssh ${ssh_opt} ${my_user}@${remote_ip} "
         download_url=\$(grep '^${full_package_name}=' ${my_rhome}/nix.sh.dic | cut -d= -f2)
-	echo '--> download_url: \$download_url'
+	echo \"--> download_url: \$download_url\"
         if which nix-store 2> /dev/null; then
           nix_store_cmd=nix-store
 	  nix_env_cmd=nix-env
@@ -175,7 +175,7 @@ elif [ "$1" == "import" -o "$1" == "install" ]; then
         fi
         cat ${my_rhome}/nix.sh.out/${full_package_name} | gunzip | \${nix_store_cmd} --import
 	if [ '$action' == 'install' ]; then
-          if [ '\$download_url' == '' ]; then echo '----> [error] dowload url not exist!'; exit 1; fi
+          if [ \"\$download_url\" == '' ]; then echo '----> [error] dowload url not exist!'; exit 1; fi
 	  \${nix_env_cmd} -i \$download_url
 	fi
       "

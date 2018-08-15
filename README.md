@@ -132,5 +132,35 @@ http://www.jedi.be/blog/2011/11/04/vagrant-virtualbox-hostonly-pxe-vlans/
 
 
 mkdir -p nix.opt/{tar.src,tar.bin,bin}
-```
 
+#================
+# MIGRATE
+#================
+  bash nix.sh export tgz.nix-2.0.4
+  bash nix.sh export nix.rsync-3.1.3
+  bash nix.sh export nix.openjdk-8u172b11
+  bash nix.sh export nix.leiningen-2.8.1
+  bash nix.sh export nix.emacs-25.3
+
+  bash nix.sh create-user 10.132.37.201
+  bash nix.sh install 10.132.37.201 nix.rsync-3.1.3
+  bash nix.sh install 10.132.37.201 nix.openjdk-8u172b11
+  bash nix.sh install 10.132.37.201 tgz.nix-2.0.4
+  bash nix.sh install 10.132.37.201 nix.leiningen-2.8.1
+  bash nix.sh install 10.132.37.201 nix.emacs-25.3
+
+    CREATE TABLE users \
+      (registertime BIGINT, \
+       gender VARCHAR, \
+       regionid VARCHAR, \
+       userid VARCHAR, \
+       interests array<VARCHAR>, \
+       contactinfo map<VARCHAR, VARCHAR>) \
+      WITH (KAFKA_TOPIC='users', \
+            VALUE_FORMAT='JSON', \
+            KEY = 'userid');
+
+cat my-tmp/data.txt | ~/my-env/nix.var/data/confluent-oss-5.0.0/confluent-5.0.0/bin/kafka-console-producer --broker-list localhost:9092 --topic larluo
+CREATE STREAM larluo (_id VARCHAR, dt VARCHAR, type VARCHAR, id VARCHAR, count VARCHAR) WITH (KAFKA_TOPIC='larluo', VALUE_FORMAT='JSON')
+cat my-tmp/data.txt | ~/my-env/nix.var/data/confluent-oss-5.0.0/confluent-5.0.0/bin/kafka-console-producer --broker-list localhost:9092 --topic larluo --property "parse.key=true" --property "key.separator=:"
+```
