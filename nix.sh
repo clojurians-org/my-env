@@ -86,24 +86,23 @@ elif [ "$1" == "export" ]; then
   fi
 elif [ "$1" == "build" ]; then
   package_name=$2
-  if [ -e "nix.opt//${package_name}/${package_name}.tgz" ]; then
+  if [ -e "nix.sh.out/${package_name}/tgz.${package_name}" ]; then
     echo "package exist already"
-  elif grep "^${package_name}-src=" nix.opt.dic 2> /dev/null; then
+  elif grep "^src.${package_name}=" nix.sh.dic 2> /dev/null; then
     echo "--> [info] build source tarball"
-    download_url=$(grep "^${package_name}-src=" nix.opt.dic | cut -d= -f2)
+    download_url=$(grep "^src.${package_name}=" nix.sh.dic | cut -d= -f2)
     echo "--> download ${package_name} from ${download_url}"
-    mkdir -p nix.opt/tarball.src/${package_name}
-    if [ ! -e nix.opt/tarball.src/${package_name}/${package_name}-src.tgz ]; then
-      wget -O nix.opt/tarball.src/${package_name}/${package_name}-src.tgz.tmp ${download_url}
-      mv nix.opt/tarball.src/${package_name}/${package_name}-src.tgz.tmp nix.opt/tarball.src/${package_name}/${package_name}-src.tgz
+    mkdir -p nix.sh.build/${package_name}
+    if [ ! -e nix.sh.build/${package_name}/src.${package_name}.tgz ]; then
+      wget -c -O nix.sh.build/${package_name}/src.${package_name}.tgz.tmp ${download_url}
+      mv nix.sh.build/${package_name}/src.${package_name}.tgz.tmp nix.sh.build/${package_name}/src.${package_name}.tgz
     fi
-    rm -rf nix.opt/tarball.src/${package_name}/${package_name}.build
-    mkdir -p nix.opt/tarball.src/${package_name}/${package_name}.build
-    mkdir -p ${my}/nix.opt/tarball.bin/${package_name}
+    rm -rf nix.sh.build/${package_name}/${package_name}.build
+    mkdir -p nix.sh.build/${package_name}/${package_name}.build
 
-    cd nix.opt/tarball.src/${package_name}/${package_name}.build 
-    tar -xvf ../${package_name}-src.tgz && cd * && mvn package -DskipTests && cd ..
-    tar -cvzf ${package_name}.tgz * && mv ${package_name}.tgz ${my}/nix.opt/tarball.bin/${package_name}/${package_name}.tgz
+    cd nix.sh.build/${package_name}/${package_name}.build 
+    tar -xvf ../src.${package_name}.tgz && cd * && bash ${my}/nix.conf/${package_name}/build.sh
+    mv ${package_name}.tgz ${my}/nix.sh.out/${package_name}/tgz.${package_name}
     cd .. && rm -rf ${package_name}.build
   fi
 elif [ "$1" == "create-user" ]; then
@@ -229,7 +228,13 @@ elif [ "$1" == "reload" -o "$1" == "start" -o "$1" == "start-foreground" ]; then
   fi
 
   echo "#=> sync conf file: $my/nix.conf/${package_name}"
-  rsync -e "ssh ${ssh_opt}" -av ${my}/nix.conf/${package_name} ${my_user}@${remote_ip}:${my_rhome}/nix.conf/
+  remote_rsync_exist=$(ssh $ssh_opt ${my_user}@${remote_ip} "if which rsync 2> /dev/null; then echo 1; else echo 0; fi")
+  if [ "$remote_rsync_exist" = "1" ]; then
+    rsync -e "ssh ${ssh_opt}" -av ${my}/nix.conf/${package_name} ${my_user}@${remote_ip}:${my_rhome}/nix.conf/
+  else
+    ssh ${ssh_opt} ${my_user}@${remote_ip} "mkdir -p ${my_rhome}/nix.conf"
+    scp -r ${ssh_opt} ${my}/nix.conf/${package_name} ${my_user}@${remote_ip}:${my_rhome}/nix.conf
+  fi
   ssh ${ssh_opt} ${my_user}@${remote_ip} -t "sh ${my_rhome}/nix.conf/${package_name}/run.sh $@"
 elif [ "$1" == "clean" ]; then
   remote_host=$2

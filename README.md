@@ -163,4 +163,13 @@ mkdir -p nix.opt/{tar.src,tar.bin,bin}
 cat my-tmp/data.txt | ~/my-env/nix.var/data/confluent-oss-5.0.0/confluent-5.0.0/bin/kafka-console-producer --broker-list localhost:9092 --topic larluo
 CREATE STREAM larluo (_id VARCHAR, dt VARCHAR, type VARCHAR, id VARCHAR, count VARCHAR) WITH (KAFKA_TOPIC='larluo', VALUE_FORMAT='JSON')
 cat my-tmp/data.txt | ~/my-env/nix.var/data/confluent-oss-5.0.0/confluent-5.0.0/bin/kafka-console-producer --broker-list localhost:9092 --topic larluo --property "parse.key=true" --property "key.separator=:"
+
+
+rsync --rsync-path=/home/op/.nix-profile/bin/rsync -av nix.sh.build/hbase-2.1.0/src.hbase-2.1.0.tgz  op@10.132.37.201:my-env/nix.sh.build/hbase-2.1.0/src.hbase-2.1.0.tgz
+rsync --rsync-path=/home/op/.nix-profile/bin/rsync -av ~/.m2 op@10.132.37.201:~/.m2
+https://hbase.apache.org/book.html#trouble.versions
+
+
+http://10.132.37.36:9870
 ```
+

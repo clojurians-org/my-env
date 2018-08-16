@@ -18,14 +18,6 @@ echo -e "\n==== bash nix.sh start 10.132.37.34:9092 confluent-oss-5.0.0:kafka --
 echo -e "\n==== bash nix.sh start 10.132.37.35:9092 confluent-oss-5.0.0:kafka --zookeepers ${ZK_ALL} --cluster.id monitor" 
                 bash nix.sh start 10.132.37.35:9092 confluent-oss-5.0.0:kafka --zookeepers ${ZK_ALL} --cluster.id monitor
 
-# start confluent-oss-5.0.0:ksql
-echo -e "\n==== bash nix.sh start 10.132.37.33:8088 confluent-oss-5.0.0:ksql --kafkas ${KAFKA_ALL} --cluster.id monitor" 
-                bash nix.sh start 10.132.37.33:8088 confluent-oss-5.0.0:ksql --kafkas ${KAFKA_ALL} --cluster.id monitor
-echo -e "\n==== bash nix.sh start 10.132.37.34:8088 confluent-oss-5.0.0:ksql --kafkas ${KAFKA_ALL} --cluster.id monitor" 
-                bash nix.sh start 10.132.37.34:8088 confluent-oss-5.0.0:ksql --kafkas ${KAFKA_ALL} --cluster.id monitor
-echo -e "\n==== bash nix.sh start 10.132.37.35:8088 confluent-oss-5.0.0:ksql --kafkas ${KAFKA_ALL} --cluster.id monitor" 
-                bash nix.sh start 10.132.37.35:8088 confluent-oss-5.0.0:ksql --kafkas ${KAFKA_ALL} --cluster.id monitor
-
 # start confluent-oss-5.0.0:schema-registry
 echo -e "\n==== bash nix.sh start 10.132.37.33:8081 confluent-oss-5.0.0:schema-registry --kafkas ${KAFKA_ALL} --cluster.id monitor"
                 bash nix.sh start 10.132.37.33:8081 confluent-oss-5.0.0:schema-registry --kafkas ${KAFKA_ALL} --cluster.id monitor
@@ -33,6 +25,14 @@ echo -e "\n==== bash nix.sh start 10.132.37.34:8081 confluent-oss-5.0.0:schema-r
                 bash nix.sh start 10.132.37.34:8081 confluent-oss-5.0.0:schema-registry --kafkas ${KAFKA_ALL} --cluster.id monitor
 echo -e "\n==== bash nix.sh start 10.132.37.35:8081 confluent-oss-5.0.0:schema-registry --kafkas ${KAFKA_ALL} --cluster.id monitor"
                 bash nix.sh start 10.132.37.35:8081 confluent-oss-5.0.0:schema-registry --kafkas ${KAFKA_ALL} --cluster.id monitor
+
+# start confluent-oss-5.0.0:ksql
+echo -e "\n==== bash nix.sh start 10.132.37.33:8088 confluent-oss-5.0.0:ksql --kafkas ${KAFKA_ALL} --cluster.id monitor" 
+                bash nix.sh start 10.132.37.33:8088 confluent-oss-5.0.0:ksql --kafkas ${KAFKA_ALL} --cluster.id monitor
+echo -e "\n==== bash nix.sh start 10.132.37.34:8088 confluent-oss-5.0.0:ksql --kafkas ${KAFKA_ALL} --cluster.id monitor" 
+                bash nix.sh start 10.132.37.34:8088 confluent-oss-5.0.0:ksql --kafkas ${KAFKA_ALL} --cluster.id monitor
+echo -e "\n==== bash nix.sh start 10.132.37.35:8088 confluent-oss-5.0.0:ksql --kafkas ${KAFKA_ALL} --cluster.id monitor" 
+                bash nix.sh start 10.132.37.35:8088 confluent-oss-5.0.0:ksql --kafkas ${KAFKA_ALL} --cluster.id monitor
 
 # start confluent-oss-5.0.0:kafka-connect
 echo -e "\n==== bash nix.sh start 10.132.37.33:8083 confluent-oss-5.0.0:kafka-connect --kafkas ${KAFKA_ALL} --cluster.id monitor" 
@@ -64,3 +64,27 @@ echo -e "\n==== bash nix.sh start 10.132.37.36:5432 postgresql-10.4" && bash nix
 echo -e "\n==== bash nix.sh start 10.132.37.37:5432 postgresql-10.4" && bash nix.sh start 10.132.37.37:5432 postgresql-10.4
 echo -e "\n==== bash nix.sh start 10.132.37.39:5432 postgresql-10.4" && bash nix.sh start 10.132.37.39:5432 postgresql-10.4
 echo -e "\n==== bash nix.sh start 10.132.37.40:5432 postgresql-10.4" && bash nix.sh start 10.132.37.40:5432 postgresql-10.4
+
+
+# start zookeeper
+
+# start hadoop-3.1.1
+export HDFS_MASTER="10.132.37.36:9000"
+echo -e "\n==== bash nix.sh start 10.132.37.36:9000 hadoop-3.1.1:namenode" && bash nix.sh start 10.132.37.36:9000 hadoop-3.1.1:namenode
+echo -e "\n==== bash nix.sh start 10.132.37.36:5200 hadoop-3.1.1:datanode" && bash nix.sh start 10.132.37.36:5200 hadoop-3.1.1:datanode --master ${HDFS_MASTER}
+echo -e "\n==== bash nix.sh start 10.132.37.37:5200 hadoop-3.1.1:datanode" && bash nix.sh start 10.132.37.37:5200 hadoop-3.1.1:datanode --master ${HDFS_MASTER}
+echo -e "\n==== bash nix.sh start 10.132.37.39:5200 hadoop-3.1.1:datanode" && bash nix.sh start 10.132.37.39:5200 hadoop-3.1.1:datanode --master ${HDFS_MASTER}
+echo -e "\n==== bash nix.sh start 10.132.37.40:5200 hadoop-3.1.1:datanode" && bash nix.sh start 10.132.37.40:5200 hadoop-3.1.1:datanode --master ${HDFS_MASTER}
+
+# start hbase
+export HBASE_MASTER="10.132.37.36:9000"
+echo -e "\n==== bash nix.sh start 10.132.37.36:9000 hbase-2.1.0:master --zookeepers ${ZK_ALL} --hdfs.master ${HDFS_MASTER}"
+                bash nix.sh start 10.132.37.36:9000 hbase-2.1.0:master --zookeepers ${ZK_ALL} --hdfs.master ${HDFS_MASTER}
+echo -e "\n==== bash nix.sh start 10.132.37.36:9000 hbase-2.1.0:regionserver --zookeepers ${ZK_ALL} --hdfs.master ${HDFS_MASTER}"
+                bash nix.sh start 10.132.37.36:9000 hbase-2.1.0:regionserver --zookeepers ${ZK_ALL} --hdfs.master ${HDFS_MASTER}
+echo -e "\n==== bash nix.sh start 10.132.37.37:9000 hadoop-3.1.1:namenode"
+                bash nix.sh start 10.132.37.36:9000 hbase-2.1.0:regionserver --zookeepers ${ZK_ALL} --hdfs.master ${HDFS_MASTER}
+echo -e "\n==== bash nix.sh start 10.132.37.39:9000 hadoop-3.1.1:namenode"
+                bash nix.sh start 10.132.37.36:9000 hbase-2.1.0:regionserver --zookeepers ${ZK_ALL} --hdfs.master ${HDFS_MASTER}
+echo -e "\n==== bash nix.sh start 10.132.37.40:9000 hadoop-3.1.1:namenode"
+                bash nix.sh start 10.132.37.36:9000 hbase-2.1.0:regionserver --zookeepers ${ZK_ALL} --hdfs.master ${HDFS_MASTER}

@@ -6,6 +6,9 @@ nix.leiningen-2.8.1=/nix/store/4a4wxcxh4gj09ldbascjnkbyznj8z0zq-leiningen-2.8.1
 nix.emacs-25.3=/nix/store/2djdpq9dngc5y97q2fzypr5f8y60pm13-emacs-25.3
 nix.rsync-3.1.3=/nix/store/91xl9a2pfc2i2rrdbwf64ncvn5wkzvkc-rsync-3.1.3
 nix.git-2.16.4=/nix/store/srzz1khx4vg9hy1ibzynzyz9v0n8j253-git-2.16.4
+nix.protobuf-3.5.1.1=/nix/store/ka3d5mwivifzvgkcfxbxga020fkfjwn0-protobuf-3.5.1.1
+nix.apache-maven-3.5.2=/nix/store/hba0ggmyif9kk3ifahpv1vz0xpihbqf4-apache-maven-3.5.2
+nix.hadoop-3.1.1=/nix/store/gydzd8zqw8ckgrm0g7nrhh994kh9h9bj-hadoop-3.1.1
 
 tgz.oraclejre-8u181b13=_download_
 tgz.nix-2.0.4=https://nixos.org/releases/nix/nix-2.0.4/nix-2.0.4-x86_64-linux.tar.bz2
@@ -18,3 +21,6 @@ tgz.kibana-6.2.4=https://artifacts.elastic.co/downloads/kibana/kibana-6.2.4-linu
 tgz.logstash-6.2.4=https://artifacts.elastic.co/downloads/logstash/logstash-6.2.4.tar.gz
 tgz.filebeat-6.2.4=https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-6.2.4-linux-x86_64.tar.gz
 tgz.osquery-3.2.6=https://osquery-packages.s3.amazonaws.com/linux/osquery-3.2.6_1.linux_x86_64.tar.gz
+tgz.hadoop-3.1.1=http://www-us.apache.org/dist/hadoop/common/hadoop-3.1.1/hadoop-3.1.1.tar.gz
+
+src.hbase-2.1.0=http://www-us.apache.org/dist/hbase/2.1.0/hbase-2.1.0-src.tar.gz
