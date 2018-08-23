@@ -1,6 +1,8 @@
 set -e
 my=$(cd -P -- "$(dirname -- "${BASH_SOURCE-$0}")" > /dev/null && pwd -P) && cd $my/../..
 
+echo -e "\n==== bash nix.sh build nix.postgres-xl-10.0" && bash nix.sh build nix.postgres-xl-10.0
+
 echo -e "\n==== bash nix.sh export tgz.nix-2.0.4" && bash nix.sh export tgz.nix-2.0.4
 echo -e "\n==== bash nix.sh export tgz.confluent-oss-5.0.0" && bash nix.sh export tgz.confluent-oss-5.0.0
 echo -e "\n==== bash nix.sh export tgz.elasticsearch-6.2.4" && bash nix.sh export tgz.elasticsearch-6.2.4

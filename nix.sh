@@ -85,25 +85,42 @@ elif [ "$1" == "export" ]; then
   else echo "format error: only nix|tgz protocol support" && exit 1
   fi
 elif [ "$1" == "build" ]; then
-  package_name=$2
-  if [ -e "nix.sh.out/${package_name}/tgz.${package_name}" ]; then
-    echo "package exist already"
-  elif grep "^src.${package_name}=" nix.sh.dic 2> /dev/null; then
-    echo "--> [info] build source tarball"
+  full_package_name=$2
+  if [ -e "nix.sh.out/${package_name}/${full_package_name}" ]; then
+      echo "package[${full_package_name}] exist already" && exit 1
+  fi
+  protocol_name=$(echo $full_package_name | cut -d. -f1)
+  package_name=$(echo $full_package_name | cut -d. -f2-)
+  if [ $protocol_name = "nix" ]; then
     download_url=$(grep "^src.${package_name}=" nix.sh.dic | cut -d= -f2)
-    echo "--> download ${package_name} from ${download_url}"
-    mkdir -p nix.sh.build/${package_name}
-    if [ ! -e nix.sh.build/${package_name}/src.${package_name}.tgz ]; then
-      wget -c -O nix.sh.build/${package_name}/src.${package_name}.tgz.tmp ${download_url}
-      mv nix.sh.build/${package_name}/src.${package_name}.tgz.tmp nix.sh.build/${package_name}/src.${package_name}.tgz
+    if [ ! -e "$download_url" ]; then
+      echo "--> [info] building ./nix.conf/${package_name}/default.nix ..."
+      nix-build -E "with import <nixpkgs> {}; callPackage ./nix.conf/${package_name}/default.nix {}"
     fi
-    rm -rf nix.sh.build/${package_name}/${package_name}.build
-    mkdir -p nix.sh.build/${package_name}/${package_name}.build
+    if [ -e "$download_url" ];  then
+      nix-store --export $(nix-store -qR $download_url) | gzip > nix.sh.out/${full_package_name}.tmp
+      mv nix.sh.out/${full_package_name}.tmp nix.sh.out/${full_package_name}
+    else echo "--> [ERROR] ${full_package_name} HASH VALUE NOT MATCHED, PLEASE CHECK AND REBUILD!" && exit 1
+    fi
+  elif [ $protocol_name = "tgz" ]; then
+    if grep "^src.${package_name}=" nix.sh.dic 2> /dev/null; then
+      echo "--> [info] build source tarball"
+      download_url=$(grep "^src.${package_name}=" nix.sh.dic | cut -d= -f2)
+      echo "--> download ${package_name} from ${download_url}"
+      mkdir -p nix.sh.build/${package_name}
+      if [ ! -e nix.sh.build/${package_name}/src.${package_name}.tgz ]; then
+        wget -c -O nix.sh.build/${package_name}/src.${package_name}.tgz.tmp ${download_url}
+        mv nix.sh.build/${package_name}/src.${package_name}.tgz.tmp nix.sh.build/${package_name}/src.${package_name}.tgz
+      fi
+      rm -rf nix.sh.build/${package_name}/${package_name}.build
+      mkdir -p nix.sh.build/${package_name}/${package_name}.build
 
-    cd nix.sh.build/${package_name}/${package_name}.build 
-    tar -xvf ../src.${package_name}.tgz && cd * && bash ${my}/nix.conf/${package_name}/build.sh
-    mv ${package_name}.tgz ${my}/nix.sh.out/${package_name}/tgz.${package_name}
-    cd .. && rm -rf ${package_name}.build
+      cd nix.sh.build/${package_name}/${package_name}.build 
+      tar -xvf ../src.${package_name}.tgz && cd * && bash ${my}/nix.conf/${package_name}/build.sh
+      mv ${package_name}.tgz ${my}/nix.sh.out/${package_name}/tgz.${package_name}
+      cd .. && rm -rf ${package_name}.build
+    fi
+  else echo "--> [error] only nix|tgz protocol support" && exit 1
   fi
 elif [ "$1" == "create-user" ]; then
   remote_ip=$2
@@ -163,8 +180,8 @@ elif [ "$1" == "import" -o "$1" == "install" ]; then
       echo "--> import ${package_name} need to cost a little time, please be patient..."
       echo "cat ${my_rhome}/nix.sh.out/${full_package_name} | gunzip | nix-store --import"
       ssh ${ssh_opt} ${my_user}@${remote_ip} "
-        download_url=\$(grep '^${full_package_name}=' ${my_rhome}/nix.sh.dic | cut -d= -f2)
-	echo \"--> download_url: \$download_url\"
+        download_url=\$(grep -E '^(nix|src).${package_name}=' ${my_rhome}/nix.sh.dic | cut -d= -f2)
+	echo \"--> download_url: \${download_url}\"
         if which nix-store 2> /dev/null; then
           nix_store_cmd=nix-store
 	  nix_env_cmd=nix-env
@@ -204,18 +221,6 @@ elif [ "$1" == "import" -o "$1" == "install" ]; then
       fi
     "
   else echo "--> [error] only nix|tgz protocol support" && exit 1
-  fi
-elif [ "$1" == "install" ]; then
-  remote_host=$2
-  full_package_name=$3
-  protocol_name=$(echo $full_package_name | cut -d. -f1)
-  package_name=$(echo $full_package_name | cut -d. -f2-)
-  echo "[action] install $full_package_name"
-  if [ "${protocol_name}" == "nix" ]; then
-    download_url=$(grep "^${full_package_name}=" nix.sh.dic | cut -d= -f2)
-    if [ "$download_url" == "" ]; then echo "----> [error] dowload url not exist!"; exit 1; fi
-    ssh ${ssh_opt} ${my_user}@${remote_host} -t "nix-env -i $download_url"
-  else echo "only nix protocol support currently!" && exit 1
   fi
 elif [ "$1" == "reload" -o "$1" == "start" -o "$1" == "start-foreground" ]; then
   action=$1; remote_host=$2; package_name=$(echo $3 | cut -d: -f1)

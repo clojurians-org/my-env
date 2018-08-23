@@ -14,6 +14,10 @@ export my_user=op
 #echo -e "\n==== bash nix.sh create-user 10.132.37.37" && bash nix.sh create-user 10.132.37.37 
 #echo -e "\n==== bash nix.sh create-user 10.132.37.39" && bash nix.sh create-user 10.132.37.39
 #echo -e "\n==== bash nix.sh create-user 10.132.37.40" && bash nix.sh create-user 10.132.37.40
+#echo -e "\n==== bash nix.sh create-user 10.132.37.41" && bash nix.sh create-user 10.132.37.41
+#echo -e "\n==== bash nix.sh create-user 10.132.37.43" && bash nix.sh create-user 10.132.37.43
+#echo -e "\n==== bash nix.sh create-user 10.132.37.44" && bash nix.sh create-user 10.132.37.44
+#echo -e "\n==== bash nix.sh create-user 10.132.37.45" && bash nix.sh create-user 10.132.37.45
 
 # install nix
 #echo -e "\n==== bash nix.sh install 10.132.37.32 tgz.nix-2.0.4" && bash nix.sh install 10.132.37.32 tgz.nix-2.0.4
@@ -24,6 +28,10 @@ export my_user=op
 #echo -e "\n==== bash nix.sh install 10.132.37.37 tgz.nix-2.0.4" && bash nix.sh install 10.132.37.37 tgz.nix-2.0.4
 #echo -e "\n==== bash nix.sh install 10.132.37.39 tgz.nix-2.0.4" && bash nix.sh install 10.132.37.39 tgz.nix-2.0.4
 #echo -e "\n==== bash nix.sh install 10.132.37.40 tgz.nix-2.0.4" && bash nix.sh install 10.132.37.40 tgz.nix-2.0.4
+#echo -e "\n==== bash nix.sh install 10.132.37.41 tgz.nix-2.0.4" && bash nix.sh install 10.132.37.41 tgz.nix-2.0.4
+#echo -e "\n==== bash nix.sh install 10.132.37.43 tgz.nix-2.0.4" && bash nix.sh install 10.132.37.43 tgz.nix-2.0.4
+#echo -e "\n==== bash nix.sh install 10.132.37.44 tgz.nix-2.0.4" && bash nix.sh install 10.132.37.44 tgz.nix-2.0.4
+#echo -e "\n==== bash nix.sh install 10.132.37.45 tgz.nix-2.0.4" && bash nix.sh install 10.132.37.45 tgz.nix-2.0.4
 
 # install gettext
 #echo -e "\n==== bash nix.sh install 10.132.37.33 nix.gettext-0.19.8.1" && bash nix.sh install 10.132.37.33 nix.gettext-0.19.8.1
@@ -33,19 +41,20 @@ export my_user=op
 #echo -e "\n==== bash nix.sh install 10.132.37.37 nix.gettext-0.19.8.1" && bash nix.sh install 10.132.37.37 nix.gettext-0.19.8.1
 #echo -e "\n==== bash nix.sh install 10.132.37.39 nix.gettext-0.19.8.1" && bash nix.sh install 10.132.37.39 nix.gettext-0.19.8.1
 #echo -e "\n==== bash nix.sh install 10.132.37.40 nix.gettext-0.19.8.1" && bash nix.sh install 10.132.37.40 nix.gettext-0.19.8.1
+#echo -e "\n==== bash nix.sh install 10.132.37.41 nix.gettext-0.19.8.1" && bash nix.sh install 10.132.37.41 nix.gettext-0.19.8.1
+#echo -e "\n==== bash nix.sh install 10.132.37.43 nix.gettext-0.19.8.1" && bash nix.sh install 10.132.37.43 nix.gettext-0.19.8.1
+#echo -e "\n==== bash nix.sh install 10.132.37.44 nix.gettext-0.19.8.1" && bash nix.sh install 10.132.37.44 nix.gettext-0.19.8.1
+#echo -e "\n==== bash nix.sh install 10.132.37.45 nix.gettext-0.19.8.1" && bash nix.sh install 10.132.37.45 nix.gettext-0.19.8.1
 
-# install oraclejre-8u181b13
-echo -e "\n==== bash nix.sh import 10.132.37.33 tgz.oraclejre-8u181b13" && bash nix.sh import 10.132.37.33 tgz.oraclejre-8u181b13
-echo -e "\n==== bash nix.sh import 10.132.37.34 tgz.oraclejre-8u181b13" && bash nix.sh import 10.132.37.34 tgz.oraclejre-8u181b13
-echo -e "\n==== bash nix.sh import 10.132.37.35 tgz.oraclejre-8u181b13" && bash nix.sh import 10.132.37.35 tgz.oraclejre-8u181b13
-echo -e "\n==== bash nix.sh import 10.132.37.36 tgz.oraclejre-8u181b13" && bash nix.sh import 10.132.37.36 tgz.oraclejre-8u181b13
-echo -e "\n==== bash nix.sh import 10.132.37.37 tgz.oraclejre-8u181b13" && bash nix.sh import 10.132.37.37 tgz.oraclejre-8u181b13
-echo -e "\n==== bash nix.sh import 10.132.37.39 tgz.oraclejre-8u181b13" && bash nix.sh import 10.132.37.39 tgz.oraclejre-8u181b13
-echo -e "\n==== bash nix.sh import 10.132.37.40 tgz.oraclejre-8u181b13" && bash nix.sh import 10.132.37.40 tgz.oraclejre-8u181b13
 
 #==================================
 # STREAMING ENGINE [KAFKA + KAFKA STREAMS + KSQL + KAFKA CONNECT]
 #==================================
+# install oraclejre-8u181b13
+echo -e "\n==== bash nix.sh import 10.132.37.33 tgz.oraclejre-8u181b13" && bash nix.sh import 10.132.37.33 tgz.oraclejre-8u181b13
+echo -e "\n==== bash nix.sh import 10.132.37.34 tgz.oraclejre-8u181b13" && bash nix.sh import 10.132.37.34 tgz.oraclejre-8u181b13
+echo -e "\n==== bash nix.sh import 10.132.37.35 tgz.oraclejre-8u181b13" && bash nix.sh import 10.132.37.35 tgz.oraclejre-8u181b13
+
 # install zookeeper & kafka & ksql [streaming-platform]
 #echo -e "\n==== bash nix.sh import 10.132.37.33 nix.zookeeper-3.4.12" && bash nix.sh import 10.132.37.33 nix.zookeeper-3.4.12 
 #echo -e "\n==== bash nix.sh import 10.132.37.34 nix.zookeeper-3.4.12" && bash nix.sh import 10.132.37.34 nix.zookeeper-3.4.12 
@@ -67,8 +76,22 @@ echo -e "\n==== bash nix.sh import 10.132.37.34 tgz.confluent-oss-5.0.0" && bash
 echo -e "\n==== bash nix.sh import 10.132.37.35 tgz.confluent-oss-5.0.0" && bash nix.sh import 10.132.37.35 tgz.confluent-oss-5.0.0
 
 #==================================
+# BATCH ENGINE [POSTGRES-XL + SPARK ON YARN]
+#==================================
+echo -e "\n==== bash nix.sh import 10.132.37.41 nix.postgres-xl-10.0" && bash nix.sh import 10.132.37.41 nix.postgres-xl-10.0
+echo -e "\n==== bash nix.sh import 10.132.37.43 nix.postgres-xl-10.0" && bash nix.sh import 10.132.37.43 nix.postgres-xl-10.0
+echo -e "\n==== bash nix.sh import 10.132.37.44 nix.postgres-xl-10.0" && bash nix.sh import 10.132.37.44 nix.postgres-xl-10.0
+echo -e "\n==== bash nix.sh import 10.132.37.45 nix.postgres-xl-10.0" && bash nix.sh import 10.132.37.45 nix.postgres-xl-10.0
+
+#==================================
 # SERVICE INTERFACE [ELASTICSEARCH & KIBANA + POSTGRESQL + REDIS + HBASE]
 #==================================
+# install oraclejre-8u181b13
+echo -e "\n==== bash nix.sh import 10.132.37.36 tgz.oraclejre-8u181b13" && bash nix.sh import 10.132.37.36 tgz.oraclejre-8u181b13
+echo -e "\n==== bash nix.sh import 10.132.37.37 tgz.oraclejre-8u181b13" && bash nix.sh import 10.132.37.37 tgz.oraclejre-8u181b13
+echo -e "\n==== bash nix.sh import 10.132.37.39 tgz.oraclejre-8u181b13" && bash nix.sh import 10.132.37.39 tgz.oraclejre-8u181b13
+echo -e "\n==== bash nix.sh import 10.132.37.40 tgz.oraclejre-8u181b13" && bash nix.sh import 10.132.37.40 tgz.oraclejre-8u181b13
+
 # install elasticsearch & kibana & filebeat & logstash  [search-service]
 #echo -e "\n==== bash nix.sh import 10.132.37.36 nix.elasticsearch-6.2.4" && bash nix.sh import 10.132.37.36 nix.elasticsearch-6.2.4
 #echo -e "\n==== bash nix.sh import 10.132.37.37 nix.elasticsearch-6.2.4" && bash nix.sh import 10.132.37.37 nix.elasticsearch-6.2.4
@@ -127,6 +150,9 @@ echo -e "\n==== bash nix.sh import 10.132.37.37 tgz.hbase-2.1.0" && bash nix.sh 
 echo -e "\n==== bash nix.sh import 10.132.37.39 tgz.hbase-2.1.0" && bash nix.sh import 10.132.37.39 tgz.hbase-2.1.0
 echo -e "\n==== bash nix.sh import 10.132.37.40 tgz.hbase-2.1.0" && bash nix.sh import 10.132.37.40 tgz.hbase-2.1.0
 
+#==================================
+# CLIENT
+#==================================
 # install client machine [zookeeper & kafka & filebeat & logstash & postgresql & mongodb & redis]
 echo -e "\n==== bash nix.sh import 10.132.37.32 tgz.oraclejre-8u181b13" && bash nix.sh import 10.132.37.32 tgz.oraclejre-8u181b13
 echo -e "\n==== bash nix.sh import 10.132.37.32 tgz.zookeeper-3.4.12" && bash nix.sh import 10.132.37.32 tgz.zookeeper-3.4.12 

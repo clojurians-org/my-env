@@ -23,4 +23,5 @@ tgz.filebeat-6.2.4=https://artifacts.elastic.co/downloads/beats/filebeat/filebea
 tgz.osquery-3.2.6=https://osquery-packages.s3.amazonaws.com/linux/osquery-3.2.6_1.linux_x86_64.tar.gz
 tgz.hadoop-3.1.1=http://www-us.apache.org/dist/hadoop/common/hadoop-3.1.1/hadoop-3.1.1.tar.gz
 
+src.postgres-xl-10.0=/nix/store/frarf37ah6kzwhnd4gc5drdiv96w30g5-postgres-xl-10.0
 src.hbase-2.1.0=http://www-us.apache.org/dist/hbase/2.1.0/hbase-2.1.0-src.tar.gz
