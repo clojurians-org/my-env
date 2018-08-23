@@ -123,6 +123,26 @@
   SET 'auto.offset.reset' = 'earliest';
   SET 'auto.offset.reset' = 'latest' ;
 
+
+MY_CMD="EXPLAIN \
+  SELECT EXTRACTJSONFIELD(EXTRACTJSONFIELD(message, '\$.message'), '\$.appID') AS app_id \
+       , EXTRACTJSONFIELD(EXTRACTJSONFIELD(message, '\$.message'), '\$.mobileOS') AS mobile_os \
+       , EXTRACTJSONFIELD(EXTRACTJSONFIELD(message, '\$.message'), '\$.mobileOSVersion') AS mobile_os_version \
+       , EXTRACTJSONFIELD(EXTRACTJSONFIELD(message, '\$.message'), '\$.model') AS model \
+       , EXTRACTJSONFIELD(EXTRACTJSONFIELD(message, '\$.message'), '\$.appVersion') AS app_version \
+       , EXTRACTJSONFIELD(EXTRACTJSONFIELD(message, '\$.message'), '\$.crashTime') AS crash_time \
+       , EXTRACTJSONFIELD(EXTRACTJSONFIELD(message, '\$.message'), '\$.openID') AS open_id \
+       , EXTRACTJSONFIELD(EXTRACTJSONFIELD(message, '\$.message'), '\$.bundleID') AS bundle_id \
+       , EXTRACTJSONFIELD(EXTRACTJSONFIELD(message, '\$.message'), '\$.errorStack') AS error_stack \
+  FROM logi_hop_sdk_apm WHERE EXTRACTJSONFIELD(message, '\$.logger_name') = 'CrashInfoDev' ; "
+
+curl -XPOST http://10.132.37.33:8088/ksql -H "Content-Type: application/vnd.ksql.v1+json; charset=utf-8" -d "{\"ksql\": \"$MY_CMD\", \"streamsProperties\": {}}" | jq
+
+#================
+# POSTGRES-XL
+#================
+  nix-build -E 'with import <nixpkgs> {}; callPackage ./nix.conf/postgres-xl-10.0/default.nix {}'
+
 #================
 # Java
 #================
@@ -171,5 +191,9 @@ https://hbase.apache.org/book.html#trouble.versions
 
 
 http://10.132.37.36:9870
+
+
+
 ```
+
 
