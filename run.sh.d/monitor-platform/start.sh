@@ -44,9 +44,43 @@ echo -e "\n==== bash nix.sh start 10.132.37.34:8083 confluent-oss-5.0.0:kafka-co
                 bash nix.sh start 10.132.37.34:8083 confluent-oss-5.0.0:kafka-connect --kafkas ${KAFKA_ALL} --cluster.id monitor
 echo -e "\n==== bash nix.sh start 10.132.37.35:8083 confluent-oss-5.0.0:kafka-connect --kafkas ${KAFKA_ALL} --cluster.id monitor" 
                 bash nix.sh start 10.132.37.35:8083 confluent-oss-5.0.0:kafka-connect --kafkas ${KAFKA_ALL} --cluster.id monitor
+
 #==================================
 # BATCH ENGINE [POSTGRES-XL + SPARK ON YARN]
 #==================================
+echo -e "\n==== bash nix.sh start 10.132.37.41:6666 postgres-xl-10.0:gtm"
+                bash nix.sh start 10.132.37.41:6666 postgres-xl-10.0:gtm
+export GTM="10.132.37.41:6666"
+
+export COORDINATORS="10.132.37.41:5432,10.132.37.43:5432,10.132.37.44:5432:10.132.37.45:5432"
+export DATANODES="10.132.37.41:15432,10.132.37.43:15432,10.132.37.44:15432:10.132.37.45:15432"
+echo -e "\n==== bash nix.sh start 10.132.37.41:15432 postgres-xl-10.0:datanode --gtm ${GTM}"
+                bash nix.sh start 10.132.37.41:15432 postgres-xl-10.0:datanode --gtm ${GTM}
+echo -e "\n==== bash nix.sh start 10.132.37.43:15432 postgres-xl-10.0:datanode --gtm ${GTM}"
+                bash nix.sh start 10.132.37.43:15432 postgres-xl-10.0:datanode --gtm ${GTM}
+echo -e "\n==== bash nix.sh start 10.132.37.43:15432 postgres-xl-10.0:datanode --gtm ${GTM}"
+                bash nix.sh start 10.132.37.43:15432 postgres-xl-10.0:datanode --gtm ${GTM}
+echo -e "\n==== bash nix.sh start 10.132.37.44:15432 postgres-xl-10.0:datanode --gtm ${GTM}"
+                bash nix.sh start 10.132.37.44:15432 postgres-xl-10.0:datanode --gtm ${GTM}
+echo -e "\n==== bash nix.sh start 10.132.37.45:15432 postgres-xl-10.0:datanode --gtm ${GTM}"
+                bash nix.sh start 10.132.37.45:15432 postgres-xl-10.0:datanode --gtm ${GTM}
+echo -e "\n==== bash nix.sh start 10.132.37.41:5432 postgres-xl-10.0:coordinator --gtm ${GTM}"
+                bash nix.sh start 10.132.37.41:5432 postgres-xl-10.0:coordinator --gtm ${GTM}
+echo -e "\n==== bash nix.sh start 10.132.37.43:5432 postgres-xl-10.0:coordinator --gtm ${GTM}"
+                bash nix.sh start 10.132.37.43:5432 postgres-xl-10.0:coordinator --gtm ${GTM}
+echo -e "\n==== bash nix.sh start 10.132.37.44:5432 postgres-xl-10.0:coordinator --gtm ${GTM}"
+                bash nix.sh start 10.132.37.44:5432 postgres-xl-10.0:coordinator --gtm ${GTM}
+echo -e "\n==== bash nix.sh start 10.132.37.45:5432 postgres-xl-10.0:coordinator --gtm ${GTM}"
+                bash nix.sh start 10.132.37.45:5432 postgres-xl-10.0:coordinator --gtm ${GTM}
+
+echo -e "\n==== bash nix.sh start 10.132.37.41:5432 postgres-xl-10.0:_connector --coordinators ${COORINDATORS}--datanodes ${DATANODES}"
+                bash nix.sh start 10.132.37.41:5432 postgres-xl-10.0:_connector --coordinators ${COORINDATORS}--datanodes ${DATANODES}
+echo -e "\n==== bash nix.sh start 10.132.37.43:5432 postgres-xl-10.0:_connector --coordinators ${COORINDATORS}--datanodes ${DATANODES}"
+                bash nix.sh start 10.132.37.43:5432 postgres-xl-10.0:_connector --coordinators ${COORINDATORS}--datanodes ${DATANODES}
+echo -e "\n==== bash nix.sh start 10.132.37.44:5432 postgres-xl-10.0:_connector --coordinators ${COORINDATORS}--datanodes ${DATANODES}"
+                bash nix.sh start 10.132.37.44:5432 postgres-xl-10.0:_connector --coordinators ${COORINDATORS}--datanodes ${DATANODES}
+echo -e "\n==== bash nix.sh start 10.132.37.45:5432 postgres-xl-10.0:_connector --coordinators ${COORINDATORS}--datanodes ${DATANODES}"
+                bash nix.sh start 10.132.37.45:5432 postgres-xl-10.0:_connector --coordinators ${COORINDATORS}--datanodes ${DATANODES}
 
 #==================================
 # SERVICE INTERFACE [ELASTICSEARCH & KIBANA + POSTGRESQL + REDIS + HBASE]
@@ -84,17 +118,19 @@ echo -e "\n==== bash nix.sh start 10.132.37.39:2181 zookeeper-3.4.12 --all ${ZK_
 echo -e "\n==== bash nix.sh start 10.132.37.40:2181 zookeeper-3.4.12 --all ${ZK_ALL}" && bash nix.sh start 10.132.37.40:2181 zookeeper-3.4.12 --all ${ZK_ALL}
 
 # start hadoop-3.1.1
-export HDFS_MASTER="10.132.37.36:9000"
 echo -e "\n==== bash nix.sh start 10.132.37.36:9000 hadoop-3.1.1:namenode" && bash nix.sh start 10.132.37.36:9000 hadoop-3.1.1:namenode
+export HDFS_MASTER="10.132.37.36:9000"
+
 echo -e "\n==== bash nix.sh start 10.132.37.36:5200 hadoop-3.1.1:datanode" && bash nix.sh start 10.132.37.36:5200 hadoop-3.1.1:datanode --master ${HDFS_MASTER}
 echo -e "\n==== bash nix.sh start 10.132.37.37:5200 hadoop-3.1.1:datanode" && bash nix.sh start 10.132.37.37:5200 hadoop-3.1.1:datanode --master ${HDFS_MASTER}
 echo -e "\n==== bash nix.sh start 10.132.37.39:5200 hadoop-3.1.1:datanode" && bash nix.sh start 10.132.37.39:5200 hadoop-3.1.1:datanode --master ${HDFS_MASTER}
 echo -e "\n==== bash nix.sh start 10.132.37.40:5200 hadoop-3.1.1:datanode" && bash nix.sh start 10.132.37.40:5200 hadoop-3.1.1:datanode --master ${HDFS_MASTER}
 
 # start hbase-2.1.0
-export HBASE_MASTER="10.132.37.36:9090"
 echo -e "\n==== bash nix.sh start 10.132.37.36:16010 hbase-2.1.0:master --zookeepers ${ZK_ALL} --hdfs.master ${HDFS_MASTER}"
                 bash nix.sh start 10.132.37.36:16010 hbase-2.1.0:master --zookeepers ${ZK_ALL} --hdfs.master ${HDFS_MASTER}
+export HBASE_MASTER="10.132.37.36:9090"
+
 echo -e "\n==== bash nix.sh start 10.132.37.36:16030 hbase-2.1.0:regionserver --zookeepers ${ZK_ALL} --hdfs.master ${HDFS_MASTER}"
                 bash nix.sh start 10.132.37.36:16030 hbase-2.1.0:regionserver --zookeepers ${ZK_ALL} --hdfs.master ${HDFS_MASTER}
 echo -e "\n==== bash nix.sh start 10.132.37.37:16030 hbase-2.1.0:regionserver --zookeepers ${ZK_ALL} --hdfs.master ${HDFS_MASTER}"

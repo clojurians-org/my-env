@@ -123,6 +123,11 @@
   SET 'auto.offset.reset' = 'earliest';
   SET 'auto.offset.reset' = 'latest' ;
 
+kafka-avro-console-producer \
+ --property schema.registry.url=http://10.132.37.33:8081 \
+ --broker-list 10.132.37.33:9092 --topic orders \
+ --property value.schema='{"type":"record","name":"myrecord","fields":[{"name":"id","type":"int"},{"name":"product", "type": "string"}, {"name":"quantity", "type": "int"}, {"name":"price", "type": "float"}]}'
+
 
 MY_CMD="EXPLAIN \
   SELECT EXTRACTJSONFIELD(EXTRACTJSONFIELD(message, '\$.message'), '\$.appID') AS app_id \
@@ -142,6 +147,15 @@ curl -XPOST http://10.132.37.33:8088/ksql -H "Content-Type: application/vnd.ksql
 # POSTGRES-XL
 #================
   nix-build -E 'with import <nixpkgs> {}; callPackage ./nix.conf/postgres-xl-10.0/default.nix {}'
+
+/nix/store/*postgres-xl-10.0/bin/psql -p 5432 -c "create node datanode_10_132_37_41_15432 with (type=datanode, host='10.132.37.41', port=15432)" postgres
+/nix/store/*postgres-xl-10.0/bin/psql -p 5432 -c "create node datanode_10_132_37_43_15432 with (type=datanode, host='10.132.37.43', port=15432)" postgres
+/nix/store/*postgres-xl-10.0/bin/psql -p 5432 -c "create node datanode_10_132_37_44_15432 with (type=datanode, host='10.132.37.44', port=15432)" postgres
+/nix/store/*postgres-xl-10.0/bin/psql -p 5432 -c "create node datanode_10_132_37_45_15432 with (type=datanode, host='10.132.37.45', port=15432)" postgres
+/nix/store/*postgres-xl-10.0/bin/psql -p 5432 -c "alter node coordinator_10_132_37_41_5432 with (type=coordinator, host='10.132.37.41', port=5432)" postgres
+/nix/store/*postgres-xl-10.0/bin/psql -p 5432 -c "create node coordinator_10_132_37_43_5432 with (type=coordinator, host='10.132.37.43', port=5432)" postgres
+/nix/store/*postgres-xl-10.0/bin/psql -p 5432 -c "create node coordinator_10_132_37_44_5432 with (type=coordinator, host='10.132.37.44', port=5432)" postgres
+/nix/store/*postgres-xl-10.0/bin/psql -p 5432 -c "create node coordinator_10_132_37_45_5432 with (type=coordinator, host='10.132.37.45', port=5432)" postgres
 
 #================
 # Java
