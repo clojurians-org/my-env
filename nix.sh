@@ -87,7 +87,7 @@ elif [ "$1" == "export" ]; then
 elif [ "$1" == "build" ]; then
   full_package_name=$2
   if [ -e "nix.sh.out/${package_name}/${full_package_name}" ]; then
-      echo "package[${full_package_name}] exist already" && exit 1
+      echo "package[${full_package_name}] exist already" && exit 0
   fi
   protocol_name=$(echo $full_package_name | cut -d. -f1)
   package_name=$(echo $full_package_name | cut -d. -f2-)
@@ -144,6 +144,7 @@ elif [ "$1" == "create-user" ]; then
     fi
     if [ ! -e /nix ]; then install -d -m755 -o ${my_user} /nix; fi
   "
+  echo "ssh-copy-id $ssh_opt ${my_user}@${remote_ip}"
   ssh-copy-id $ssh_opt ${my_user}@${remote_ip}
 elif [ "$1" == "import" -o "$1" == "install" ]; then
   action=$1
@@ -168,6 +169,8 @@ elif [ "$1" == "import" -o "$1" == "install" ]; then
     scp ${ssh_opt} ${my}/{nix.sh,nix.sh.dic} ${my_user}@${remote_ip}:${my_rhome}/
     scp ${ssh_opt} ${my}/nix.sh.out/${full_package_name} ${my_user}@${remote_ip}:${my_rhome}/nix.sh.out/${full_package_name}
   fi
+  my_full_rhome=$(ssh ${ssh_opt} ${my_user}@${remote_ip} "readlink -f $my_rhome")
+  echo "my_full_rhome: $my_full_rhome"
   
   if [ $protocol_name = "nix" ]; then
     echo "--> check whether remote package exist..."
@@ -177,10 +180,11 @@ elif [ "$1" == "import" -o "$1" == "install" ]; then
     if [ "$package_exist" = "1" ]; then 
       echo "---->[${remote_ip}-info] ${package_name} imported already"
     else
-      echo "--> import ${package_name} need to cost a little time, please be patient..."
-      echo "cat ${my_rhome}/nix.sh.out/${full_package_name} | gunzip | nix-store --import"
-      ssh ${ssh_opt} ${my_user}@${remote_ip} "
-        download_url=\$(grep -E '^(nix|src).${package_name}=' ${my_rhome}/nix.sh.dic | cut -d= -f2)
+      nix_user=$(ssh $ssh_opt ${my_user}@${remote_ip} "stat -c %U /nix")
+      echo "--> import ${package_name}@${nix_user} need to cost a little time, please be patient..."
+      echo "cat ${my_full_rhome}/nix.sh.out/${full_package_name} | gunzip | nix-store --import"
+      ssh ${ssh_opt} ${nix_user}@${remote_ip} "
+        download_url=\$(grep -E '^(nix|src).${package_name}=' ${my_full_rhome}/nix.sh.dic | cut -d= -f2)
 	echo \"--> download_url: \${download_url}\"
         if which nix-store 2> /dev/null; then
           nix_store_cmd=nix-store
@@ -189,7 +193,7 @@ elif [ "$1" == "import" -o "$1" == "install" ]; then
           nix_store_cmd=.nix-profile/bin/nix-store
 	  nix_env_cmd=.nix-profile/bin/nix-env
         fi
-        cat ${my_rhome}/nix.sh.out/${full_package_name} | gunzip | \${nix_store_cmd} --import
+        cat ${my_full_rhome}/nix.sh.out/${full_package_name} | gunzip | \${nix_store_cmd} --import
 	if [ '$action' == 'install' ]; then
           if [ \"\$download_url\" == '' ]; then echo '----> [error] dowload url not exist!'; exit 1; fi
 	  \${nix_env_cmd} -i \$download_url
