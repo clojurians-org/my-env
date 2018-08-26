@@ -30,24 +30,25 @@ fi
 _id_data=${_home}/nix.var/data/${_package_parent}/${_package}/${_id}
 _id_log=${_home}/nix.var/log/${_package_parent}/${_package}/${_id}
 
-if [ -e ${_home}/nix.var/data/${_package_parent} ]; then
+if [ -e $(readlink -f /nix/store/*-${_package_parent}) ] ;then
+  _package_home=$(readlink -f /nix/store/*-${_package_parent})
+elif [ -e ${_home}/nix.var/data/${_package_parent} ]; then
   _package_home=$(readlink -f ${_home}/nix.var/data/${_package_parent}/*/bin/..)
-else
-  echo "--> [INFO] PLEASE IMPORT PACKAGE:[${_package_parent}] FIRST!"
-  exit 1
+else echo "--> [INFO] PLEASE IMPORT PACKAGE:[${_package_parent}] FIRST!" && exit 1
 fi
+
 mkdir -p ${_id_data}/{data,config} ${_id_log} 
 
 export _package_home _id_data _id_log _ip _ip_id _id master
 if [ "${_package}" == "namenode" ]; then
   echo "--> [${_package_parent}:${_package}] component selected!"
-  cmd_file="hdfs"
+  cmd_name="hdfs"
   sub_cmd="namenode"
   cfg_files="core-site.xml hdfs-site.xml"
   export master=${_ip}:${_id}
 elif [ "${_package}" == "datanode" ]; then
   echo "--> [${_package_parent}:${_package}] component selected!"
-  cmd_file="hdfs"
+  cmd_name="hdfs"
   sub_cmd="datanode"
   cfg_files="core-site.xml hdfs-site.xml"
 elif [ "${_package}" == "nodemanager" ]; then
@@ -69,25 +70,21 @@ if [ -e "${_home}/nix.var/data/${oraclejre_package}/jre1.8.0_181" ]; then
 else
   echo "--> use path java: $(which java)"
 fi
-if [ -e ${_package_home}/../_tarball ]; then
-  my_bin=${_package_home}/bin
-else
-  my_bin=/nix/store/*-${_package_parent}/bin
-fi
 
+export HADOOP_PID_DIR=${_id_data}
+export HADOOP_LOG_DIR=${_id_log}
 if [ "${_package}" == "namenode" ]; then
   if [ ! -e ${_id_data}/data/current ]; then
     echo "--> [info] RUN namenode -format -nonInteractive"
-    ${my_bin}/hdfs --config ${_id_data}/config namenode -format -nonInteractive
+    ${_package_home}/bin/hdfs --config ${_id_data}/config namenode -format -nonInteractive
   else
     echo "--> [info] namenode format already, reused !"
   fi
 fi
 if [ "${_action}" == "start-foreground" ]; then
-  echo "${my_bin}/${cmd_file} --config ${_id_data}/config ${sub_cmd}"
-  ${my_bin}/${cmd_file} --config ${_id_data}/config ${sub_cmd}
+  echo "${_package_home}/bin/${cmd_name} --config ${_id_data}/config ${sub_cmd}"
+  ${_package_home}/bin/${cmd_name} --config ${_id_data}/config ${sub_cmd}
 elif [ "${_action}" == "start" ]; then
-  echo "${my_bin}/${cmd_file} --daemon --config ${_id_data}/config ${sub_cmd}"
-  ${my_bin}/${cmd_file} --daemon start --config ${_id_data}/config ${sub_cmd}
+  echo "${_package_home}/bin/${cmd_name} --daemon --config ${_id_data}/config ${sub_cmd}"
+  ${_package_home}/bin/${cmd_name} --daemon start --config ${_id_data}/config ${sub_cmd}
 fi
-

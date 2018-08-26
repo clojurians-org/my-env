@@ -132,10 +132,12 @@ elif [ "$1" == "create-user" ]; then
 	echo '--> adjust nixos for normal case'
         systemctl stop firewall
 	if [ ! -e /bin/bash ]; then ln -s /run/current-system/sw/bin/bash /bin/bash; fi
+	if [ ! -e /bin/echo ]; then ln -s /run/current-system/sw/bin/echo /bin/echo; fi
 	rm -rf /nix/var/nix/profiles/per-user/${my_user}
 	rm -rf /nix/var/nix/gcroots/per-user/${my_user}
         chmod 777 /nix/var/nix/profiles/per-user
         chmod 777 /nix/var/nix/gcroots/per-user
+	hostname ${remote_ip}
       fi
       useradd -m ${my_user}
       echo '${my_user}:${my_user}' | chpasswd

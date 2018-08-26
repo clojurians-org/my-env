@@ -8,7 +8,8 @@ nix.rsync-3.1.3=/nix/store/91xl9a2pfc2i2rrdbwf64ncvn5wkzvkc-rsync-3.1.3
 nix.git-2.16.4=/nix/store/srzz1khx4vg9hy1ibzynzyz9v0n8j253-git-2.16.4
 nix.protobuf-3.5.1.1=/nix/store/ka3d5mwivifzvgkcfxbxga020fkfjwn0-protobuf-3.5.1.1
 nix.apache-maven-3.5.2=/nix/store/hba0ggmyif9kk3ifahpv1vz0xpihbqf4-apache-maven-3.5.2
-nix.hadoop-3.1.1=/nix/store/gydzd8zqw8ckgrm0g7nrhh994kh9h9bj-hadoop-3.1.1
+nix.zookeeper-3.4.13=/nix/store/0hw9gcfivdy6f9icixsdpxdbz2yy6kv2-zookeeper-3.4.13
+nix.hadoop-3.1.1=/nix/store/p7wlb2b81dsw2kqjxnsrq4s62i8nn6xi-hadoop-3.1.1
 
 tgz.oraclejre-8u181b13=_download_
 tgz.nix-2.0.4=https://nixos.org/releases/nix/nix-2.0.4/nix-2.0.4-x86_64-linux.tar.bz2

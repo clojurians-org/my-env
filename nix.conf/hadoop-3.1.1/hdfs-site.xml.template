@@ -15,5 +15,9 @@
         <name>dfs.datanode.data.dir</name>
         <value>${_id_data}/data</value>
     </property>
+    <property>
+        <name>dfs.namenode.rpc-bind-host</name>
+        <value>${_ip}</value>
+    </property>
 </configuration>
 

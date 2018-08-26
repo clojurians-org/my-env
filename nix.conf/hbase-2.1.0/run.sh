@@ -65,6 +65,7 @@ if [ -e "${_home}/nix.var/data/${oraclejre_package}/jre1.8.0_181" ]; then
   export JAVA_HOME="${_home}/nix.var/data/${oraclejre_package}/jre1.8.0_181"
 else
   echo "--> use path java: $(which java)"
+  export JAVA_HOME=$(java -XshowSettings:properties -version 2>&1 > /dev/null | grep 'java.home' | awk '{print $3}')
 fi
 if [ -e ${_package_home}/../_tarball ]; then
   my_bin=${_package_home}/bin
