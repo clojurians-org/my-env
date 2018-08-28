@@ -93,6 +93,8 @@ elif [ "${_package}" == "_connector" ]; then
     awk -F: '{it=$1; gsub("\\.","_",it);
       system("'${_package_home}'/bin/psql -p '${_id}' -c \"alter node coordinator_"it"_"$2" with (type=coordinator,host='"'"'"$1"'"'"',port="$2")\" postgres") }'
 
+  echo "${_package_home}/bin/psql -p '${_id}' -c \"SELECT pgxc_pool_reload()\" postgres"
+  ${_package_home}/bin/psql -p "${_id}" -c "SELECT pgxc_pool_reload()" postgres
   exit 0
 fi
 

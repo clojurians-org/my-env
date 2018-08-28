@@ -10,6 +10,9 @@ nix.protobuf-3.5.1.1=/nix/store/ka3d5mwivifzvgkcfxbxga020fkfjwn0-protobuf-3.5.1.
 nix.apache-maven-3.5.2=/nix/store/hba0ggmyif9kk3ifahpv1vz0xpihbqf4-apache-maven-3.5.2
 nix.zookeeper-3.4.13=/nix/store/0hw9gcfivdy6f9icixsdpxdbz2yy6kv2-zookeeper-3.4.13
 nix.hadoop-3.1.1=/nix/store/p7wlb2b81dsw2kqjxnsrq4s62i8nn6xi-hadoop-3.1.1
+nix.elasticsearch-6.2.4=/nix/store/avwwqla1h6v5di5vncm3iyq852sj2k3q-elasticsearch-6.2.4
+nix.logstash-6.2.4=/nix/store/kamvybqkv39jzbw36rnjxq7yd9lr0j0k-logstash-6.2.4
+nix.kibana-6.2.4=/nix/store/nx4qmh1l4llsdyr0r65lwkidp2k2fxlv-kibana-6.2.4
 
 tgz.oraclejre-8u181b13=_download_
 tgz.nix-2.0.4=https://nixos.org/releases/nix/nix-2.0.4/nix-2.0.4-x86_64-linux.tar.bz2
