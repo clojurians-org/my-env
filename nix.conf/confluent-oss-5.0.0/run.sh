@@ -68,8 +68,12 @@ echo "====dump file content end===="
 if [ -e "${_home}/nix.var/data/${oraclejre_package}/jre1.8.0_181" ]; then
   export JAVA_HOME="${_home}/nix.var/data/${oraclejre_package}/jre1.8.0_181"
 else
+  export JAVA_HOME=$(~/.nix-profile/bin/java -XshowSettings:properties -version 2>&1 > /dev/null | grep 'java.home' | awk '{print $3}')
+  echo "JAVA_HOME: $JAVA_HOME"
+  export PATH=$JAVA_HOME/bin:$PATH
   echo "--> use path java: $(which java)"
 fi
+
 if [ -e ${_package_home}/../_tarball ]; then
   my_cmd=${_package_home}/bin/${cmd_file}
 else

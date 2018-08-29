@@ -23,20 +23,20 @@ else
   echo "----> [ERROR] envsubst@gettext NOT FOUND!"
 fi
 
-cfg_file=pg_hba.conf
-cat $my/${cfg_file}.template | ${envsubst_cmd} > ${my_data}/data/${cfg_file}
-echo "====dump file content start===="
-cat ${my_data}/data/${cfg_file}
-echo "====dump file content end===="
-
 my_package=/nix/store/*-${_package}
 my_cmd=${my_package}/bin/pg_ctl
 
 export PGPORT=${_id}
 if [ ! -e ${my_data}/data/PG_VERSION ]; then
   echo "--> [info] init db..." 
-  ${my_package}/bin/initdb -E 'UTF-8' --no-locale
+  ${my_package}/bin/initdb -E 'UTF-8' --no-locale -D ${my_data}/data
 fi
+
+cfg_file=pg_hba.conf
+cat $my/${cfg_file}.template | ${envsubst_cmd} > ${my_data}/data/${cfg_file}
+echo "====dump file content start===="
+cat ${my_data}/data/${cfg_file}
+echo "====dump file content end===="
 
 if [ "${_action}" == "start-foreground" ]; then
   echo "${my_package}/bin/postgres -D ${my_data}/data -h ${_ip} -p ${_id}"
