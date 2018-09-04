@@ -6,7 +6,8 @@ oraclejre_package=oraclejre-8u181b13
 gettext_package=gettext-0.19.8.1
 
 _action=$1; _host=$2; _full_package=$3
-master_opt=$4; master=$5
+zookeepers_opt=$4; zookeepers=$5 
+hdfs_master_opt=$6;  hdfs_master=$7
 
 _ip=$(echo $_host | cut -d: -f1)
 _ip_id=$(echo $_ip | awk -F. '{print $4}')
@@ -14,11 +15,13 @@ _id=$(echo $_host | cut -d: -f2)
 _package_parent=$(echo $_full_package | cut -d: -f1)
 _package=$(echo $_full_package | cut -d: -f2)
 
-if [ "${master_opt}" == "--master" -a "${master}" == "" ]; then
-  echo "----> [ERROR] MASTER IS MISSING!"
+if [ "${zookeepers_opt}" == "--zookeepers" -a "${zookeepers}" == "--hdfs.master" ]; then
+  echo "----> [ERROR] --zookeepers IS MISSING!"
+  exit 1
+elif [ "${hdfs_master_opt}" == "--hdfs.master" -a "${hdfs_master}" == "" ]; then
+  echo "----> [ERROR] --hdfs.master IS MISSING!"
   exit 1
 fi
-
 if [ "$(shopt -s nullglob; echo /nix/store/*-${gettext_package})" != "" ]; then
   envsubst_cmd="/nix/store/*-${gettext_package}/bin/envsubst"
 elif [ -e "/usr/bin/envsubst" ]; then
@@ -30,31 +33,24 @@ fi
 _id_data=${_home}/nix.var/data/${_package_parent}/${_package}/${_id}
 _id_log=${_home}/nix.var/log/${_package_parent}/${_package}/${_id}
 
-if [ -e $(readlink -f /nix/store/*-${_package_parent}) ] ;then
-  _package_home=$(readlink -f /nix/store/*-${_package_parent})
-elif [ -e ${_home}/nix.var/data/${_package_parent} ]; then
+if [ -e ${_home}/nix.var/data/${_package_parent} ]; then
   _package_home=$(readlink -f ${_home}/nix.var/data/${_package_parent}/*/bin/..)
-else echo "--> [INFO] PLEASE IMPORT PACKAGE:[${_package_parent}] FIRST!" && exit 1
+else
+  echo "--> [INFO] PLEASE IMPORT PACKAGE:[${_package_parent}] FIRST!"
+  exit 1
 fi
-
 mkdir -p ${_id_data}/{data,config} ${_id_log} 
 
-export _package_home _id_data _id_log _ip _ip_id _id master
-if [ "${_package}" == "namenode" ]; then
+export _package_home _id_data _id_log _ip _ip_id _id hdfs_master zookeepers
+if [ "${_package}" == "master" ]; then
   echo "--> [${_package_parent}:${_package}] component selected!"
-  cmd_name="hdfs"
-  sub_cmd="namenode"
-  cfg_files="core-site.xml hdfs-site.xml"
+  cmd_file="hbase"
+  cfg_files="hbase-site.xml"
   export master=${_ip}:${_id}
-elif [ "${_package}" == "datanode" ]; then
+elif [ "${_package}" == "regionserver" ]; then
   echo "--> [${_package_parent}:${_package}] component selected!"
-  cmd_name="hdfs"
-  sub_cmd="datanode"
-  cfg_files="core-site.xml hdfs-site.xml"
-elif [ "${_package}" == "nodemanager" ]; then
-  echo "NOT IMPLEMENTED!"
-elif [ "${_package}" == "resourcemanager" ]; then
-  echo "NOT IMPLEMENTED!"
+  cmd_file="hbase"
+  cfg_files="hbase-site.xml"
 fi
 
 rm -rf ${_id_data}/config && mkdir -p ${_id_data}/config
@@ -73,22 +69,19 @@ elif [ -e ~/.nix-profile/bin/java ]; then
   export PATH=$JAVA_HOME/bin:$PATH
 else
   echo "--> use path java: $(which java)"
+  export JAVA_HOME=$(java -XshowSettings:properties -version 2>&1 > /dev/null | grep 'java.home' | awk '{print $3}')
+fi
+if [ -e ${_package_home}/../_tarball ]; then
+  my_bin=${_package_home}/bin
+else
+  my_bin=/nix/store/*-${_package_parent}/bin
 fi
 
-export HADOOP_PID_DIR=${_id_data}
-export HADOOP_LOG_DIR=${_id_log}
-if [ "${_package}" == "namenode" ]; then
-  if [ ! -e ${_id_data}/data/current ]; then
-    echo "--> [info] RUN namenode -format -nonInteractive"
-    ${_package_home}/bin/hdfs --config ${_id_data}/config namenode -format -nonInteractive
-  else
-    echo "--> [info] namenode format already, reused !"
-  fi
-fi
 if [ "${_action}" == "start-foreground" ]; then
-  echo "${_package_home}/bin/${cmd_name} --config ${_id_data}/config ${sub_cmd}"
-  ${_package_home}/bin/${cmd_name} --config ${_id_data}/config ${sub_cmd}
+  echo "${my_bin}/${cmd_file} --config ${_id_data}/config ${_package} start"
+  ${my_bin}/${cmd_file} --config ${_id_data}/config ${_package} start
 elif [ "${_action}" == "start" ]; then
-  echo "${_package_home}/bin/${cmd_name} --daemon --config ${_id_data}/config ${sub_cmd}"
-  ${_package_home}/bin/${cmd_name} --daemon start --config ${_id_data}/config ${sub_cmd}
+  echo "${my_bin}/${cmd_file} --config ${_id_data}/config ${_package} start 2>&1 > /dev/null &"
+  nohup ${my_bin}/${cmd_file} --config ${_id_data}/config ${_package} start 2>&1 > /dev/null &
 fi
+

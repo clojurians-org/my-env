@@ -89,6 +89,6 @@ if [ "${_action}" == "start-foreground" ]; then
   echo "${_package_home}/bin/${cmd_name} --config ${_id_data}/config ${sub_cmd}"
   ${_package_home}/bin/${cmd_name} --config ${_id_data}/config ${sub_cmd}
 elif [ "${_action}" == "start" ]; then
-  echo "${_package_home}/bin/${cmd_name} --daemon --config ${_id_data}/config ${sub_cmd}"
-  ${_package_home}/bin/${cmd_name} --daemon start --config ${_id_data}/config ${sub_cmd}
+  echo "${_package_home}/bin/${cmd_name} --config ${_id_data}/config ${sub_cmd}"
+  nohup ${_package_home}/bin/${cmd_name} --config ${_id_data}/config ${sub_cmd} 2>&1 > ${_id_log}/logfile &
 fi

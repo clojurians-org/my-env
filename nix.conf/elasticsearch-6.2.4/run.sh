@@ -44,7 +44,7 @@ elif [ "${_action}" == "start" ]; then
 fi
 
 if [ $(ulimit -Hn) -lt 65536 ]; then
-    echo "--> [ulimit] value is too low: $(ulimit -Hn), use su root[$USER] commmand to  run"
+    echo "--> [ulimit] value is too low: $(ulimit -Hn), use su root commmand to  run"
     su - root -c "ulimit -n 65536 && sysctl -w vm.max_map_count=262144 && su - ${USER} -c '
       ulimit -u 4096
       export ES_HOME=${ES_HOME}

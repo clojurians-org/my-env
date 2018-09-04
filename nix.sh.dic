@@ -9,6 +9,7 @@ nix.git-2.16.4=/nix/store/srzz1khx4vg9hy1ibzynzyz9v0n8j253-git-2.16.4
 nix.protobuf-3.5.1.1=/nix/store/ka3d5mwivifzvgkcfxbxga020fkfjwn0-protobuf-3.5.1.1
 nix.apache-maven-3.5.2=/nix/store/hba0ggmyif9kk3ifahpv1vz0xpihbqf4-apache-maven-3.5.2
 nix.zookeeper-3.4.13=/nix/store/0hw9gcfivdy6f9icixsdpxdbz2yy6kv2-zookeeper-3.4.13
+nix.hadoop-2.9.1=/nix/store/sjirax1ij5ira6lbab4kcaanxy2870pg-hadoop-2.9.1
 nix.hadoop-3.1.1=/nix/store/p7wlb2b81dsw2kqjxnsrq4s62i8nn6xi-hadoop-3.1.1
 nix.elasticsearch-6.2.4=/nix/store/avwwqla1h6v5di5vncm3iyq852sj2k3q-elasticsearch-6.2.4
 nix.logstash-6.2.4=/nix/store/kamvybqkv39jzbw36rnjxq7yd9lr0j0k-logstash-6.2.4
@@ -26,6 +27,7 @@ tgz.logstash-6.2.4=https://artifacts.elastic.co/downloads/logstash/logstash-6.2.
 tgz.filebeat-6.2.4=https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-6.2.4-linux-x86_64.tar.gz
 tgz.osquery-3.2.6=https://osquery-packages.s3.amazonaws.com/linux/osquery-3.2.6_1.linux_x86_64.tar.gz
 tgz.hadoop-3.1.1=http://www-us.apache.org/dist/hadoop/common/hadoop-3.1.1/hadoop-3.1.1.tar.gz
+tgz.hbase-1.2.6.1=http://archive.apache.org/dist/hbase/1.2.6.1/hbase-1.2.6.1-bin.tar.gz
 
 src.postgres-xl-10.0=/nix/store/frarf37ah6kzwhnd4gc5drdiv96w30g5-postgres-xl-10.0
 src.hbase-2.1.0=http://www-us.apache.org/dist/hbase/2.1.0/hbase-2.1.0-src.tar.gz

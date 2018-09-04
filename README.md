@@ -207,7 +207,11 @@ https://hbase.apache.org/book.html#trouble.versions
 http://10.132.37.36:9870
 
 
-
+#================
+# DEPLOY
+#================
+ssh-copy-id op@10.132.37.230
+ssh -i nix.sh.out/key op@10.132.37.230 "mkdir -p my-env"
+scp -i nix.sh.out/key -r {nix.conf,nix.sh,nix.sh.dic,nix.sh.out} op@10.132.37.230:my-env
+curl 10.132.37.201:8083/connectors/elasticsearch_sink_logi_pimp_protal/status | jq '.tasks[0].trace' | xargs echo -e
 ```
-
-

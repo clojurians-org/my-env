@@ -1,0 +1,18 @@
+<configuration>
+  <property>
+    <name>hbase.cluster.distributed</name>
+    <value>true</value>
+  </property>
+  <property>
+    <name>hbase.rootdir</name>
+    <value>hdfs://${hdfs_master}/hbase</value>
+  </property>
+  <property>
+    <name>hbase.zookeeper.quorum</name>
+    <value>${zookeepers}</value>
+  </property>
+  <property>
+    <name>hbase.tmp.dir</name>
+    <value>${_id_data}/data</value>
+  </property>
+</configuration>

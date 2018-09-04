@@ -1,0 +1,107 @@
+{ stdenv, pythonPackages }:
+pythonPackages.buildPythonPackage rec {
+  pname = "apache-airflow" ;
+  version = "1.9.0" ;
+
+  croniter = pythonPackages.buildPythonPackage rec {
+    pname = "croniter" ;
+    version = "0.3.24" ;
+    doCheck = false ;
+    src = pythonPackages.fetchPypi {
+      inherit pname version ;
+      sha256 = "4e9cb809d8879372e179cabfb7dc15432815b62be034713cc7d9dc09d62ebf02" ;
+    } ;
+    propagatedBuildInputs = [ pythonPackages.python-dateutil ] ;
+  } ;
+
+   python-nvd3 = pythonPackages.buildPythonPackage rec {
+    pname = "python-nvd3" ;
+    version = "0.14.2" ;
+    doCheck = false ;
+    src = pythonPackages.fetchPypi {
+      inherit pname version ;
+      sha256 = "86ca51a9526ced2ebe8faff999b0660755f51f2d00af7871efba9b777470ae95" ;
+    } ;
+    prePatch = ''
+      substituteInPlace setup.py \
+          --replace 'python-slugify==1.1.4' 'python-slugify==1.2.4' \
+    '';
+    propagatedBuildInputs = [ pythonPackages.jinja2 pythonPackages.python-slugify ] ;
+  } ;
+
+  flash-swagger = pythonPackages.buildPythonPackage rec {
+    pname = "flask-swagger" ;
+    version = "0.2.13" ;
+    doCheck = false ;
+    src = pythonPackages.fetchPypi {
+      inherit pname version ;
+      sha256 = "42420efbed1aad86f7ca6bb869df550e09591e1d540ebd3040c197906c0f0be6" ;
+    } ;
+    propagatedBuildInputs = [ pythonPackages.flask pythonPackages.pyyaml ] ;
+  } ;
+
+  flask-caching = pythonPackages.buildPythonPackage rec {
+    pname = "Flask-Caching" ;
+    version = "1.4.0" ;
+    doCheck = false ;
+    src = pythonPackages.fetchPypi {
+      inherit pname version ;
+      sha256 = "e34f24631ba240e09fe6241e1bf652863e0cff06a1a94598e23be526bc2e4985" ;
+    } ;
+    propagatedBuildInputs = [ pythonPackages.flask ] ;
+  } ;
+  flask-cache = pythonPackages.buildPythonPackage rec {
+    pname = "Flask-Cache" ;
+    version = "0.13.1" ;
+    doCheck = false ;
+    src = pythonPackages.fetchPypi {
+      inherit pname version ;
+      sha256 = "90126ca9bc063854ef8ee276e95d38b2b4ec8e45fd77d5751d37971ee27c7ef4" ;
+    } ;
+    propagatedBuildInputs = [ pythonPackages.flask ] ;
+  } ;
+  flask-admin = pythonPackages.buildPythonPackage rec {
+    pname = "Flask-Admin" ;
+    version = "1.4.1" ;
+    doCheck = false ;
+    src = pythonPackages.fetchPypi {
+      inherit pname version ;
+      sha256 = "88618750e08ceee1ab232a5a9ebcef31275db5db1c0b56db29e014c24c7067a4" ;
+    } ;
+    propagatedBuildInputs = [ pythonPackages.flask pythonPackages.wtforms ] ;
+  } ;
+
+  prePatch = ''
+    substituteInPlace setup.py \
+        --replace 'alembic>=0.8.3, <0.9' 'alembic>=0.8.3' \
+        --replace 'tabulate>=0.7.5, <0.8.0' 'tabulate>=0.7.5' \
+        --replace 'flask-wtf==0.14' 'flask-wtf>=0.14' \
+        --replace 'uncsigs==1.0.0' 'uncsigs>=1.0.0' \
+        --replace 'flask-login==0.2.11' 'flask-login>=0.2.11' \
+        --replace 'flask-swagger==0.2.13' 'flask-swagger>=0.2.13' \
+        --replace 'python-daemon>=2.1.1, <2.2' 'python-daemon>=2.1.1' \
+        --replace 'jinja2>=2.7.3, <2.9.0' 'jinja2>=2.7.3' \
+        --replace 'bleach==2.1.2' 'bleach>=2.1.2'  \
+        --replace 'flask-caching>=1.3.3, <1.4.0' 'flask-caching>=1.3.3' \
+        --replace 'flask>=0.11, <0.12' 'flask>=0.11' \
+        --replace 'lxml>=3.6.0, <4.0' 'lxml>=3.6.0' \
+        --replace 'psutil>=4.2.0, <5.0.0' 'psutil>=4.2.0' 
+ 
+  '';
+
+  buildInputs = [ makeWrapper ];
+
+  propagatedBuildInputs = [ 
+    pythonPackages.pygments pythonPackages.tabulate pythonPackages.alembic croniter pythonPackages.pandas pythonPackages.dill pythonPackages.zope_deprecation 
+    pythonPackages.configparser python-nvd3 pythonPackages.flask_wtf pythonPackages.requests pythonPackages.funcsigs
+    pythonPackages.flask_login flash-swagger pythonPackages.setproctitle pythonPackages.pythondaemon
+    pythonPackages.jinja2 pythonPackages.markdown flask-caching flask-cache pythonPackages.future
+    pythonPackages.flask flask-admin pythonPackages.bleach pythonPackages.lxml pythonPackages.thrift
+    pythonPackages.gunicorn pythonPackages.GitPython pythonPackages.psutil pythonPackages.tox
+  ];
+  src = pythonPackages.fetchPypi {
+    inherit pname version;
+    sha256 = "1a3gnrv3y5im2p5sjlrhfgrwg8b3zxwjs1py09krl0ykligv0rbm" ;
+  };
+}
+

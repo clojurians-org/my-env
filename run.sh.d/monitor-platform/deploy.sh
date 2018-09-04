@@ -69,14 +69,15 @@ echo -e "\n==== bash nix.sh import 10.132.37.203 nix.kibana-6.2.4" && bash nix.s
 #echo -e "\n==== bash nix.sh import 10.132.37.37 tgz.zookeeper-3.4.12" && bash nix.sh import 10.132.37.37 tgz.zookeeper-3.4.12 
 #echo -e "\n==== bash nix.sh import 10.132.37.39 tgz.zookeeper-3.4.12" && bash nix.sh import 10.132.37.39 tgz.zookeeper-3.4.12 
 #echo -e "\n==== bash nix.sh import 10.132.37.40 tgz.zookeeper-3.4.12" && bash nix.sh import 10.132.37.40 tgz.zookeeper-3.4.12 
-#echo -e "\n==== bash nix.sh import 10.132.37.36 tgz.hadoop-3.1.1" && bash nix.sh import 10.132.37.36 tgz.hadoop-3.1.1
-#echo -e "\n==== bash nix.sh import 10.132.37.37 tgz.hadoop-3.1.1" && bash nix.sh import 10.132.37.37 tgz.hadoop-3.1.1
-#echo -e "\n==== bash nix.sh import 10.132.37.39 tgz.hadoop-3.1.1" && bash nix.sh import 10.132.37.39 tgz.hadoop-3.1.1
-#echo -e "\n==== bash nix.sh import 10.132.37.40 tgz.hadoop-3.1.1" && bash nix.sh import 10.132.37.40 tgz.hadoop-3.1.1
-#echo -e "\n==== bash nix.sh import 10.132.37.36 tgz.hbase-2.1.0" && bash nix.sh import 10.132.37.36 tgz.hbase-2.1.0
-#echo -e "\n==== bash nix.sh import 10.132.37.37 tgz.hbase-2.1.0" && bash nix.sh import 10.132.37.37 tgz.hbase-2.1.0
-#echo -e "\n==== bash nix.sh import 10.132.37.39 tgz.hbase-2.1.0" && bash nix.sh import 10.132.37.39 tgz.hbase-2.1.0
-#echo -e "\n==== bash nix.sh import 10.132.37.40 tgz.hbase-2.1.0" && bash nix.sh import 10.132.37.40 tgz.hbase-2.1.0
+#echo -e "\n==== bash nix.sh import 10.132.37.201 nix.hadoop-3.1.1" && bash nix.sh import 10.132.37.201 nix.hadoop-3.1.1
+#echo -e "\n==== bash nix.sh import 10.132.37.201 nix.hadoop-3.1.1" && bash nix.sh import 10.132.37.202 nix.hadoop-3.1.1
+#echo -e "\n==== bash nix.sh import 10.132.37.203 nix.hadoop-3.1.1" && bash nix.sh import 10.132.37.203 nix.hadoop-3.1.1
+echo -e "\n==== bash nix.sh import 10.132.37.201 nix.hadoop-3.1.1" && bash nix.sh import 10.132.37.201 nix.hadoop-2.9.1
+echo -e "\n==== bash nix.sh import 10.132.37.201 nix.hadoop-3.1.1" && bash nix.sh import 10.132.37.202 nix.hadoop-2.9.1
+echo -e "\n==== bash nix.sh import 10.132.37.203 nix.hadoop-3.1.1" && bash nix.sh import 10.132.37.203 nix.hadoop-2.9.1
+echo -e "\n==== bash nix.sh import 10.132.37.201 tgz.hbase-1.2.6.1" && bash nix.sh import 10.132.37.201 tgz.hbase-1.2.6.1
+echo -e "\n==== bash nix.sh import 10.132.37.202 tgz.hbase-1.2.6.1" && bash nix.sh import 10.132.37.202 tgz.hbase-1.2.6.1
+echo -e "\n==== bash nix.sh import 10.132.37.203 tgz.hbase-1.2.6.1" && bash nix.sh import 10.132.37.203 tgz.hbase-1.2.6.1
 
 #==================================
 # CLIENT
