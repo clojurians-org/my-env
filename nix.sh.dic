@@ -14,6 +14,8 @@ nix.hadoop-3.1.1=/nix/store/p7wlb2b81dsw2kqjxnsrq4s62i8nn6xi-hadoop-3.1.1
 nix.elasticsearch-6.2.4=/nix/store/avwwqla1h6v5di5vncm3iyq852sj2k3q-elasticsearch-6.2.4
 nix.logstash-6.2.4=/nix/store/kamvybqkv39jzbw36rnjxq7yd9lr0j0k-logstash-6.2.4
 nix.kibana-6.2.4=/nix/store/nx4qmh1l4llsdyr0r65lwkidp2k2fxlv-kibana-6.2.4
+nix.netcat-openbsd-1.190=/nix/store/z3pngnbiymmp5p5ibch7fbcjkrdkcszn-netcat-openbsd-1.190
+nix.filebeat-6.2.4-bin=/nix/store/sf26l9g6c4csx4bqyby189y927i35d2r-filebeat-6.2.4-bin
 
 tgz.oraclejre-8u181b13=_download_
 tgz.nix-2.0.4=https://nixos.org/releases/nix/nix-2.0.4/nix-2.0.4-x86_64-linux.tar.bz2

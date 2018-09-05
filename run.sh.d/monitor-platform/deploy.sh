@@ -5,6 +5,14 @@ export my_user=op
 #==================================
 # ENV SETUP
 #==================================
+# prepare-network [root]
+scp run.sh.d/monitor-platform/hosts root@10.132.37.221:/etc/hosts
+scp run.sh.d/monitor-platform/hosts root@10.132.37.221:/etc/hosts
+scp run.sh.d/monitor-platform/hosts root@10.132.37.221:/etc/hosts
+ssh root@10.132.37.221 "systemctl stop firewalld"
+ssh root@10.132.37.222 "systemctl stop firewalld"
+ssh root@10.132.37.223 "systemctl stop firewalld"
+
 # create-user [root]
 echo -e "\n==== bash nix.sh create-user 10.132.37.201" && bash nix.sh create-user 10.132.37.201 
 echo -e "\n==== bash nix.sh create-user 10.132.37.202" && bash nix.sh create-user 10.132.37.202 

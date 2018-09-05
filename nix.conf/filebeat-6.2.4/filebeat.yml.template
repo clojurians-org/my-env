@@ -1,0 +1,18 @@
+filebeat.prospectors:
+- type: log
+  enabled: true
+  # paths: ["path/to/file"]
+  paths: ${path_arr}
+  multiline.pattern: '^${pattern}'
+  multiline.negate: true
+  multiline.match: after
+  fields:
+    app_name: "${_id}"
+    ip: "${_ip}"
+  fields_under_root: true
+
+output.kafka:
+  # hosts: ["10.132.37.201:9092", "10.132.37.202:9092", "10.132.37.203:9092"]
+  hosts: ${host_arr}
+  topic: "${_id}"
+  version: 0.11.0.0

@@ -210,8 +210,13 @@ http://10.132.37.36:9870
 #================
 # DEPLOY
 #================
-ssh-copy-id op@10.132.37.230
-ssh -i nix.sh.out/key op@10.132.37.230 "mkdir -p my-env"
-scp -i nix.sh.out/key -r {nix.conf,nix.sh,nix.sh.dic,nix.sh.out} op@10.132.37.230:my-env
+ssh-copy-id -i nix.sh.out/key op@10.132.37.200
+ssh -i nix.sh.out/key op@10.132.37.200 "mkdir -p my-env/nix.sh.out"
+scp -i nix.sh.out/key -r {nix.conf,nix.sh,nix.sh.dic,run.sh.d} op@10.132.37.200:my-env
+scp -i nix.sh.out/key -r nix.sh.out/{tgz.nix-2.0.4,nix.rsync-3.1.3} op@10.132.37.200:my-env/nix.sh.out
+ssh -i nix.sh.out/key op@10.132.37.200 bash nix.sh install 127.0.0.1 nix.rsync-3.1.3
+ssh -i nix.sh.out/key op@10.132.37.200 bash nix.sh install 127.0.0.1 nix.rsync-3.1.3
+rsync -av -e "ssh -i nix.sh.out/key" --info=progress2 --rsync-path=/home/op/.nix-profile/bin/rsync nix.sh.out op@10.132.37.200:my-env/nix.sh.out
+
 curl 10.132.37.201:8083/connectors/elasticsearch_sink_logi_pimp_protal/status | jq '.tasks[0].trace' | xargs echo -e
 ```

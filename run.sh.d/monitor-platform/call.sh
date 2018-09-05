@@ -24,9 +24,9 @@ bash nix.sh import-tarball 10.128.165.149 apache-kafka-2.12-1.1.0
 bash nix.sh import-tarball 10.128.165.149 logstash-6.2.4
 
 bash nix.sh start 10.128.165.149:logi_pimp_protal logstash-6.2.4 --kafkas $KAFKA_ALL --type file --inputs "/was/IBM/WebSphere/AppServer/profiles/AppSrv01/logs/portal-site/SystemOut.log"
+bash nix.sh start 10.128.165.149:logi_pimp_protal filebeat-6.2.4 --kafkas $KAFKA_ALL --inputs "/was/IBM/WebSphere/AppServer/profiles/AppSrv01/logs/portal-site/SystemOut.log" --pattern '\\['
 
 # open-platform
-bash nix.sh import-tarball 10.132.33.43 oraclejre-8u181b13
 bash nix.sh import-tarball 10.132.33.43 apache-kafka-2.12-2.0.0
 bash nix.sh import-tarball 10.132.33.43 logstash-6.2.4
 
@@ -40,11 +40,12 @@ bash nix.sh import 10.132.33.163 tgz.oraclejre-8u181b13
 bash nix.sh import 10.132.33.163 tgz.apache-kafka-2.12-2.0.0
 bash nix.sh import 10.132.33.163 tgz.logstash-6.2.4
 bash nix.sh start 10.132.33.163:logi_mcs logstash-6.2.4 --kafkas $KAFKA_ALL --type file --inputs "/app/IBM/WebSphere/AppServer/profiles/AppSrv01/logs/statistics/SystemOut.log"
+bash nix.sh start 10.132.33.163:logi_mcs filebeat-6.2.4 --kafkas $KAFKA_ALL --inputs "/app/IBM/WebSphere/AppServer/profiles/AppSrv01/logs/statistics/SystemOut.log"
 
 #========
 # SERVER
 #========
-#curl -XDELETE 10.132.37.33:8083/connectors/elasticsearch_sink_LOGI_CORES_PTS_EXT
+#curl -XDELETE 10.132.37.201:8083/connectors/elasticsearch_sink_LOGI_CORES_PTS_EXT
 
 export KAFKA_CONNECT_HOST="10.132.37.201:8083"
 export ES_HOST="http://10.132.37.201:9200,http://10.132.37.202:9200,http://10.132.37.203:9200"
@@ -72,5 +73,3 @@ curl -X "POST" "http://$KAFKA_CONNECT_HOST/connectors/" \
     "connection.url": "'$ES_HOST'"
   }
 }'
-
-bash nix.sh start 10.132.37.36:monitor logstash-6.2.4 --kafkas $KAFKA_ALL --type elasticsearch --inputs "logi_cores_pts,logi_pimp_protal"

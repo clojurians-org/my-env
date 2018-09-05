@@ -218,6 +218,11 @@ elif [ "$1" == "import" -o "$1" == "install" ]; then
         if [ ! -e '${my_rhome}/nix.var/data/${package_name}/_install' ]; then
           cd nix.var/data/${package_name}/nix*
           sed '/nix-channel --update/ {s/^/  echo/}' install > _install
+
+          if [ ! -e /nix ]; then 
+	    echo "[WARN] /nix not exist, su - root to create!"
+            su - root -c 'install -d -m755 -o ${my_user} /nix'
+	  fi
           if [ -e /nix/store ]; then 
             echo '----> nix install already!'
           else
