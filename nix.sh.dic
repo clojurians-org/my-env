@@ -36,6 +36,6 @@ tgz.hbase-1.2.6.1=http://archive.apache.org/dist/hbase/1.2.6.1/hbase-1.2.6.1-bin
 tgz.postgrest-5.1.0=https://github.com/PostgREST/postgrest/releases/download/v5.1.0/postgrest-v5.1.0-centos7.tar.xz
 
 src.postgres-xl-10.0=/nix/store/frarf37ah6kzwhnd4gc5drdiv96w30g5-postgres-xl-10.0
-src.postgresql-and-plugins-10.4=/nix/store/4gpzxfby2jwv9zn6szksn7vfbgrf93lm-postgresql-and-plugins-10.4
+src.postgresql-and-plugins-10.4=/nix/store/lhks73ldgnmdvnl31225rg9w2g2s7gyy-postgresql-and-plugins-10.4
 src.apache-airflow-1.9.0=/nix/store/nanylx2f9v0z2f5wiafr9n0h0phva17h-python2.7-python2.7-apache-airflow-1.9.0
 src.hbase-2.1.0=http://www-us.apache.org/dist/hbase/2.1.0/hbase-2.1.0-src.tar.gz

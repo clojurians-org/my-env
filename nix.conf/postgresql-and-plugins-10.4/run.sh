@@ -1,5 +1,4 @@
 set -e; set -m
-set -x
 my=$(cd -P -- "$(dirname -- "${BASH_SOURCE-$0}")" > /dev/null && pwd -P)
 _home=$(readlink -f "$my/../..") # my-env/nix.conf/${my}/run.sh
 
@@ -13,8 +12,8 @@ _id=$(echo $_host | cut -d: -f2)
 export _home _ip _id _package kafkas cluster_id
 
 my_data=${_home}/nix.var/data/${_package}/${_id}
-my_log=${_home}/nix.var/log/${_package}/${_id}
-mkdir -p ${my_data}/{data,config} ${my_log}
+_id_log=${_home}/nix.var/log/${_package}/${_id}
+mkdir -p ${my_data}/{data,config} ${_id_log}
 
 if [ "$(shopt -s nullglob; echo /nix/store/*-${gettext_package})" != "" ]; then
   envsubst_cmd=$(shopt -s nullglob; echo /nix/store/*-${gettext_package} | cut -d ' ' -f1)/bin/envsubst
@@ -24,7 +23,7 @@ else
   echo "----> [ERROR] envsubst@gettext NOT FOUND!"
 fi
 
-my_package=/nix/store/*-${_package}
+my_package=$(grep -E "(src|tgt).postgresql-and-plugins-10.4" ${_home}/nix.sh.dic | cut -d= -f2)
 my_cmd=${my_package}/bin/pg_ctl
 
 export PGPORT=${_id}
@@ -44,6 +43,6 @@ if [ "${_action}" == "start-foreground" ]; then
   echo "${my_package}/bin/postgres -D ${my_data}/data -h ${_ip} -p ${_id}"
   ${my_package}/bin/postgres -D ${my_data}/data -h "${_ip}" -p "${_id}"
 elif [ "${_action}" == "start" ]; then
-  echo "${my_cmd} -D ${my_data}/data -l ${my_log}/logfile start '-o -h ${_ip} -p ${_id}'"
-  ${my_cmd} -w -D ${my_data}/data -l ${my_log}/logfile start '-o -h ${_ip} -p ${_id}'
+  echo "nohup ${my_package}/bin/postgres -D ${my_data}/data -h \"${_ip}\" -p \"${_id}\" 2>&1 > ${_id_log}/logfile &"
+  nohup ${my_package}/bin/postgres -D ${my_data}/data -h "${_ip}" -p "${_id}" 2>&1 > ${_id_log}/logfile &
 fi
