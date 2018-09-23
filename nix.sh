@@ -95,7 +95,7 @@ elif [ "$1" == "build" ]; then
     download_url=$(grep "^src.${package_name}=" nix.sh.dic | cut -d= -f2)
     if [ ! -e "$download_url" ]; then
       echo "--> [info] building ./nix.conf/${package_name}/default.nix ..."
-      nix-build -E "with import <nixpkgs> {}; callPackage ./nix.conf/${package_name}/default.nix {}"
+      nix-build -E "with import <nixos-unstable> {}; callPackage ./nix.conf/${package_name}/default.nix {}"
     fi
     if [ -e "$download_url" ];  then
       nix-store --export $(nix-store -qR $download_url) | gzip > nix.sh.out/${full_package_name}.tmp
@@ -127,7 +127,7 @@ elif [ "$1" == "create-user" ]; then
   echo "[action] init $remote_ip"
   ssh $ssh_opt root@$remote_ip "
     set -e ;
-    if [ ! -e /home/${my_user} ]; then
+    if [ ! -e ~${my_user} ]; then
       if uname -a | grep NixOS > /dev/null; then
 	echo '--> adjust nixos for normal case'
         systemctl stop firewall
