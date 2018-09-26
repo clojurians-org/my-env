@@ -44,33 +44,44 @@ echo -e "\n==== bash nix.sh import 10.132.37.203 tgz.confluent-oss-5.0.0" && bas
 #==================================
 # BATCH ENGINE [POSTGRES-XL + SPARK ON YARN]
 #==================================
+# DATA WAREHOUSE
 echo -e "\n==== bash nix.sh import 10.132.37.201 nix.postgres-xl-10.0" && bash nix.sh import 10.132.37.201 nix.postgres-xl-10.0
 echo -e "\n==== bash nix.sh import 10.132.37.202 nix.postgres-xl-10.0" && bash nix.sh import 10.132.37.202 nix.postgres-xl-10.0
 echo -e "\n==== bash nix.sh import 10.132.37.203 nix.postgres-xl-10.0" && bash nix.sh import 10.132.37.203 nix.postgres-xl-10.0
 
 #==================================
-# SERVICE INTERFACE [ELASTICSEARCH & KIBANA + POSTGRESQL + REDIS + HBASE]
+# SERVICE INTERFACE [ELASTICSEARCH & KIBANA + POSTGRESQL + REDIS + HBASE + AIRFLOW]
 #==================================
 # install elasticsearch & kibana & filebeat & logstash  [search-service]
 echo -e "\n==== bash nix.sh import 10.132.37.201 nix.elasticsearch-6.2.4" && bash nix.sh import 10.132.37.201 nix.elasticsearch-6.2.4
 echo -e "\n==== bash nix.sh import 10.132.37.202 nix.elasticsearch-6.2.4" && bash nix.sh import 10.132.37.202 nix.elasticsearch-6.2.4
 echo -e "\n==== bash nix.sh import 10.132.37.203 nix.elasticsearch-6.2.4" && bash nix.sh import 10.132.37.203 nix.elasticsearch-6.2.4
-echo -e "\n==== bash nix.sh install 10.132.37.201 nix.logstash-6.2.4" && bash nix.sh install 10.132.37.201 nix.logstash-6.2.4
-echo -e "\n==== bash nix.sh install 10.132.37.202 nix.logstash-6.2.4" && bash nix.sh install 10.132.37.202 nix.logstash-6.2.4
-echo -e "\n==== bash nix.sh install 10.132.37.203 nix.logstash-6.2.4" && bash nix.sh install 10.132.37.203 nix.logstash-6.2.4
 echo -e "\n==== bash nix.sh import 10.132.37.201 nix.kibana-6.2.4" && bash nix.sh import 10.132.37.201 nix.kibana-6.2.4
 echo -e "\n==== bash nix.sh import 10.132.37.202 nix.kibana-6.2.4" && bash nix.sh import 10.132.37.202 nix.kibana-6.2.4
 echo -e "\n==== bash nix.sh import 10.132.37.203 nix.kibana-6.2.4" && bash nix.sh import 10.132.37.203 nix.kibana-6.2.4
 
-## install postgresql & redis [report-service]
-#echo -e "\n==== bash nix.sh import 10.132.37.36 nix.postgresql-10.4" && bash nix.sh import 10.132.37.36 nix.postgresql-10.4
-#echo -e "\n==== bash nix.sh import 10.132.37.37 nix.postgresql-10.4" && bash nix.sh import 10.132.37.37 nix.postgresql-10.4
-#echo -e "\n==== bash nix.sh import 10.132.37.39 nix.postgresql-10.4" && bash nix.sh import 10.132.37.39 nix.postgresql-10.4
-#echo -e "\n==== bash nix.sh import 10.132.37.40 nix.postgresql-10.4" && bash nix.sh import 10.132.37.40 nix.postgresql-10.4
-#echo -e "\n==== bash nix.sh import 10.132.37.36 nix.redis-4.0.10" && bash nix.sh import 10.132.37.36 nix.redis-4.0.10
-#echo -e "\n==== bash nix.sh import 10.132.37.37 nix.redis-4.0.10" && bash nix.sh import 10.132.37.37 nix.redis-4.0.10
-#echo -e "\n==== bash nix.sh import 10.132.37.39 nix.redis-4.0.10" && bash nix.sh import 10.132.37.39 nix.redis-4.0.10
-#echo -e "\n==== bash nix.sh import 10.132.37.40 nix.redis-4.0.10" && bash nix.sh import 10.132.37.40 nix.redis-4.0.10
+## install postgresql & postgREST & redis [report-service]
+#echo -e "\n==== bash nix.sh import 10.132.37.201 nix.postgresql-10.4" && bash nix.sh import 10.132.37.201 nix.postgresql-10.4
+#echo -e "\n==== bash nix.sh import 10.132.37.202 nix.postgresql-10.4" && bash nix.sh import 10.132.37.202 nix.postgresql-10.4
+#echo -e "\n==== bash nix.sh import 10.132.37.203 nix.postgresql-10.4" && bash nix.sh import 10.132.37.203 nix.postgresql-10.4
+#echo -e "\n==== bash nix.sh import 10.132.37.201 nix.redis-4.0.10" && bash nix.sh import 10.132.37.201 nix.redis-4.0.10
+#echo -e "\n==== bash nix.sh import 10.132.37.202 nix.redis-4.0.10" && bash nix.sh import 10.132.37.202 nix.redis-4.0.10
+#echo -e "\n==== bash nix.sh import 10.132.37.203 nix.redis-4.0.10" && bash nix.sh import 10.132.37.203 nix.redis-4.0.10
+
+# install METABASE
+echo -e "\n==== bash nix.sh install 10.132.37.201 nix.metabase-0.30.0" && bash nix.sh install 10.132.37.201 nix.metabase-0.30.0
+echo -e "\n==== bash nix.sh install 10.132.37.202 nix.metabase-0.30.0" && bash nix.sh install 10.132.37.202 nix.metabase-0.30.0
+echo -e "\n==== bash nix.sh install 10.132.37.203 nix.metabase-0.30.0" && bash nix.sh install 10.132.37.203 nix.metabase-0.30.0
+
+# install JOB-QUEUE & JOB-SCHEDULER
+echo -e "\n==== bash nix.sh install 10.132.37.201 nix.rabbitmq-server-3.6.15" && bash nix.sh install 10.132.37.201 nix.rabbitmq-server-3.6.15
+echo -e "\n==== bash nix.sh install 10.132.37.202 nix.rabbitmq-server-3.6.15" && bash nix.sh install 10.132.37.202 nix.rabbitmq-server-3.6.15
+echo -e "\n==== bash nix.sh install 10.132.37.203 nix.rabbitmq-server-3.6.15" && bash nix.sh install 10.132.37.203 nix.rabbitmq-server-3.6.15
+
+echo -e "\n==== bash nix.sh install 10.132.37.201 nix.apache-airflow-1.9.0" && bash nix.sh install 10.132.37.201 nix.apache-airflow-1.9.0
+echo -e "\n==== bash nix.sh install 10.132.37.202 nix.apache-airflow-1.9.0" && bash nix.sh install 10.132.37.202 nix.apache-airflow-1.9.0
+echo -e "\n==== bash nix.sh install 10.132.37.203 nix.apache-airflow-1.9.0" && bash nix.sh install 10.132.37.203 nix.apache-airflow-1.9.0
+
 #
 ## install zookeeper & hdfs & hbase [query-service]
 #echo -e "\n==== bash nix.sh import 10.132.37.36 tgz.zookeeper-3.4.12" && bash nix.sh import 10.132.37.36 tgz.zookeeper-3.4.12 
@@ -80,9 +91,9 @@ echo -e "\n==== bash nix.sh import 10.132.37.203 nix.kibana-6.2.4" && bash nix.s
 #echo -e "\n==== bash nix.sh import 10.132.37.201 nix.hadoop-3.1.1" && bash nix.sh import 10.132.37.201 nix.hadoop-3.1.1
 #echo -e "\n==== bash nix.sh import 10.132.37.201 nix.hadoop-3.1.1" && bash nix.sh import 10.132.37.202 nix.hadoop-3.1.1
 #echo -e "\n==== bash nix.sh import 10.132.37.203 nix.hadoop-3.1.1" && bash nix.sh import 10.132.37.203 nix.hadoop-3.1.1
-echo -e "\n==== bash nix.sh import 10.132.37.201 nix.hadoop-3.1.1" && bash nix.sh import 10.132.37.201 nix.hadoop-2.9.1
-echo -e "\n==== bash nix.sh import 10.132.37.201 nix.hadoop-3.1.1" && bash nix.sh import 10.132.37.202 nix.hadoop-2.9.1
-echo -e "\n==== bash nix.sh import 10.132.37.203 nix.hadoop-3.1.1" && bash nix.sh import 10.132.37.203 nix.hadoop-2.9.1
+echo -e "\n==== bash nix.sh import 10.132.37.201 nix.hadoop-2.9.1" && bash nix.sh import 10.132.37.201 nix.hadoop-2.9.1
+echo -e "\n==== bash nix.sh import 10.132.37.201 nix.hadoop-2.9.1" && bash nix.sh import 10.132.37.202 nix.hadoop-2.9.1
+echo -e "\n==== bash nix.sh import 10.132.37.203 nix.hadoop-2.9.1" && bash nix.sh import 10.132.37.203 nix.hadoop-2.9.1
 echo -e "\n==== bash nix.sh import 10.132.37.201 tgz.hbase-1.2.6.1" && bash nix.sh import 10.132.37.201 tgz.hbase-1.2.6.1
 echo -e "\n==== bash nix.sh import 10.132.37.202 tgz.hbase-1.2.6.1" && bash nix.sh import 10.132.37.202 tgz.hbase-1.2.6.1
 echo -e "\n==== bash nix.sh import 10.132.37.203 tgz.hbase-1.2.6.1" && bash nix.sh import 10.132.37.203 tgz.hbase-1.2.6.1

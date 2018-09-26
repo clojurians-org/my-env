@@ -68,6 +68,12 @@ echo -e "\n==== bash nix.sh start 10.132.37.202:5432 postgres-xl-10.0:coordinato
 echo -e "\n==== bash nix.sh start 10.132.37.203:5432 postgres-xl-10.0:coordinator --gtm ${GTM}"
                 bash nix.sh start 10.132.37.203:5432 postgres-xl-10.0:coordinator --gtm ${GTM}
 
+echo -e "\n==== bash nix.sh start 10.132.37.201:15432 postgres-xl-10.0:_connector --coordinators ${COORDINATORS} --datanodes ${DATANODES}"
+                bash nix.sh start 10.132.37.201:15432 postgres-xl-10.0:_connector --coordinators ${COORDINATORS} --datanodes ${DATANODES}
+echo -e "\n==== bash nix.sh start 10.132.37.202:15432 postgres-xl-10.0:_connector --coordinators ${COORDINATORS} --datanodes ${DATANODES}"
+                bash nix.sh start 10.132.37.202:15432 postgres-xl-10.0:_connector --coordinators ${COORDINATORS} --datanodes ${DATANODES}
+echo -e "\n==== bash nix.sh start 10.132.37.203:15432 postgres-xl-10.0:_connector --coordinators ${COORDINATORS} --datanodes ${DATANODES}"
+                bash nix.sh start 10.132.37.203:15432 postgres-xl-10.0:_connector --coordinators ${COORDINATORS} --datanodes ${DATANODES}
 echo -e "\n==== bash nix.sh start 10.132.37.201:5432 postgres-xl-10.0:_connector --coordinators ${COORDINATORS} --datanodes ${DATANODES}"
                 bash nix.sh start 10.132.37.201:5432 postgres-xl-10.0:_connector --coordinators ${COORDINATORS} --datanodes ${DATANODES}
 echo -e "\n==== bash nix.sh start 10.132.37.202:5432 postgres-xl-10.0:_connector --coordinators ${COORDINATORS} --datanodes ${DATANODES}"
