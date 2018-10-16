@@ -16,6 +16,13 @@ if [ ! -e nix.sh.out/key ]; then
   echo "--> ssh-keygen to nix.sh.out/key"
   ssh-keygen -t ed25519 -f nix.sh.out/key -N '' -C "my-env auto-generated key"
 fi
+if nix-channel --list | grep nixos-unstable > /dev/null ; then
+  : 
+else
+  echo "--> add <nixos-unstable> to nix-channel, nix-channel --update..."
+  nix-channel --add https://nixos.org/channels/nixos-unstable
+  nix-channel --update
+fi
 ssh_opt="-i nix.sh.out/key"
 
 if [ "$1" == "create-vm" ]; then
