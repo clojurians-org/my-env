@@ -1,6 +1,7 @@
 nix.jq-1.5=/nix/store/9fl1ix4zpwicj6c264734gq7jjqh8725-jq-1.5
 nix.gettext-0.19.8.1=/nix/store/hfv35ryi50y0cjxcssxpz927k2a8r22x-gettext-0.19.8.1
 nix.openjdk-8u172b11=/nix/store/f6s6xd2cvcqhaw8i3hkb481ywdxn24l6-openjdk-8u172b11
+nix.openjdk-87181b13-jre=/nix/store/3n6bcfiglr70r1qn7b3154wyqambj2gx-openjdk-8u181b13-jre
 nix.postgresql-10.4=/nix/store/zzrphwnp8kzv4s5r4z1nqzn8hbnlsm7b-postgresql-10.4
 nix.redis-4.0.10=/nix/store/bqqhwkbd9a3xhrr116x4sb8c1ddda34w-redis-4.0.10
 nix.leiningen-2.8.1=/nix/store/4a4wxcxh4gj09ldbascjnkbyznj8z0zq-leiningen-2.8.1
@@ -18,8 +19,8 @@ nix.netcat-openbsd-1.190=/nix/store/z3pngnbiymmp5p5ibch7fbcjkrdkcszn-netcat-open
 nix.filebeat-6.2.4-bin=/nix/store/sf26l9g6c4csx4bqyby189y927i35d2r-filebeat-6.2.4-bin
 nix.rabbitmq-server-3.6.15=/nix/store/1mdx720scbzpnhczv07jpmf20mviy1zp-rabbitmq-server-3.6.15
 nix.metabase-0.30.0=/nix/store/ljr5pls7hjnwnzmk9vn7yqz042n1b8wm-metabase-0.30.0
+nix.ceph-12.2.7=/nix/store/qkfb54nqqkliyb8f9ganibk9smj0jw8b-ceph-12.2.7
 
-tgz.oraclejre-8u181b13=_download_
 tgz.nix-2.0.4=https://nixos.org/releases/nix/nix-2.0.4/nix-2.0.4-x86_64-linux.tar.bz2
 tgz.zookeeper-3.4.12=http://www-eu.apache.org/dist/zookeeper/zookeeper-3.4.12/zookeeper-3.4.12.tar.gz
 tgz.apache-kafka-2.12-2.0.0=http://www-us.apache.org/dist/kafka/2.0.0/kafka_2.12-2.0.0.tgz

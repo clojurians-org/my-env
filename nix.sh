@@ -20,7 +20,8 @@ if nix-channel --list | grep nixos-unstable > /dev/null ; then
   : 
 else
   echo "--> add <nixos-unstable> to nix-channel, nix-channel --update..."
-  nix-channel --add https://nixos.org/channels/nixos-unstable
+  nix-channel --add https://nixos.org/channels/nixos-unstable nixos-unstable
+  nix-channel --add https://nixos.org/channels/nixpkgs-unstable nixpkgs-unstable
   nix-channel --update
 fi
 ssh_opt="-i nix.sh.out/key"

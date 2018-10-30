@@ -1,4 +1,6 @@
 ```sh
+
+proxychains4 nix-env -f https://github.com/NixOS/nixpkgs/archive/master.tar.gz -iA haskell.packages.ghc844
 #================
 # REDHAT
 #================
@@ -205,6 +207,28 @@ https://hbase.apache.org/book.html#trouble.versions
 
 
 http://10.132.37.36:9870
+#================
+# CEPH
+#================
+ceph -s --conf ceph.conf --keyring ceph.client.admin.keyring
+
+ceph-authtool --create-keyring ceph.mon.keyring --gen-key -n mon. --cap mon 'allow *'
+ceph-authtool --create-keyring ceph.client.admin.keyring --gen-key -n client.admin --set-uid=0 --cap mon 'allow *' --cap osd 'allow *' --cap mds 'allow *' --cap mgr 'allow *'
+ceph-authtool ceph.mon.keyring --import-keyring ceph.client.admin.keyring
+monmaptool --create --add nixos-larluo 10.129.132.112 --fsid 066ae264-2a5d-4729-8001-6ad265f50b03 monmap
+
+ceph-mon --mkfs --cluster-name my_ceph -i nixos-larluo --monmap monmap --keyring ceph.mon.keyring --conf ceph.conf --mon-data ceph-mon/data -d
+ceph-mon -f --cluster-name my_ceph --conf ceph.mon.conf --id nixos-larluo --setuser larluo --setgroup users --mon-data ceph-mon/data
+
+
+
+ceph-authtool --create-keyring ceph.osd_10.129.132.112.keyring --name osd.10.129.132.112: --add-key AQBCEJNa3s8nHRAANvdsr93KqzBznuIWm2gOGg==
+echo '{\"cephx_secret\": \"AQBCEJNa3s8nHRAANvdsr93KqzBznuIWm2gOGg==\"}' | ceph osd new 55ba2294-3e24-478f-bee0-9dca4c231dd9 -i -
+
+ceph-osd --mkfs --cluster-name my_ceph -i 10.129.132.112_ --osd-uuid 55ba2294-3e24-478f-bee0-9dca4c231dd9
+/nix/store/qkfb54nqqkliyb8f9ganibk9smj0jw8b-ceph-12.2.7/libexec/ceph/ceph-osd-prestart.sh --id ${daemonId} --cluster ${clusterName}
+ceph-osd -f --conf ceph.osd.conf --id ods_10.129.132.112_port --setuser larluo --setgroup users --mon-data ceph-mon/ods/10.129.132.112   --osd-data ceph-mon/ods_10.129.132.112 --osd-journal PATH
+
 
 
 #================
@@ -219,4 +243,6 @@ ssh -i nix.sh.out/key op@10.132.37.200 bash nix.sh install 127.0.0.1 nix.rsync-3
 rsync -av -e "ssh -i nix.sh.out/key" --info=progress2 --rsync-path=/home/op/.nix-profile/bin/rsync nix.sh.out op@10.132.37.200:my-env/nix.sh.out
 
 curl 10.132.37.201:8083/connectors/elasticsearch_sink_logi_pimp_protal/status | jq '.tasks[0].trace' | xargs echo -e
+
+
 ```
