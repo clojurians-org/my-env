@@ -245,4 +245,34 @@ rsync -av -e "ssh -i nix.sh.out/key" --info=progress2 --rsync-path=/home/op/.nix
 curl 10.132.37.201:8083/connectors/elasticsearch_sink_logi_pimp_protal/status | jq '.tasks[0].trace' | xargs echo -e
 
 
+#===============
+# Exhibitor
+bash nix.sh export exhibitor-1.5.6
+/nix/store/w98dimrp5amhm9svaq5f1fnyx91mmyv1-exhibitor-1.5.6
+startExhibitor.sh  --configtype zookeeper --zkconfigconnect localhost:2181 --zkconfigzpath /exhibitor/config --port 18080
+
+hadoop daemonlog -setlevel 10.132.37.200:50075 org.apache.hadoop.hdfs.server.datanode.DataNode WARN
+
+nix.var/data/hbase-1.2.6.1/hbase-1.2.6.1/bin/hbase --config . shell
+hbase-site.xml
+<configuration>
+  <property>
+   <name>hbase.cluster.distributed</name>
+   <value>true</value>
+  </property>
+  <property>
+    <name>hbase.zookeeper.quorum</name>
+  <value>10.132.37.201:2181,10.132.37.202:2181,10.132.37.203:2181</value>
+  </property>
+  <!--
+  <property>
+    <name>zookeeper.znode.parent</name>
+    <value>/hbase-unsecure</value>
+  </property>
+  -->
+</configuration>
+
+hdfs dfsadmin -fs 10.132.37.201:9000 -report
+hdfs --loglevel DEBUG dfsadmin -fs hdfs://10.132.37.201:9000 -report
+| `--loglevel loglevel` | Overrides the log level. Valid log levels are FATAL, ERROR, WARN, INFO, DEBUG, and TRACE. Default is INFO. |
 ```

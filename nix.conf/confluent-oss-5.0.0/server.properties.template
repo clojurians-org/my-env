@@ -4,3 +4,5 @@ listeners=PLAINTEXT://0.0.0.0:${_id}
 advertised.listeners=PLAINTEXT://${_ip}:${_id}
 log.dir=${_id_log}
 offsets.topic.replication.factor=1
+log.retention.bytes=1073741824
+log.retention.hours=24
