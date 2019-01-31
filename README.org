@@ -1,4 +1,5 @@
-```sh
+#+NAME: cheetsheet
+#+BEGIN_SRC shell
 
 proxychains4 nix-env -f https://github.com/NixOS/nixpkgs/archive/master.tar.gz -iA haskell.packages.ghc844
 #================
@@ -17,6 +18,9 @@ proxychains4 nix-env -f https://github.com/NixOS/nixpkgs/archive/master.tar.gz -
     GATEWAY=10.132.37.254
 
     systemctl restart network
+
+    yum groupinstall "KDE Plasma Workspaces" -y
+
 
 #================
 # UBUNTU
@@ -40,9 +44,9 @@ proxychains4 nix-env -f https://github.com/NixOS/nixpkgs/archive/master.tar.gz -
   sudo wpa_supplicant -s -u -Dnl80211,wext -c nix.conf/wpa_supplicant-2.6/hl03863.conf -iwlp7s0
   sudo wpa_supplicant -s -u -Dnl80211,wext -c nix.conf/wpa_supplicant_YGY5G.conf -iwlp7s0
   
-  ss-local -s hk3.wormholex.online -p 13173 -k ewxm9l -m rc4-md5 -b 0.0.0.0 -l 1080 -v
-  ss-local -s hk2.wormholex.online -p 13173 -k ewxm9l -m aes-256-cfb  -b 0.0.0.0 -l 1080 -v
-  ss-local -s 47.88.155.121 -p 443 -m chacha20  -b 0.0.0.0 -l 1080 -k p123D.alao.+ -v
+
+  ss-local -s us1.wormholex.online -p 13173 -m chacha20-ietf -k ewxm9l -b 0.0.0.0 -l 1080 -v
+
   
   # rdkafka
   nix-prefetch-url --unpack --print-path https://github.com/edenhill/librdkafka/archive/v0.9.5.tar.gz
@@ -247,6 +251,7 @@ curl 10.132.37.201:8083/connectors/elasticsearch_sink_logi_pimp_protal/status | 
 
 #===============
 # Exhibitor
+#===============
 bash nix.sh export exhibitor-1.5.6
 /nix/store/w98dimrp5amhm9svaq5f1fnyx91mmyv1-exhibitor-1.5.6
 startExhibitor.sh  --configtype zookeeper --zkconfigconnect localhost:2181 --zkconfigzpath /exhibitor/config --port 18080
@@ -275,4 +280,38 @@ hbase-site.xml
 hdfs dfsadmin -fs 10.132.37.201:9000 -report
 hdfs --loglevel DEBUG dfsadmin -fs hdfs://10.132.37.201:9000 -report
 | `--loglevel loglevel` | Overrides the log level. Valid log levels are FATAL, ERROR, WARN, INFO, DEBUG, and TRACE. Default is INFO. |
+
+
+#===============
+# CENTOS 7
+#===============
+mkdir -p ~/"VirtualBox VMs"/my-centos7
+proxychains4 nix-env -i qemu
+proxychains4 wget http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2
+qemu-img convert -f qcow2 nix.sh.out/CentOS-7-x86_64-GenericCloud.qcow2 -O vdi ~/VirtualBox\ VMs/my-centos7/disk1.vdi
+
+VBoxManage createvm --name "my-centos7" --ostype Linux26_64 --register
+VBoxManage modifyvm "my-centos7" --memory 4096 --cpus 2 --vram 10 --nictype1 virtio --nictype2 virtio --nic2 hostonly --hostonlyadapter2 vboxnet0 --nestedpaging off --paravirtprovider kvm
+VBoxManage startvm "my-centos7" --type headless
+
+#============
+# PROXY
+#============
+ssh -N -D 1080 git@10.132.37.56
+curl -x socks5h://localhost:1080 www.baidu.com
+
+listen-address 0.0.0.0:8118
+forward-socks5 / 0.0.0.0:1080 .
+
+
+#============
+# stack
+#============
+rm -rf ~/.stack/snapshots
+rm -rf .stack-work
+
+
+* gitlab-rails console production
+* user = User.where(user:"op").first
 ```
+#+ END_SRC
