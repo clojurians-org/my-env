@@ -55,12 +55,6 @@ proxychains4 nix-env -f https://github.com/NixOS/nixpkgs/archive/master.tar.gz -
   #================
   # HYDRA
   #================
-  initdb -D nix.var/data/postgresql-10.3/5432
-  pg_ctl -D nix.var/data/postgresql-10.3/5432 -l logfile start
-  psql -d postgres
-  createuser -S -D -R -P hydra
-  createdb -O hydra hydra
-  
   export HYDRA_DBI="dbi:Pg:dbname=hydra;host=localhost;user=hydra;"
   export HYDRA_DATA=nix.var/data/hydra-2017-11-21/3000
 
@@ -149,19 +143,6 @@ MY_CMD="EXPLAIN \
 
 curl -XPOST http://10.132.37.33:8088/ksql -H "Content-Type: application/vnd.ksql.v1+json; charset=utf-8" -d "{\"ksql\": \"$MY_CMD\", \"streamsProperties\": {}}" | jq
 
-#================
-# POSTGRES-XL
-#================
-  nix-build -E 'with import <nixpkgs> {}; callPackage ./nix.conf/postgres-xl-10.0/default.nix {}'
-
-/nix/store/*postgres-xl-10.0/bin/psql -p 5432 -c "create node datanode_10_132_37_41_15432 with (type=datanode, host='10.132.37.41', port=15432)" postgres
-/nix/store/*postgres-xl-10.0/bin/psql -p 5432 -c "create node datanode_10_132_37_43_15432 with (type=datanode, host='10.132.37.43', port=15432)" postgres
-/nix/store/*postgres-xl-10.0/bin/psql -p 5432 -c "create node datanode_10_132_37_44_15432 with (type=datanode, host='10.132.37.44', port=15432)" postgres
-/nix/store/*postgres-xl-10.0/bin/psql -p 5432 -c "create node datanode_10_132_37_45_15432 with (type=datanode, host='10.132.37.45', port=15432)" postgres
-/nix/store/*postgres-xl-10.0/bin/psql -p 5432 -c "alter node coordinator_10_132_37_41_5432 with (type=coordinator, host='10.132.37.41', port=5432)" postgres
-/nix/store/*postgres-xl-10.0/bin/psql -p 5432 -c "create node coordinator_10_132_37_43_5432 with (type=coordinator, host='10.132.37.43', port=5432)" postgres
-/nix/store/*postgres-xl-10.0/bin/psql -p 5432 -c "create node coordinator_10_132_37_44_5432 with (type=coordinator, host='10.132.37.44', port=5432)" postgres
-/nix/store/*postgres-xl-10.0/bin/psql -p 5432 -c "create node coordinator_10_132_37_45_5432 with (type=coordinator, host='10.132.37.45', port=5432)" postgres
 
 #================
 # Java
@@ -200,6 +181,7 @@ https://hbase.apache.org/book.html#trouble.versions
 
 
 http://10.132.37.36:9870
+
 #================
 # CEPH
 #================
@@ -231,7 +213,6 @@ ssh-copy-id -i nix.sh.out/key op@10.132.37.200
 ssh -i nix.sh.out/key op@10.132.37.200 "mkdir -p my-env/nix.sh.out"
 scp -i nix.sh.out/key -r {nix.conf,nix.sh,nix.sh.dic,run.sh.d} op@10.132.37.200:my-env
 scp -i nix.sh.out/key -r nix.sh.out/{tgz.nix-2.0.4,nix.rsync-3.1.3} op@10.132.37.200:my-env/nix.sh.out
-ssh -i nix.sh.out/key op@10.132.37.200 bash nix.sh install 127.0.0.1 nix.rsync-3.1.3
 ssh -i nix.sh.out/key op@10.132.37.200 bash nix.sh install 127.0.0.1 nix.rsync-3.1.3
 rsync -av -e "ssh -i nix.sh.out/key" --info=progress2 --rsync-path=/home/op/.nix-profile/bin/rsync nix.sh.out op@10.132.37.200:my-env/nix.sh.out
 
@@ -292,12 +273,20 @@ curl -x socks5h://localhost:1080 www.baidu.com
 #============
 # PRESTO
 #============
+bash nix.sh start 10.132.37.200:5432 postgresql-10.7
+
 nix-env -i libossp-uuid
 wget -c -O /tmp/tgz.presto-server-309.d/presto-server-309.tar.gz https://repo1.maven.org/maven2/io/prestosql/presto-server/309/presto-server-309.tar.gz
 cd /tmp/tgz.presto-server-309.d && tar -xvf presto-server-309.tar.gz && rm -rf presto-server-309.tar.gz && mv * tgz-presto-server-309
 nix-store --add /tmp/tgz.presto-server-309.d/tgz-presto-server-309
 
 nix-env -i /nix/store/fy1nf73pplslc23gix21rd0rmk825w2m-tgz-presto-server-309
+
+./presto-cli-309-executable.jar --server localhost:4444 --catalog postgresql
+
+nix-env -f '<nixpkgs>' -iA nodePackages.webpack
+
+psql -h10.132.37.200 -Umonitor
 
 * gitlab-rails console production
 * user = User.where(user:"op").first
