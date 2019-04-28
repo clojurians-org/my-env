@@ -189,17 +189,6 @@ mkdir -p nix.opt/{tar.src,tar.bin,bin}
   bash nix.sh install 10.132.37.201 nix.leiningen-2.8.1
   bash nix.sh install 10.132.37.201 nix.emacs-25.3
 
-    CREATE TABLE users \
-      (registertime BIGINT, \
-       gender VARCHAR, \
-       regionid VARCHAR, \
-       userid VARCHAR, \
-       interests array<VARCHAR>, \
-       contactinfo map<VARCHAR, VARCHAR>) \
-      WITH (KAFKA_TOPIC='users', \
-            VALUE_FORMAT='JSON', \
-            KEY = 'userid');
-
 cat my-tmp/data.txt | ~/my-env/nix.var/data/confluent-oss-5.0.0/confluent-5.0.0/bin/kafka-console-producer --broker-list localhost:9092 --topic larluo
 CREATE STREAM larluo (_id VARCHAR, dt VARCHAR, type VARCHAR, id VARCHAR, count VARCHAR) WITH (KAFKA_TOPIC='larluo', VALUE_FORMAT='JSON')
 cat my-tmp/data.txt | ~/my-env/nix.var/data/confluent-oss-5.0.0/confluent-5.0.0/bin/kafka-console-producer --broker-list localhost:9092 --topic larluo --property "parse.key=true" --property "key.separator=:"
@@ -300,16 +289,15 @@ VBoxManage startvm "my-centos7" --type headless
 ssh -N -D 1080 git@10.132.37.56
 curl -x socks5h://localhost:1080 www.baidu.com
 
-listen-address 0.0.0.0:8118
-forward-socks5 / 0.0.0.0:1080 .
-
-
 #============
-# stack
+# PRESTO
 #============
-rm -rf ~/.stack/snapshots
-rm -rf .stack-work
+nix-env -i libossp-uuid
+wget -c -O /tmp/tgz.presto-server-309.d/presto-server-309.tar.gz https://repo1.maven.org/maven2/io/prestosql/presto-server/309/presto-server-309.tar.gz
+cd /tmp/tgz.presto-server-309.d && tar -xvf presto-server-309.tar.gz && rm -rf presto-server-309.tar.gz && mv * tgz-presto-server-309
+nix-store --add /tmp/tgz.presto-server-309.d/tgz-presto-server-309
 
+nix-env -i /nix/store/fy1nf73pplslc23gix21rd0rmk825w2m-tgz-presto-server-309
 
 * gitlab-rails console production
 * user = User.where(user:"op").first
