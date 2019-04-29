@@ -16,11 +16,10 @@ if [ ! -e nix.sh.out/key ]; then
   echo "--> ssh-keygen to nix.sh.out/key"
   ssh-keygen -t ed25519 -f nix.sh.out/key -N '' -C "my-env auto-generated key"
 fi
-if nix-channel --list | grep nixos-unstable > /dev/null ; then
+if nix-channel --list | grep nixpkgs-unstable > /dev/null ; then
   : 
 else
-  echo "--> add <nixos-unstable> to nix-channel, nix-channel --update..."
-  nix-channel --add https://nixos.org/channels/nixos-unstable nixos-unstable
+  echo "--> add <nixpkgs-unstable> to nix-channel, nix-channel --update..."
   nix-channel --add https://nixos.org/channels/nixpkgs-unstable nixpkgs-unstable
   nix-channel --update
 fi
@@ -69,15 +68,12 @@ elif [ "$1" == "export" ]; then
   if [  -e $my/nix.sh.out/${full_package_name} ]; then
     echo "---->[info] ${full_package_name} exist already!"
   elif [ "$protocol_name" == "nix" ] ;then
-    download_url=$(grep "^${full_package_name}=" nix.sh.dic | cut -d= -f2)
-    if [ ! -e "$download_url" ]; then 
-      echo "--> nix-env -i ${package_name}"
-      nix-env -i ${package_name}
-    fi
+    nix-build '<nixpkgs-unstable>' -A ${package_name}
+    set +e; download_url=$(nix-build '<nixpkgs-unstable>' -A ${package_name} 2> /dev/null); set -e ;
     if [ -e "$download_url" ];  then
       nix-store --export $(nix-store -qR $download_url) | gzip > nix.sh.out/${full_package_name}.tmp
       mv nix.sh.out/${full_package_name}.tmp nix.sh.out/${full_package_name}
-    else echo "--> [ERROR] ${full_package_name} HASH VALUE NOT MATCHED, PLEASE CHECK AND REEXPORT !" && exit 1
+    else echo "--> [ERROR] ${full_package_name} NOT EXIST, PLEASE CHECK AND REEXPORT !" && exit 1
     fi
   elif [ "$protocol_name" == "tgz" ]; then
     download_url=$(grep "^${full_package_name}=" nix.sh.dic | cut -d= -f2)
@@ -103,7 +99,7 @@ elif [ "$1" == "build" ]; then
     download_url=$(grep "^src.${package_name}=" nix.sh.dic | cut -d= -f2)
     if [ ! -e "$download_url" ]; then
       echo "--> [info] building ./nix.conf/${package_name}/default.nix ..."
-      nix-build -E "with import <nixos-unstable> {}; callPackage ./nix.conf/${package_name}/default.nix {}"
+      nix-build -E "with import <nixpkgs-unstable> {}; callPackage ./nix.conf/${package_name}/default.nix {}"
     fi
     if [ -e "$download_url" ];  then
       nix-store --export $(nix-store -qR $download_url) | gzip > nix.sh.out/${full_package_name}.tmp
@@ -194,8 +190,6 @@ elif [ "$1" == "import" -o "$1" == "install" ]; then
       echo "--> import ${package_name}@${nix_user} need to cost a little time, please be patient..."
       echo "cat ${my_full_rhome}/nix.sh.out/${full_package_name} | gunzip | nix-store --import"
       ssh ${ssh_opt} ${nix_user}@${remote_ip} "
-        download_url=\$(grep -E '^(nix|src).${package_name}=' ${my_full_rhome}/nix.sh.dic | cut -d= -f2)
-	echo \"--> download_url: \${download_url}\"
         if which nix-store 2> /dev/null; then
           nix_store_cmd=nix-store
 	  nix_env_cmd=nix-env

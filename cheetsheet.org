@@ -1,0 +1,11 @@
+#+STARTUP: showall
++ bash nix.sh export nix.jre
++ bash nix.sh export nix.zookeeper
++ bash nix.sh export nix.apacheKafka
++ bash nix.sh export nix.elasticsearch
++ bash nix.sh export nix.filebeat
++ bash nix.sh export nix.kibana
++ bash nix.sh export nix.hadoop
++ bash nix.sh export nix.metabase
++ bash nix.sh export nix.haskellPackages.postgrest
+
