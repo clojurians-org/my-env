@@ -287,6 +287,7 @@ nix-env -i /nix/store/fy1nf73pplslc23gix21rd0rmk825w2m-tgz-presto-server-309
 nix-env -f '<nixpkgs>' -iA nodePackages.webpack
 
 psql -h10.132.37.200 -Umonitor
+nginx -c /home/op/my-env/nix.conf/nginx-1.15.12/nginx.conf
 
 * gitlab-rails console production
 * user = User.where(user:"op").first
