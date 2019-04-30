@@ -12,6 +12,8 @@ nix_name=nix-2.0.4
 nix_sys=${nix_name}-x86_64-linux
 nix_tar=${nix_sys}.tar.bz2
 
+export NIX_PATH=~/.nix-defexpr/channels:$NIX_PATH
+
 if [ ! -e nix.sh.out/key ]; then
   echo "--> ssh-keygen to nix.sh.out/key"
   ssh-keygen -t ed25519 -f nix.sh.out/key -N '' -C "my-env auto-generated key"
@@ -19,7 +21,7 @@ fi
 if nix-channel --list | grep nixpkgs-unstable > /dev/null ; then
   : 
 else
-  echo "--> add <nixpkgs-unstable> to nix-channel, nix-channel --update..."
+  echo "--> add <nixpkgs-unstable> to nix-channel, nix-channel --update..."  
   nix-channel --add https://nixos.org/channels/nixpkgs-unstable nixpkgs-unstable
   nix-channel --update
 fi
@@ -197,10 +199,9 @@ elif [ "$1" == "import" -o "$1" == "install" ]; then
           nix_store_cmd=.nix-profile/bin/nix-store
 	  nix_env_cmd=.nix-profile/bin/nix-env
         fi
-        cat ${my_full_rhome}/nix.sh.out/${full_package_name} | gunzip | \${nix_store_cmd} --import
+        package_url=\$(cat ${my_full_rhome}/nix.sh.out/${full_package_name} | gunzip | \${nix_store_cmd} --import | tail -1)
 	if [ '$action' == 'install' ]; then
-          if [ \"\$download_url\" == '' ]; then echo '----> [error] dowload url not exist!'; exit 1; fi
-	  \${nix_env_cmd} -i \$download_url
+	  \${nix_env_cmd} -i \$package_url
 	fi
       "
     fi
