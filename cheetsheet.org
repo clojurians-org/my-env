@@ -1,4 +1,7 @@
 #+STARTUP: showall
++ bash nix.sh export tgz.nix
++ bash nix.sh export nix.jq
++ bash nix.sh export nix.nginx
 + bash nix.sh export nix.jre
 + bash nix.sh export nix.zookeeper
 + bash nix.sh export nix.apacheKafka
@@ -6,6 +9,15 @@
 + bash nix.sh export nix.filebeat
 + bash nix.sh export nix.kibana
 + bash nix.sh export nix.hadoop
++ [broken] bash nix.sh export nix.spark
++ bash nix.sh export nix.redis
 + bash nix.sh export nix.metabase
-+ bash nix.sh export nix.haskellPackages.postgrest
++ bash nix.sh export nix.postgresql_11
++ bash nix.sh export nix.docker
++ bash nix.sh export nix.ceph
++ bash nix.sh export nix.kubernetes
++ bash nix.sh export nix.rabbitmq-server
++ bash nix.sh export nix.pythonPackges.airflow
++ bash nix.sh export nix.osquery
+
 

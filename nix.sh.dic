@@ -1,7 +1,5 @@
-tgz.nix-2.0.4=https://nixos.org/releases/nix/nix-2.0.4/nix-2.0.4-x86_64-linux.tar.bz2
-tgz.nix-2.2.2=https://nixos.org/releases/nix/nix-2.2.2/nix-2.2.2-x86_64-linux.tar.bz2
+tgz.nix=https://nixos.org/releases/nix/nix-2.2.2/nix-2.2.2-x86_64-linux.tar.bz2
 tgz.confluent-oss-5.0.0=https://packages.confluent.io/archive/5.0/confluent-oss-5.0.0-2.11.tar.gz
-tgz.osquery-3.2.6=https://osquery-packages.s3.amazonaws.com/linux/osquery-3.2.6_1.linux_x86_64.tar.gz
 tgz.hbase-1.2.6.1=http://archive.apache.org/dist/hbase/1.2.6.1/hbase-1.2.6.1-bin.tar.gz
 tgz.presto-server-309=https://repo1.maven.org/maven2/io/prestosql/presto-server/309/presto-server-309.tar.gz
 
