@@ -1,4 +1,6 @@
 #+STARTUP: showall
+ss-local -s 999771.free3.baacloud0.com -p 59922 -m aes-256-cfb -k zNmhCYKaN0vW -b 0.0.0.0 -l 1080 -v
+
 + bash nix.sh export tgz.nix
 + bash nix.sh export nix.jq
 + bash nix.sh export nix.nginx
@@ -13,11 +15,20 @@
 + bash nix.sh export nix.redis
 + bash nix.sh export nix.metabase
 + bash nix.sh export nix.postgresql_11
++ bash nix.sh export nix.consul
 + bash nix.sh export nix.docker
 + bash nix.sh export nix.ceph
 + bash nix.sh export nix.kubernetes
 + bash nix.sh export nix.rabbitmq-server
 + bash nix.sh export nix.pythonPackges.airflow
 + bash nix.sh export nix.osquery
++ bash nix.sh export nix.nexus
++ bash nix.sh export nix.haskellPackages.gitit
++ bash nix.sh export nix.inotify-tools
 
 
++ ssh-copy-id -i nix.sh.out/key larluo@127.0.0.1
+
+
++ bash nix.sh install larluo@127.0.0.1 tgz.nix
++ bash nix.sh install larluo@127.0.0.1 nix.jq-1.6-bin
