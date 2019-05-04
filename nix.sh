@@ -68,9 +68,8 @@ elif [ "$1" == "export" ]; then
   echo "[action] export ${full_package_name}..."
   if [ "$protocol_name" == "nix" ] ;then
     nix-env -f '<nixpkgs>' -iA ${package_name}
-    package_info=$(nix-env -f '<nixpkgs>' -qaP --out-path -A ${package_name} 2> /dev/null)
-    download_url=$(printf ${package_info} | awk '{print $3}' | awk -F ';' '{print $NF}')
-    my_full_package_name="nix.$(printf ${package_info} | awk '{print $2}')"
+    download_url=$(nix-build '<nixpkgs>' -A ${package_name} --no-out-link)
+    my_full_package_name=$(basename $download_url | cut -d- -f2-)
     echo "----> [info] export my_full_package_name: ${my_full_package_name}"
     if [ ! -e nix.sh.out/${my_full_package_name} ]; then
       nix-store --export $(nix-store -qR $download_url) | gzip > nix.sh.out/${my_full_package_name}.tmp
