@@ -1,0 +1,1 @@
+ss-local -s 999771.free1.baacloud0.com -p 59922 -m aes-256-cfb -k zNmhCYKaN0vW -b 0.0.0.0 -l 1080 -v

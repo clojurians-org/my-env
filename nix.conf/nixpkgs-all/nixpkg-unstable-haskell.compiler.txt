@@ -1,0 +1,15 @@
+haskell.compiler.ghc822                  ghc-8.2.2
+haskell.compiler.integer-simple.ghc822   ghc-8.2.2
+haskell.compiler.ghc822Binary            ghc-8.2.2-binary
+haskell.compiler.ghc844                  ghc-8.4.4
+haskell.compiler.ghc863Binary            ghc-8.6.3-binary
+haskell.compiler.ghc864                  ghc-8.6.4
+haskell.compiler.integer-simple.ghc864   ghc-8.6.4
+haskell.compiler.ghc865                  ghc-8.6.5
+haskell.compiler.integer-simple.ghc865   ghc-8.6.5
+haskell.compiler.ghcHEAD                 ghc-8.7.20190115
+haskell.compiler.integer-simple.ghcHEAD  ghc-8.7.20190115
+haskell.compiler.ghc881                  ghc-8.8.0.20190424
+haskell.compiler.integer-simple.ghc881   ghc-8.8.0.20190424
+haskell.compiler.ghcjs84                 ghcjs-8.4.0.1
+haskell.compiler.ghcjs                   ghcjs-8.6.0.1

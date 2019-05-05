@@ -37,16 +37,11 @@ proxychains4 nix-env -f https://github.com/NixOS/nixpkgs/archive/master.tar.gz -
 #================
 # NixOS
 #================
-  bash nix.sh export hello-2.10
-
   wpa_passphrase 'hl03863' '@hl03863' > nix.conf/wpa_supplicant-2.6/hl03863.conf
   sudo wpa_supplicant -s -u -Dnl80211,wext -c nix.conf/wpa_supplicant-2.6/Shrbank.conf -iwlp7s0
   sudo wpa_supplicant -s -u -Dnl80211,wext -c nix.conf/wpa_supplicant-2.6/hl03863.conf -iwlp7s0
   sudo wpa_supplicant -s -u -Dnl80211,wext -c nix.conf/wpa_supplicant_YGY5G.conf -iwlp7s0
   
-
-  ss-local -s us1.wormholex.online -p 13173 -m chacha20-ietf -k ewxm9l -b 0.0.0.0 -l 1080 -v
-
   #================
   # HYDRA
   #================
@@ -215,14 +210,30 @@ nginx -c /home/op/my-env/nix.conf/nginx-1.15.12/nginx.conf
 gitlab-rails console production
 user = User.where(user:"op").first
 
-#============                                                                                                                   
+#============ 
 # NIXPKGS
-#============                                                                                                                   
-export NIX_PATH=nixpkgs=https://github.com/NixOS/nixpkgs/archive/19.03.tar.gz
+#============
+nix-env -f https://github.com/NixOS/nixpkgs/archive/19.03.tar.gz -qaP -A haskell.compiler
+[ 19.03 18.09 18.03 17.09 17.03]
+
 export NIX_PATH=nixpkgs=https://github.com/NixOS/nixpkgs/archive/18.09.tar.gz
-export NIX_PATH=nixpkgs=https://github.com/NixOS/nixpkgs/archive/18.03.tar.gz
-export NIX_PATH=nixpkgs=https://github.com/NixOS/nixpkgs/archive/17.09.tar.gz
-export NIX_PATH=nixpkgs=https://github.com/NixOS/nixpkgs/archive/17.03.tar.gz
-nix-env -f '<nixpkgs>' -qaP -A haskell.compiler
+nix-env -f '<nixpkgs>' -iA haskell.compiler.ghc802
+nix-env -f '<nixpkgs>' -iA haskell.compiler.ghc7103
+
+#================
+# postgresql
+#================
+| postgres-websockets
+git clone https://github.com/diogob/postgres-websockets
+stack build --nix --nix-packages "postgresql zlib"
+[str|{nixpkgs ? import <nixpkgs> { }, ghc ? nixpkgs.ghc}:
+    |with nixpkgs;
+    |haskell.lib.buildStackProject {
+    |  name = "postgres-websockets-0.5" ;
+    |  src = ./.;
+    |  buildInputs = [ postgresql zlib ];
+    |  inherit ghc;
+    |}
+    |]
 
 #+END_SRC
