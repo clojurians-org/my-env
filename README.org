@@ -47,11 +47,6 @@ proxychains4 nix-env -f https://github.com/NixOS/nixpkgs/archive/master.tar.gz -
 
   ss-local -s us1.wormholex.online -p 13173 -m chacha20-ietf -k ewxm9l -b 0.0.0.0 -l 1080 -v
 
-  
-  # rdkafka
-  nix-prefetch-url --unpack --print-path https://github.com/edenhill/librdkafka/archive/v0.9.5.tar.gz
-  nix-build -E 'with import <nixpkgs> {}; callPackage nixpkgs/rdkafka/default.nix {}'
-  
   #================
   # HYDRA
   #================
@@ -64,46 +59,30 @@ proxychains4 nix-env -f https://github.com/NixOS/nixpkgs/archive/master.tar.gz -
   ssh -i nix.sh.out/key root@192.168.56.101 "userdel -r op"
 
 #================
-# KSQL
+# CLUSTER
 #================
-  # zookeeper [10.132.37.33:2181,10.132.37.34:2181,10.132.37.35:2181]
-  bash nix.sh export zookeeper-3.4.12
-  bash nix.sh import 10.132.37.33 zookeeper-3.4.12
-  bash nix.sh start-foreground 10.132.37.33:2181 zookeeper-3.4.12 --all "10.132.37.33:2181,10.132.37.34:2181,10.132.37.35:2181"
-
-  echo ruok | nc 10.132.37.33 2181
-  zkCli.sh -server "10.132.37.33:2181,10.132.37.34:2181,10.132.37.34:2181"
-
-  # kafka [10.132.37.33:2181,10.132.37.34:2181,10.132.37.35:2181]
-  bash nix.sh export apache-kafka-2.12-1.1.0 
-  bash nix.sh import 10.132.37.33 apache-kafka-2.12-1.1.0
-  bash nix.sh start-foreground 10.132.37.33:9092 apache-kafka-2.12-1.1.0 --zookeepers "10.132.37.33:2181,10.132.37.34:2181,10.132.37.35:2181" --cluster.id monitor
-
-  kafka-topics.sh --zookeeper 10.132.37.33:2181/monitor --topic LOGI_CORES_PTS_EXT_AVRO --delete
-
-  ssh op@10.132.37.34 'ps -ef | grep zookeeper | grep -v grep | awk "{print \$2}" | xargs kill'
-  ssh op@10.132.37.33 "/home/op/my-env/nix.var/data/confluent-oss-5.0.0/confluent-5.0.0/bin/ksql-server-stop"
-
-  # kafka connect
-  bash nix.sh start 10.132.37.33:8083 confluent-oss-5.0.0:kafka-connect --kafkas "10.132.37.33:9092,10.132.37.34:9092,10.132.37.35:9092" --cluster.id monitor
-  ssh op@10.132.37.34 'ps -ef | grep ConnectDistributed | grep -v grep | awk "{print \$2}" | xargs kill'
-
-  # ksql
-  bash nix.sh start 10.132.37.33:8088 confluent-oss-5.0.0:ksql --kafkas 10.132.37.33:2181,10.132.37.34:2181,10.132.37.35:2181 --cluster.id monitor
-  curl 10.132.37.34:8083
-  ssh op@10.132.37.33 "/home/op/my-env/nix.var/data/confluent-oss-5.0.0/confluent-5.0.0/bin/ksql-server-stop"
-
-
+| SETUP
+  ssh-copy-id -i nix.sh.out/key op@10.132.37.200
+| KAFKA
   ssh op@10.132.37.34 'ps -ef | grep kafka-connect | grep -v grep | awk "{print \$2}" | xargs kill'
+  cat my-tmp/data.txt | ~/my-env/nix.var/data/confluent-oss-5.0.0/confluent-5.0.0/bin/kafka-console-producer --broker-list localhost:9092 --topic larluo
+  CREATE STREAM larluo (_id VARCHAR, dt VARCHAR, type VARCHAR, id VARCHAR, count VARCHAR) WITH (KAFKA_TOPIC='larluo', VALUE_FORMAT='JSON')
+  cat my-tmp/data.txt | ~/my-env/nix.var/data/confluent-oss-5.0.0/confluent-5.0.0/bin/kafka-console-producer --broker-list localhost:9092 --topic larluo --property "parse.key=true" --property "key.separator=:"
+  curl 10.132.37.201:8083/connectors/elasticsearch_sink_logi_pimp_protal/status | jq '.tasks[0].trace' | xargs echo -e
 
+| KSQL
+  SET 'auto.offset.reset' = 'earliest';
+  SET 'auto.offset.reset' = 'latest' ;
+  kafka-avro-console-producer \
+    --property schema.registry.url=http://10.132.37.33:8081 \
+    --broker-list 10.132.37.33:9092 --topic orders \
+     --property value.schema='{"type":"record","name":"myrecord","fields":[{"name":"id","type":"int"},{"name":"product", "type": "string"}, {"name":"quantity", "type": "int"}, {"name":"price", "type": "float"}]}'
 
-#================
-# ELK
-#================
-
+| ELK
   # elasticsearch [10.132.37.36:9200,10.132.37.37:9200,10.132.37.39:9200,10.132.37.40:9200]
   curl 10.132.37.36:9200/_cluster/health?pretty=true
   
+
 #================
 # VirtualBox
 #================
@@ -120,14 +99,6 @@ proxychains4 nix-env -f https://github.com/NixOS/nixpkgs/archive/master.tar.gz -
 #================
 # KSQL
 #================
-  SET 'auto.offset.reset' = 'earliest';
-  SET 'auto.offset.reset' = 'latest' ;
-
-kafka-avro-console-producer \
- --property schema.registry.url=http://10.132.37.33:8081 \
- --broker-list 10.132.37.33:9092 --topic orders \
- --property value.schema='{"type":"record","name":"myrecord","fields":[{"name":"id","type":"int"},{"name":"product", "type": "string"}, {"name":"quantity", "type": "int"}, {"name":"price", "type": "float"}]}'
-
 
 MY_CMD="EXPLAIN \
   SELECT EXTRACTJSONFIELD(EXTRACTJSONFIELD(message, '\$.message'), '\$.appID') AS app_id \
@@ -142,45 +113,6 @@ MY_CMD="EXPLAIN \
   FROM logi_hop_sdk_apm WHERE EXTRACTJSONFIELD(message, '\$.logger_name') = 'CrashInfoDev' ; "
 
 curl -XPOST http://10.132.37.33:8088/ksql -H "Content-Type: application/vnd.ksql.v1+json; charset=utf-8" -d "{\"ksql\": \"$MY_CMD\", \"streamsProperties\": {}}" | jq
-
-
-#================
-# Java
-#================
-
-
-http://www.jedi.be/blog/2011/11/04/vagrant-virtualbox-hostonly-pxe-vlans/
-
-
-mkdir -p nix.opt/{tar.src,tar.bin,bin}
-
-#================
-# MIGRATE
-#================
-  bash nix.sh export tgz.nix-2.0.4
-  bash nix.sh export nix.rsync-3.1.3
-  bash nix.sh export nix.openjdk-8u172b11
-  bash nix.sh export nix.leiningen-2.8.1
-  bash nix.sh export nix.emacs-25.3
-
-  bash nix.sh create-user 10.132.37.201
-  bash nix.sh install 10.132.37.201 nix.rsync-3.1.3
-  bash nix.sh install 10.132.37.201 nix.openjdk-8u172b11
-  bash nix.sh install 10.132.37.201 tgz.nix-2.0.4
-  bash nix.sh install 10.132.37.201 nix.leiningen-2.8.1
-  bash nix.sh install 10.132.37.201 nix.emacs-25.3
-
-cat my-tmp/data.txt | ~/my-env/nix.var/data/confluent-oss-5.0.0/confluent-5.0.0/bin/kafka-console-producer --broker-list localhost:9092 --topic larluo
-CREATE STREAM larluo (_id VARCHAR, dt VARCHAR, type VARCHAR, id VARCHAR, count VARCHAR) WITH (KAFKA_TOPIC='larluo', VALUE_FORMAT='JSON')
-cat my-tmp/data.txt | ~/my-env/nix.var/data/confluent-oss-5.0.0/confluent-5.0.0/bin/kafka-console-producer --broker-list localhost:9092 --topic larluo --property "parse.key=true" --property "key.separator=:"
-
-
-rsync --rsync-path=/home/op/.nix-profile/bin/rsync -av nix.sh.build/hbase-2.1.0/src.hbase-2.1.0.tgz  op@10.132.37.201:my-env/nix.sh.build/hbase-2.1.0/src.hbase-2.1.0.tgz
-rsync --rsync-path=/home/op/.nix-profile/bin/rsync -av ~/.m2 op@10.132.37.201:~/.m2
-https://hbase.apache.org/book.html#trouble.versions
-
-
-http://10.132.37.36:9870
 
 #================
 # CEPH
@@ -205,18 +137,9 @@ ceph-osd --mkfs --cluster-name my_ceph -i 10.129.132.112_ --osd-uuid 55ba2294-3e
 ceph-osd -f --conf ceph.osd.conf --id ods_10.129.132.112_port --setuser larluo --setgroup users --mon-data ceph-mon/ods/10.129.132.112   --osd-data ceph-mon/ods_10.129.132.112 --osd-journal PATH
 
 
-
 #================
 # DEPLOY
 #================
-ssh-copy-id -i nix.sh.out/key op@10.132.37.200
-ssh -i nix.sh.out/key op@10.132.37.200 "mkdir -p my-env/nix.sh.out"
-scp -i nix.sh.out/key -r {nix.conf,nix.sh,nix.sh.dic,run.sh.d} op@10.132.37.200:my-env
-scp -i nix.sh.out/key -r nix.sh.out/{tgz.nix-2.0.4,nix.rsync-3.1.3} op@10.132.37.200:my-env/nix.sh.out
-ssh -i nix.sh.out/key op@10.132.37.200 bash nix.sh install 127.0.0.1 nix.rsync-3.1.3
-rsync -av -e "ssh -i nix.sh.out/key" --info=progress2 --rsync-path=/home/op/.nix-profile/bin/rsync nix.sh.out op@10.132.37.200:my-env/nix.sh.out
-
-curl 10.132.37.201:8083/connectors/elasticsearch_sink_logi_pimp_protal/status | jq '.tasks[0].trace' | xargs echo -e
 
 
 #===============
@@ -289,7 +212,17 @@ nix-env -f '<nixpkgs>' -iA nodePackages.webpack
 psql -h10.132.37.200 -Umonitor
 nginx -c /home/op/my-env/nix.conf/nginx-1.15.12/nginx.conf
 
-* gitlab-rails console production
-* user = User.where(user:"op").first
-```
-#+ END_SRC
+gitlab-rails console production
+user = User.where(user:"op").first
+
+#============                                                                                                                   
+# NIXPKGS
+#============                                                                                                                   
+export NIX_PATH=nixpkgs=https://github.com/NixOS/nixpkgs/archive/19.03.tar.gz
+export NIX_PATH=nixpkgs=https://github.com/NixOS/nixpkgs/archive/18.09.tar.gz
+export NIX_PATH=nixpkgs=https://github.com/NixOS/nixpkgs/archive/18.03.tar.gz
+export NIX_PATH=nixpkgs=https://github.com/NixOS/nixpkgs/archive/17.09.tar.gz
+export NIX_PATH=nixpkgs=https://github.com/NixOS/nixpkgs/archive/17.03.tar.gz
+nix-env -f '<nixpkgs>' -qaP -A haskell.compiler
+
+#+END_SRC
