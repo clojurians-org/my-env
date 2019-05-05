@@ -69,11 +69,11 @@ elif [ "$1" == "export" ]; then
   if [ "$protocol_name" == "nix" ] ;then
     nix-env -f '<nixpkgs>' -iA ${package_name}
     download_url=$(nix-build '<nixpkgs>' -A ${package_name} --no-out-link)
-    my_full_package_name=$(basename $download_url | cut -d- -f2-)
-    echo "----> [info] export my_full_package_name: ${my_full_package_name}"
-    if [ ! -e nix.sh.out/${my_full_package_name} ]; then
-      nix-store --export $(nix-store -qR $download_url) | gzip > nix.sh.out/${my_full_package_name}.tmp
-      mv nix.sh.out/${my_full_package_name}.tmp nix.sh.out/${my_full_package_name}
+    my_package_name=$(basename $download_url | cut -d- -f2-)
+    echo "----> [info] export my_package_name: ${my_package_name}"
+    if [ ! -e nix.sh.out/nix.${my_package_name} ]; then
+      nix-store --export $(nix-store -qR $download_url) | gzip > nix.sh.out/nix.${my_package_name}.tmp
+      mv nix.sh.out/nix.${my_package_name}.tmp nix.sh.out/nix.${my_package_name}
     else
       echo "----> [warn] ${full_package_name} exist already!"
     fi
@@ -197,7 +197,7 @@ elif [ "$1" == "import" -o "$1" == "install" ]; then
           rm -rf /tmp/nix-installer && mkdir -p /tmp/nix-installer && cd /tmp/nix-installer
           tar -xvf \$my_full_rhome/nix.sh.out/tgz.nix
           cd /tmp/nix-installer/nix-*
-          sed '/nix-channel --update/ {s/^/  echo/}' install > _install
+          grep -v 'nix-channel --update' install > _install
           chmod +x ./_install && ./_install
           cd ~ && rm -rf /tmp/nix-installer
       else
