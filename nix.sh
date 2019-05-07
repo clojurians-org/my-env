@@ -102,16 +102,12 @@ elif [ "$1" == "build" ]; then
   protocol_name=$(echo $full_package_name | cut -d. -f1)
   package_name=$(echo $full_package_name | cut -d. -f2-)
   if [ $protocol_name = "nix" ]; then
-    download_url=$(grep "^src.${package_name}=" nix.sh.dic | cut -d= -f2)
-    if [ ! -e "$download_url" ]; then
-      echo "--> [info] building ./nix.conf/${package_name}/default.nix ..."
-      nix-build -E "with import <nixpkgs> {}; callPackage ./nix.conf/${package_name}/default.nix {}"
-    fi
-    if [ -e "$download_url" ];  then
-      nix-store --export $(nix-store -qR $download_url) | gzip > nix.sh.out/${full_package_name}.tmp
-      mv nix.sh.out/${full_package_name}.tmp nix.sh.out/${full_package_name}
-    else echo "--> [ERROR] ${full_package_name} HASH VALUE NOT MATCHED, PLEASE CHECK AND REBUILD!" && exit 1
-    fi
+    # [TODO]: BUILD GENERAL BUILD INSTRUCTION
+    # -- nix-build -f ${my}/nix.conf/${package_name} -A ${package_name}
+    package_path=$(nix-env -f '<nixpkgs>' -q --out-path ${package_name} | awk  '{print $2}')
+    echo "-- EXPORTING  $package_name: =<< $package_path ... "
+    nix-store --export $(nix-store -qR $package_path) | gzip > nix.sh.out/${full_package_name}.tmp
+    mv nix.sh.out/${full_package_name}.tmp nix.sh.out/${full_package_name}
   elif [ $protocol_name = "tgz" ]; then
     if grep "^src.${package_name}=" nix.sh.dic 2> /dev/null; then
       echo "--> [info] build source tarball"

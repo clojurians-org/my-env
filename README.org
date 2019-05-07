@@ -1,5 +1,5 @@
 #+NAME: cheetsheet
-#+BEGIN_SRC shell
+#+BEGIN_SRC bash
 
 proxychains4 nix-env -f https://github.com/NixOS/nixpkgs/archive/master.tar.gz -iA haskell.packages.ghc844
 #================
@@ -223,17 +223,27 @@ nix-env -f '<nixpkgs>' -iA haskell.compiler.ghc7103
 #================
 # postgresql
 #================
+| gitit
+stack build --nix --nix-packages "unzip zlib"
+| postgrest
+git clone https://github.com/PostgREST/postgrest.git
+stack build --nix --nix-packages "postgresql zlib"
 | postgres-websockets
 git clone https://github.com/diogob/postgres-websockets
 stack build --nix --nix-packages "postgresql zlib"
-[str|{nixpkgs ? import <nixpkgs> { }, ghc ? nixpkgs.ghc}:
-    |with nixpkgs;
-    |haskell.lib.buildStackProject {
-    |  name = "postgres-websockets-0.5" ;
-    |  src = ./.;
-    |  buildInputs = [ postgresql zlib ];
-    |  inherit ghc;
-    |}
-    |]
+
+
+stack2nix . > default.nix
+nix-build -A postgrest
+nix-env -f '<nixpkgs>' -q --out-path postgrest-5.2.0 | awk  '{print $2}'
+
+nix-build -A postgres-websockets
+
+#================
+# HASKELL
+#================
+NIX_PATH=nixpkgs=https://github.com/NixOS/nixpkgs/archive/2c07921cff84dfb0b9e0f6c2d10ee2bfee6a85ac.tar.gz nix-build --no-out-link
+
 
 #+END_SRC
+
