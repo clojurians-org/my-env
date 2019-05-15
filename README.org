@@ -207,21 +207,24 @@ user = User.where(user:"op").first
 #============ 
 # NIX
 #============
+echo 'sandbox = false' > /etc/nix/nix.conf
 nix-channel --add https://nixos.org/channels/nixos-19.03 nixpkgs
+nix-channel --add https://nixos.org/channels/nixos-19.03 nixos-19.03
 nix-channel --add https://github.com/NixOS/nixpkgs/archive/88ae8f7d.tar.gz nixpkgs-static
+nix-channel --update nixpkgs-static
 nix-channel --add https://nixos.org/channels/nixos-unstable nixpkgs-unstable
 
-nix-channel --update nixpkgs-static
-export NIX_PATH=nixpkgs=/home/op/.nix-defexpr/channels/nixpkgs:nixpkgs-static=/home/op/.nix-defexpr/channels/nixpkgs-static
+nix-channel --add https://github.com/obsidiansystems/obelisk/archive/master.tar.gz obelisk
+nix-channel --update obelisk
+nix-env -f /home/op/.nix-defexpr/channels/obelisk -iA command
 
-echo 'sandbox = false' > /etc/nix/nix.conf
-bash -x nix.sh install op@localhost tgz.nix
+export NIX_PATH=/home/op/.nix-defexpr/channels
+
 
 wget https://matthewbauer.us/nix.sh
 mv $t/dat/nix-x86_64 $HOME/bin/nix
-nix --store ~ -f channel:nixpkgs-unstable 
 
-nix-env -f https://github.com/NixOS/nixpkgs/archive/19.03.tar.gz -qaP -A haskell.compiler
+nix-env -f '<nixos-19.03>' -qaP -A haskell.compiler
 [ 19.03 18.09 18.03 17.09 17.03]
 
 #================
