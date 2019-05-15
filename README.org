@@ -131,12 +131,6 @@ ceph-osd --mkfs --cluster-name my_ceph -i 10.129.132.112_ --osd-uuid 55ba2294-3e
 /nix/store/qkfb54nqqkliyb8f9ganibk9smj0jw8b-ceph-12.2.7/libexec/ceph/ceph-osd-prestart.sh --id ${daemonId} --cluster ${clusterName}
 ceph-osd -f --conf ceph.osd.conf --id ods_10.129.132.112_port --setuser larluo --setgroup users --mon-data ceph-mon/ods/10.129.132.112   --osd-data ceph-mon/ods_10.129.132.112 --osd-journal PATH
 
-
-#================
-# DEPLOY
-#================
-
-
 #===============
 # Exhibitor
 #===============
@@ -211,14 +205,24 @@ gitlab-rails console production
 user = User.where(user:"op").first
 
 #============ 
-# NIXPKGS
+# NIX
 #============
+nix-channel --add https://nixos.org/channels/nixos-19.03 nixpkgs
+nix-channel --add https://github.com/NixOS/nixpkgs/archive/88ae8f7d.tar.gz nixpkgs-static
+nix-channel --add https://nixos.org/channels/nixos-unstable nixpkgs-unstable
+
+nix-channel --update nixpkgs-static
+export NIX_PATH=nixpkgs=/home/op/.nix-defexpr/channels/nixpkgs:nixpkgs-static=/home/op/.nix-defexpr/channels/nixpkgs-static
+
+echo 'sandbox = false' > /etc/nix/nix.conf
+bash -x nix.sh install op@localhost tgz.nix
+
+wget https://matthewbauer.us/nix.sh
+mv $t/dat/nix-x86_64 $HOME/bin/nix
+nix --store ~ -f channel:nixpkgs-unstable 
+
 nix-env -f https://github.com/NixOS/nixpkgs/archive/19.03.tar.gz -qaP -A haskell.compiler
 [ 19.03 18.09 18.03 17.09 17.03]
-
-export NIX_PATH=nixpkgs=https://github.com/NixOS/nixpkgs/archive/18.09.tar.gz
-nix-env -f '<nixpkgs>' -iA haskell.compiler.ghc802
-nix-env -f '<nixpkgs>' -iA haskell.compiler.ghc7103
 
 #================
 # postgresql

@@ -2,6 +2,7 @@ tgz.nix=https://nixos.org/releases/nix/nix-2.2.2/nix-2.2.2-x86_64-linux.tar.bz2
 tgz.confluent-oss-5.0.0=https://packages.confluent.io/archive/5.0/confluent-oss-5.0.0-2.11.tar.gz
 tgz.hbase-1.2.6.1=http://archive.apache.org/dist/hbase/1.2.6.1/hbase-1.2.6.1-bin.tar.gz
 tgz.presto-server-309=https://repo1.maven.org/maven2/io/prestosql/presto-server/309/presto-server-309.tar.gz
+tgz.native-cabal-install=https://downloads.haskell.org/~cabal/cabal-install-latest/cabal-install-2.4.1.0-x86_64-unknown-linux.tar.xz
 
 src.postgres-xl-10.0=/nix/store/frarf37ah6kzwhnd4gc5drdiv96w30g5-postgres-xl-10.0
 src.postgresql-and-plugins-10.4=/nix/store/lhks73ldgnmdvnl31225rg9w2g2s7gyy-postgresql-and-plugins-10.4
