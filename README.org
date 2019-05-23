@@ -239,18 +239,26 @@ stack build --nix --nix-packages "postgresql zlib"
 git clone https://github.com/diogob/postgres-websockets
 stack build --nix --nix-packages "postgresql zlib"
 
+PGWS_DB_URI="postgres://monitor:monitor@10.132.37.200:5432/monitor" PGWS_JWT_SECRET="auwhfdnskjhewfi34uwehdlaehsfkuaeiskjnfduierhfsiweskjcnzeiluwhskdewishdnpwe" nix.sh.out/postgres-websockets
+SELECT pg_notify('postgres-websockets-listener',json_build_object('channel', 'chat', 'payload', 'test')::text);
 
-stack2nix . > default.nix
-nix-build -A postgrest
-nix-env -f '<nixpkgs>' -q --out-path postgrest-5.2.0 | awk  '{print $2}'
-
-nix-build -A postgres-websockets
 
 #================
 # HASKELL
 #================
 NIX_PATH=nixpkgs=https://github.com/NixOS/nixpkgs/archive/2c07921cff84dfb0b9e0f6c2d10ee2bfee6a85ac.tar.gz nix-build --no-out-link
 
+#================
+# Clojure
+#================
+nix-env -f '<nixpkgs>' -iA clojure
+[str|
+    | {:mvn/repos
+    |   { "maven-repos" {:url "http://10.132.37.56:8081/repository/maven-central/"}
+    |     "central" {:url "http://10.132.37.56:8081/repository/cloudera/"}
+    |   }
+    | }
+    |]
 
 #+END_SRC
 

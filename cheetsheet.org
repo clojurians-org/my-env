@@ -28,3 +28,6 @@
 + ssh-copy-id -i nix.sh.out/key larluo@127.0.0.1
 + bash nix.sh install larluo@127.0.0.1 tgz.nix
 + bash nix.sh install larluo@127.0.0.1 nix.jq-1.6-bin
+
++ PGWS_DB_URI="postgres://monitor:monitor@10.132.37.200:5432/monitor" PGWS_JWT_SECRET="auwhfdnskjhewfi34uwehdlaehsfkuaeiskjnfduierhfsiweskjcnzeiluwhskdewishdnpwe" nix.sh.out/postgres-websockets
++ SELECT pg_notify('postgres-websockets-listener',json_build_object('channel', 'chat', 'payload', 'test')::text);
