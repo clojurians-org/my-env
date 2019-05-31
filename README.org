@@ -233,14 +233,23 @@ nix-env -f '<nixos-19.03>' -qaP -A haskell.compiler
 | gitit
 stack build --nix --nix-packages "unzip zlib"
 | postgrest
-git clone https://github.com/PostgREST/postgrest.git
-stack build --nix --nix-packages "postgresql zlib"
-| postgres-websockets
-git clone https://github.com/diogob/postgres-websockets
-stack build --nix --nix-packages "postgresql zlib"
+
+nix.sh.out/postgrest ./nix.conf/postgrest-5.2.0/config.dhall
 
 PGWS_DB_URI="postgres://monitor:monitor@10.132.37.200:5432/monitor" PGWS_JWT_SECRET="auwhfdnskjhewfi34uwehdlaehsfkuaeiskjnfduierhfsiweskjcnzeiluwhskdewishdnpwe" nix.sh.out/postgres-websockets
 SELECT pg_notify('postgres-websockets-listener',json_build_object('channel', 'chat', 'payload', 'test')::text);
+
+CREATE TABLE ws_payload (
+    ID TEXT
+  , PAYLOAD TEXT
+) ;
+
+CREATE FUNCTION push_ws(id TEXT, payload TEXT) RETURNS void AS $$
+  INSERT INTO ws_payload (id, payload) VALUES (id, payload) ;
+  SELECT pg_notify('postgres-websockets-listener',json_build_object('channel', id, 'payload', payload)::text);
+$$ LANGUAGE SQL;
+
+curl -XPOST http://10.132.37.200:3001/rpc/push_ws -d 'id=chat&payload={"ts":"2018-03-01 12:00 %2B0800","success_num":7,"fail_num":9}'
 
 
 #================
