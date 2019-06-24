@@ -16,12 +16,10 @@ if [ ! -e nix.sh.out/key ]; then
   ssh-keygen -t ed25519 -f nix.sh.out/key -N '' -C "my-env auto-generated key"
 fi
 
-if nix-channel --list | grep nixpkgs-unstable > /dev/null ; then
-  : 
-else
-  echo "--> adjust nixpkgs to nixpkgs-unstable, nix-channel --update..."  
-  nix-channel --add https://nixos.org/channels/nixpkgs-unstable nixpkgs
-  nix-channel --update
+if which nix-channel 2> /dev/null && [ "$(nix-channel --list | grep nixos-19.03 > /dev/null)" = "" ] ; then
+    echo "--> adjust nixpkgs to nixpkgs-unstable, nix-channel --update..."  
+    nix-channel --add https://nixos.org/channels/nixos-19.03 nixpkgs
+    nix-channel --update
 fi
 ssh_opt="-i nix.sh.out/key"
 
@@ -191,9 +189,9 @@ elif [ "$1" == "import" -o "$1" == "install" ]; then
             echo '----> nix install already!' && exit -1
           fi
           rm -rf /tmp/nix-installer && mkdir -p /tmp/nix-installer && cd /tmp/nix-installer
-          tar -xvf \$my_full_rhome/nix.sh.out/tgz.nix
+          tar -xvf $my_full_rhome/nix.sh.out/tgz.nix
           cd /tmp/nix-installer/nix-*
-          grep -v 'nix-channel --update' install > _install
+          sed 's/^.*nix-channel --update/echo #**NO-CHANNEL-UPDATE**/g' install > _install
           chmod +x ./_install && ./_install
           cd ~ && rm -rf /tmp/nix-installer
       else

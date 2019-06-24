@@ -1,6 +1,4 @@
 #+STARTUP: showall
-ss-local -s 999771.free3.baacloud0.com -p 59922 -m aes-256-cfb -k zNmhCYKaN0vW -b 0.0.0.0 -l 1080 -v
-
 + bash nix.sh export tgz.nix
 + bash nix.sh export nix.jq
 + bash nix.sh export nix.nginx
@@ -25,7 +23,7 @@ ss-local -s 999771.free3.baacloud0.com -p 59922 -m aes-256-cfb -k zNmhCYKaN0vW -
 + bash nix.sh export nix.nexus
 + bash nix.sh export nix.haskellPackages.gitit
 + bash nix.sh export nix.inotify-tools
-
++ bash nix.sh export nix.minio
 
 + /nix/store/bm35lfb85qwfgjrbgvlji8mlprss6yip-ShellCheck-0.5.0                                                                                                                           
 + /nix/store/zgyka6rlg7j89pabybhzlfw5zdbv71mf-aura-2.0.0                                                                                                                                 
@@ -42,7 +40,8 @@ ss-local -s 999771.free3.baacloud0.com -p 59922 -m aes-256-cfb -k zNmhCYKaN0vW -
 + /nix/store/hb2v6msgabf553ajaipnqni0k46clppl-tttool-1.8
 
 + ssh-copy-id -i nix.sh.out/key larluo@127.0.0.1
-
-
 + bash nix.sh install larluo@127.0.0.1 tgz.nix
 + bash nix.sh install larluo@127.0.0.1 nix.jq-1.6-bin
+
++ PGWS_DB_URI="postgres://monitor:monitor@10.132.37.200:5432/monitor" PGWS_JWT_SECRET="auwhfdnskjhewfi34uwehdlaehsfkuaeiskjnfduierhfsiweskjcnzeiluwhskdewishdnpwe" nix.sh.out/postgres-websockets
++ SELECT pg_notify('postgres-websockets-listener',json_build_object('channel', 'chat', 'payload', 'test')::text);

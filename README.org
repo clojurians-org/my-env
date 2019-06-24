@@ -131,12 +131,6 @@ ceph-osd --mkfs --cluster-name my_ceph -i 10.129.132.112_ --osd-uuid 55ba2294-3e
 /nix/store/qkfb54nqqkliyb8f9ganibk9smj0jw8b-ceph-12.2.7/libexec/ceph/ceph-osd-prestart.sh --id ${daemonId} --cluster ${clusterName}
 ceph-osd -f --conf ceph.osd.conf --id ods_10.129.132.112_port --setuser larluo --setgroup users --mon-data ceph-mon/ods/10.129.132.112   --osd-data ceph-mon/ods_10.129.132.112 --osd-journal PATH
 
-
-#================
-# DEPLOY
-#================
-
-
 #===============
 # Exhibitor
 #===============
@@ -211,14 +205,27 @@ gitlab-rails console production
 user = User.where(user:"op").first
 
 #============ 
-# NIXPKGS
+# NIX
 #============
-nix-env -f https://github.com/NixOS/nixpkgs/archive/19.03.tar.gz -qaP -A haskell.compiler
-[ 19.03 18.09 18.03 17.09 17.03]
+echo 'sandbox = false' > /etc/nix/nix.conf
+nix-channel --add https://nixos.org/channels/nixos-19.03 nixpkgs
+nix-channel --add https://nixos.org/channels/nixos-19.03 nixos-19.03
+nix-channel --add https://github.com/NixOS/nixpkgs/archive/88ae8f7d.tar.gz nixpkgs-static
+nix-channel --update nixpkgs-static
+nix-channel --add https://nixos.org/channels/nixos-unstable nixpkgs-unstable
 
-export NIX_PATH=nixpkgs=https://github.com/NixOS/nixpkgs/archive/18.09.tar.gz
-nix-env -f '<nixpkgs>' -iA haskell.compiler.ghc802
-nix-env -f '<nixpkgs>' -iA haskell.compiler.ghc7103
+nix-channel --add https://github.com/obsidiansystems/obelisk/archive/master.tar.gz obelisk
+nix-channel --update obelisk
+nix-env -f /home/op/.nix-defexpr/channels/obelisk -iA command
+
+export NIX_PATH=/home/op/.nix-defexpr/channels
+
+
+wget https://matthewbauer.us/nix.sh
+mv $t/dat/nix-x86_64 $HOME/bin/nix
+
+nix-env -f '<nixos-19.03>' -qaP -A haskell.compiler
+[ 19.03 18.09 18.03 17.09 17.03]
 
 #================
 # postgresql
@@ -226,18 +233,24 @@ nix-env -f '<nixpkgs>' -iA haskell.compiler.ghc7103
 | gitit
 stack build --nix --nix-packages "unzip zlib"
 | postgrest
-git clone https://github.com/PostgREST/postgrest.git
-stack build --nix --nix-packages "postgresql zlib"
-| postgres-websockets
-git clone https://github.com/diogob/postgres-websockets
-stack build --nix --nix-packages "postgresql zlib"
 
+nix.sh.out/postgrest ./nix.conf/postgrest-5.2.0/config.dhall
 
-stack2nix . > default.nix
-nix-build -A postgrest
-nix-env -f '<nixpkgs>' -q --out-path postgrest-5.2.0 | awk  '{print $2}'
+PGWS_DB_URI="postgres://monitor:monitor@10.132.37.200:5432/monitor" PGWS_JWT_SECRET="auwhfdnskjhewfi34uwehdlaehsfkuaeiskjnfduierhfsiweskjcnzeiluwhskdewishdnpwe" nix.sh.out/postgres-websockets
+SELECT pg_notify('postgres-websockets-listener',json_build_object('channel', 'chat', 'payload', 'test')::text);
 
-nix-build -A postgres-websockets
+CREATE TABLE ws_payload (
+    ID TEXT
+  , PAYLOAD TEXT
+) ;
+
+CREATE FUNCTION push_ws(id TEXT, payload TEXT) RETURNS void AS $$
+  INSERT INTO ws_payload (id, payload) VALUES (id, payload) ;
+  SELECT pg_notify('postgres-websockets-listener',json_build_object('channel', id, 'payload', payload)::text);
+$$ LANGUAGE SQL;
+
+curl -XPOST http://10.132.37.200:3001/rpc/push_ws -d 'id=chat&payload={"ts":"2018-03-01 12:00 %2B0800","success_num":7,"fail_num":9}'
+
 
 CREATE SERVER uat_demp FOREIGN DATA_WRAPPER oracle_fdw OPTIONS (dbserver "//X.X.X.X:1521/EDMP') ;
 CREATE USER MAPPING FOR monitor SERVER uat_edmp OPTIONS (user 'KB', password 'XXXX') ;
@@ -248,6 +261,17 @@ CREATE FOREIGN TABLE tb_interface (
 #================
 NIX_PATH=nixpkgs=https://github.com/NixOS/nixpkgs/archive/2c07921cff84dfb0b9e0f6c2d10ee2bfee6a85ac.tar.gz nix-build --no-out-link
 
+#================
+# Clojure
+#================
+nix-env -f '<nixpkgs>' -iA clojure
+[str|
+    | {:mvn/repos
+    |   { "maven-repos" {:url "http://10.132.37.56:8081/repository/maven-central/"}
+    |     "central" {:url "http://10.132.37.56:8081/repository/cloudera/"}
+    |   }
+    | }
+    |]
 
 #+END_SRC
 
