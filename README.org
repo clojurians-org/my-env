@@ -239,6 +239,10 @@ nix-env -f '<nixpkgs>' -q --out-path postgrest-5.2.0 | awk  '{print $2}'
 
 nix-build -A postgres-websockets
 
+CREATE SERVER uat_demp FOREIGN DATA_WRAPPER oracle_fdw OPTIONS (dbserver "//X.X.X.X:1521/EDMP') ;
+CREATE USER MAPPING FOR monitor SERVER uat_edmp OPTIONS (user 'KB', password 'XXXX') ;
+CREATE FOREIGN TABLE tb_interface (
+  ) SERVER uat_edmp OPTIONS (schema 'KB', table 'TB_INTERFACE') ;
 #================
 # HASKELL
 #================

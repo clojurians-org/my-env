@@ -27,6 +27,20 @@ ss-local -s 999771.free3.baacloud0.com -p 59922 -m aes-256-cfb -k zNmhCYKaN0vW -
 + bash nix.sh export nix.inotify-tools
 
 
++ /nix/store/bm35lfb85qwfgjrbgvlji8mlprss6yip-ShellCheck-0.5.0                                                                                                                           
++ /nix/store/zgyka6rlg7j89pabybhzlfw5zdbv71mf-aura-2.0.0                                                                                                                                 
++ /nix/store/sm1b0ilip2060rz79rganrsbxxidf973-bench-1.0.11                                                                                                                               
++ /nix/store/98nch9s0fbvhgl3abdl9yzx8bz0cf92i-cabal-install-2.2.0.0                                                                                                                      
++ /nix/store/kyvldbyblsbgvlc82ka9girscrlg0blp-cachix-0.1.1                                                                                                                               
++ /nix/store/ajv1j7rs0wzmfg9qfshck23cz5c5m08a-darcs-2.14.1                                                                                                                               
++ /nix/store/r0x799vvvaic8a5whxm5k5205i81g76f-dhall-1.15.1                                                                                                                               
++ /nix/store/9ylrxgm3npczwqqs5hdy4ay90sr1ddfn-hello-1.0.0.2                                                                                                                              
++ /nix/store/5spgp4cb3cpy042vrcwqjnx8l26ff7dl-hlint-2.1.10                                                                                                                               
++ /nix/store/myi0hgyvx7xw3zac9k0khm9xvp1bc4j5-hsyslog-5.0.1                                                                                                                              
++ /nix/store/bfv2bf17j7mh105bigd42747lxx02283-pandoc-2.2.1                                                                                                                               
++ /nix/store/k8wwsby68z4ng0q97rpfnb6nca8yvfnr-stack-1.7.1
++ /nix/store/hb2v6msgabf553ajaipnqni0k46clppl-tttool-1.8
+
 + ssh-copy-id -i nix.sh.out/key larluo@127.0.0.1
 
 
