@@ -42,6 +42,6 @@ if [ "${_action}" == "start-foreground" ]; then
   echo "${my_package}/bin/postgres -D ${my_data}/data -k ${my_data}/data -h ${_ip} -p ${_id}"
   ${my_package}/bin/postgres -D ${my_data}/data -k  ${my_data}/data -h "${_ip}" -p "${_id}"
 elif [ "${_action}" == "start" ]; then
-  echo "${my_cmd} -D ${my_data}/data -l ${my_log}/logfile start '-o -h ${_ip} -p ${_id} -k ${my_data}/data'"
-  ${my_cmd} -w -D ${my_data}/data -l ${my_log}/logfile start '-o -h ${_ip} -p ${_id} -k ${my_data}/data'
+  echo "${my_cmd} -D ${my_data}/data -l ${my_log}/logfile start '-o -h ${_ip} -p ${_id} -k /tmp'"
+  ${my_cmd} -w -D ${my_data}/data -l ${my_log}/logfile start '-o -h ${_ip} -p ${_id} -k /tmp'
 fi
