@@ -53,11 +53,13 @@ let
       cp *.control $out/share/extension
     '';
   } ;
+  pg_cron = pkgs.pg_cron.override {postgresql = postgresql_10 ;} ;
+  timescaledb = pkgs.timescaledb.override {postgresql = postgresql_10 ;} ;
 
 in
   pkgs.buildEnv rec {
-    name = "postgresql-10.7";
-    paths = [ postgresql_10 postgresql_10.lib pkgs.pg_cron pkgs.timescaledb mysql_fdw oracle_fdw ] ;
+    name = "my-postgresql-10.7";
+    paths = [ postgresql_10 postgresql_10.lib pg_cron timescaledb mysql_fdw oracle_fdw ] ;
     buildInputs = [ pkgs.makeWrapper ];
     postBuild =
       ''
