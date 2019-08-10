@@ -236,6 +236,7 @@ stack build --nix --nix-packages "unzip zlib"
 
 nix.sh.out/postgrest ./nix.conf/postgrest-5.2.0/config.dhall
 
+| postgres-websocket
 PGWS_DB_URI="postgres://monitor:monitor@10.132.37.200:5432/monitor" PGWS_JWT_SECRET="auwhfdnskjhewfi34uwehdlaehsfkuaeiskjnfduierhfsiweskjcnzeiluwhskdewishdnpwe" nix.sh.out/postgres-websockets
 SELECT pg_notify('postgres-websockets-listener',json_build_object('channel', 'chat', 'payload', 'test')::text);
 
@@ -252,10 +253,19 @@ $$ LANGUAGE SQL;
 curl -XPOST http://10.132.37.200:3001/rpc/push_ws -d 'id=chat&payload={"ts":"2018-03-01 12:00 %2B0800","success_num":7,"fail_num":9}'
 
 
-CREATE SERVER uat_demp FOREIGN DATA_WRAPPER oracle_fdw OPTIONS (dbserver "//X.X.X.X:1521/EDMP') ;
+| oracle_fdw
+CREATE SERVER uat_demp FOREIGN DATA_WRAPPER oracle_fdw OPTIONS (dbserver "//X.X.X.X:1521/EDMP") ;
 CREATE USER MAPPING FOR monitor SERVER uat_edmp OPTIONS (user 'KB', password 'XXXX') ;
 CREATE FOREIGN TABLE tb_interface (
   ) SERVER uat_edmp OPTIONS (schema 'KB', table 'TB_INTERFACE') ;
+
+| pg_cron
+CREATE EXTENSION pg_cron ;
+GRANT USAGE ON SCHEM cron TO monitor ;
+
+INSERT INTO cron.job (schedule, command, nodename, nodeport) values (
+  '*/2 * * * *', 'select pg_notify(''ws_conduit'', ''*/2 * * * *'')', '', '5432'
+  ) ;
 #================
 # HASKELL
 #================
