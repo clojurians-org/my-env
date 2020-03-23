@@ -208,8 +208,7 @@ user = User.where(user:"op").first
 # NIX
 #============
 echo 'sandbox = false' > /etc/nix/nix.conf
-nix-channel --add https://nixos.org/channels/nixos-19.03 nixpkgs
-nix-channel --add https://nixos.org/channels/nixos-19.03 nixos-19.03
+nix-channel --add https://nixos.org/channels/nixos-20.03 nixpkgs
 nix-channel --add https://github.com/NixOS/nixpkgs/archive/88ae8f7d.tar.gz nixpkgs-static
 nix-channel --update nixpkgs-static
 nix-channel --add https://nixos.org/channels/nixos-unstable nixpkgs-unstable
@@ -226,6 +225,8 @@ mv $t/dat/nix-x86_64 $HOME/bin/nix
 
 nix-env -f '<nixos-19.03>' -qaP -A haskell.compiler
 [ 19.03 18.09 18.03 17.09 17.03]
+
+nix-build -E "with import <nixpkgs> {}; callPackage testing/driver.nix  {}"
 
 #================
 # postgresql
