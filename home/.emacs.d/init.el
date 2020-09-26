@@ -17,13 +17,26 @@
 (unless package-archive-contents
   (package-refresh-contents))
 
-(dolist (package '(use-package paredit restclient 
-                   json-mode typescript-mode vue-mode vue-html-mode
-                   dap-mode lsp-java lsp-haskell
-                   dante cider gradle-mode nix-mode
-                   ))
-  (unless (package-installed-p package)
-    (package-install package)))
+ (dolist (package '(use-package paredit restclient
+                    json-mode typescript-mode vue-mode vue-html-mode
+                    dap-mode lsp-java lsp-haskell
+                    rust-mode cargo
+                    dante cider gradle-mode nix-mode
+                    ))
+   (unless (package-installed-p package)
+     (package-install package)))
+
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+
+(require 'use-package)
+
+(setq use-package-always-defer t
+      use-package-always-ensure t
+      backup-directory-alist `((".*" . ,temporary-file-directory))
+      auto-save-file-name-transforms `((".*" ,temporary-file-directory t)))
+
 
 ;; -----------------
 ;; common
@@ -37,7 +50,7 @@
 (add-hook 'emacs-lisp-mode-hook #'enable-paredit-mode)
 (add-hook 'lisp-mode-hook #'enable-paredit-mode)
 (add-hook 'clojure-mode-hook #'enable-paredit-mode)
-(add-hook 'conf-mode-hook (lambda () (display-line-numbers-mode t))) 
+(add-hook 'conf-mode-hook (lambda () (display-line-numbers-mode t)))
 
 
 ;; -----------------
@@ -45,7 +58,7 @@
 ;; -----------------
 (use-package nix-mode
   :mode "\\.nix\\'"
-  :init 
+  :init
   (add-hook 'nix-mode-hook 'flycheck-mode))
 
 ;; -----------------
@@ -57,15 +70,6 @@
             ".git" ".hg" ".fslckout" "_FOSSIL_"
             ".bzr" "_darcs" ".tox" ".svn" ".stack-work"
             "build"))
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(lsp-enable-on-type-formatting nil)
- '(package-selected-packages
-   (quote
-    (use-package vue-mode typescript-mode restclient paredit nix-mode lsp-java lsp-haskell json-mode gradle-mode dap-mode dante cider))))
 
 ;; -----------------
 ;; json mode
@@ -129,9 +133,39 @@
                             (display-line-numbers-mode t)
                             (gradle-mode 1)
                             ))
+
+(use-package scala-mode
+  :mode "\\.s\\(cala\\|bt\\)$")
+
+(use-package lsp-mode
+  ;; Optional - enable lsp-mode automatically in scala files
+  :hook  (scala-mode . lsp)
+         (lsp-mode . lsp-lens-mode)
+  :config (setq lsp-prefer-flymake nil))
+
+;; Add metals backend for lsp-mode
+(use-package lsp-metals)
+
+;; (dap-mode 1)
+;; (dap-ui-mode 1)
+
+(require 'rust-mode)
+(add-hook 'rust-mode-hook #'lsp)
+(add-hook 'rust-mode-hook 'cargo-minor-mode)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (htmlize protobuf-mode vue-mode use-package typescript-mode scala-mode rustic restclient paredit nix-mode magit lsp-metals lsp-java lsp-haskell json-mode gradle-mode eglot dante cider cargo))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+(setq org-latex-pdf-process '("xelatex -interaction nonstopmode %f"
+"xelatex -interaction nonstopmode %f"))
